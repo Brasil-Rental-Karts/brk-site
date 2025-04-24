@@ -12,7 +12,7 @@ import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "./ui/card"
 import pilotsData from "@/data/pilots.json"
-import { getInitials } from "@/utils/pilot-utils"
+import { getInitials } from "../utils/pilot-utils"
 
 const APP_URL = import.meta.env.VITE_APP_URL
 
@@ -73,7 +73,7 @@ export function Navbar() {
     setPilotSearchQuery(e.target.value)
     // Reset empty message timer on each input change
     setShowPilotEmptyMessage(false)
-    if (e.target.value && filteredPilots.length === 0) {
+    if (e.target.value.length >= 2 && filteredPilots.length === 0) {
       // Show empty message after slight delay
       setTimeout(() => setShowPilotEmptyMessage(true), 300)
     }
@@ -93,18 +93,19 @@ export function Navbar() {
   )
   
   // Filter pilots based on search query
-  const filteredPilots = pilotsData.filter(pilot => 
-    pilot.name.toLowerCase().includes(pilotSearchQuery.toLowerCase()) || 
-    (pilot.nickname && pilot.nickname.toLowerCase().includes(pilotSearchQuery.toLowerCase())) ||
-    pilot.category.toLowerCase().includes(pilotSearchQuery.toLowerCase()) ||
-    (`#${pilot.number}`.includes(pilotSearchQuery.toLowerCase()))
-  )
+  const filteredPilots = pilotSearchQuery.length >= 2 
+    ? pilotsData
+        .filter(pilot => 
+          pilot.name.toLowerCase().includes(pilotSearchQuery.toLowerCase()) || 
+          (pilot.nickname && pilot.nickname.toLowerCase().includes(pilotSearchQuery.toLowerCase())) ||
+          pilot.category.toLowerCase().includes(pilotSearchQuery.toLowerCase()) ||
+          (`#${pilot.number}`.includes(pilotSearchQuery.toLowerCase()))
+        )
+        .slice(0, 5)
+    : []
 
   // Suggested clubs to make the interface more helpful
   const suggestedClubs = searchQuery.length === 0 ? CLUBS.slice(0, 5) : []
-  
-  // Suggested pilots to make the interface more helpful
-  const suggestedPilots = pilotSearchQuery.length === 0 ? pilotsData.slice(0, 5) : []
 
   // Focus search input when dropdown opens
   useEffect(() => {
@@ -303,11 +304,11 @@ export function Navbar() {
                 <div className="max-h-[50vh] overflow-y-auto mt-3 pr-1">
                   {pilotSearchQuery ? (
                     filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                      <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
-                        <Info className="h-10 w-10 text-muted-foreground/50" />
+                      <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
+                        <Info className="h-8 w-8 text-muted-foreground/50" />
                         <div>
-                          <p className="font-medium">Nenhum piloto encontrado</p>
-                          <p className="text-sm text-muted-foreground mt-1">Tente outro termo ou explore os pilotos disponíveis</p>
+                          <p className="font-medium text-sm">Nenhum piloto encontrado</p>
+                          <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou explore os pilotos disponíveis</p>
                         </div>
                         <Button 
                           variant="outline" 
@@ -318,7 +319,13 @@ export function Navbar() {
                           Ver todos os pilotos
                         </Button>
                       </div>
-                    ) : (
+                    ) : pilotSearchQuery.length === 1 ? (
+                      <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                        <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                        <p className="font-medium text-sm text-foreground mb-1">Continue digitando...</p>
+                        <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                      </div>
+                    ) : filteredPilots.length > 0 ? (
                       filteredPilots.map((pilot) => (
                         <Card 
                           key={pilot.id}
@@ -349,53 +356,18 @@ export function Navbar() {
                           </CardContent>
                         </Card>
                       ))
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                        <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                        <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
+                        <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                      </div>
                     )
                   ) : (
-                    <div className="space-y-4">
-                      <div className="text-xs uppercase font-medium text-muted-foreground tracking-wider mt-2">
-                        Pilotos em destaque
-                      </div>
-                      {suggestedPilots.map((pilot) => (
-                        <Card 
-                          key={pilot.id}
-                          className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
-                          onClick={() => handlePilotSelect(pilot)}
-                        >
-                          <CardContent className="p-3 flex items-start space-x-3">
-                            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-500/30 flex items-center justify-center bg-muted text-primary-500">
-                              {pilot.avatar_url ? (
-                                <img 
-                                  src={pilot.avatar_url} 
-                                  alt={pilot.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <span className="text-sm font-bold">{getInitials(pilot.name)}</span>
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-sm">{pilot.name}</div>
-                              <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                <span className="bg-primary-500/10 text-primary-500 px-1 py-0.5 rounded text-xs mr-2">
-                                  #{pilot.number}
-                                </span>
-                                {pilot.category}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                      <div className="pt-2 pb-1 text-center">
-                        <Button 
-                          variant="link" 
-                          size="sm" 
-                          className="text-xs text-primary-500"
-                          onClick={() => {}}
-                        >
-                          <Users className="h-3 w-3 mr-1" />
-                          Ver todos os pilotos
-                        </Button>
-                      </div>
+                    <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                      <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                      <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
+                      <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
                     </div>
                   )}
                 </div>
@@ -600,7 +572,13 @@ export function Navbar() {
                       Ver todos os pilotos
                     </Button>
                   </div>
-                ) : (
+                ) : pilotSearchQuery.length === 1 ? (
+                  <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                    <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                    <p className="font-medium text-sm text-foreground mb-1">Continue digitando...</p>
+                    <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                  </div>
+                ) : filteredPilots.length > 0 ? (
                   filteredPilots.map((pilot) => (
                     <Card 
                       key={pilot.id}
@@ -631,42 +609,18 @@ export function Navbar() {
                       </CardContent>
                     </Card>
                   ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                    <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                    <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
+                    <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                  </div>
                 )
               ) : (
-                <div className="space-y-3">
-                  <div className="text-xs uppercase font-medium text-muted-foreground tracking-wider mt-2">
-                    Pilotos em destaque
-                  </div>
-                  {suggestedPilots.map((pilot) => (
-                    <Card 
-                      key={pilot.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
-                      onClick={() => handlePilotSelect(pilot)}
-                    >
-                      <CardContent className="p-3 flex items-start space-x-3">
-                        <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-500/30 flex items-center justify-center bg-muted text-primary-500">
-                          {pilot.avatar_url ? (
-                            <img 
-                              src={pilot.avatar_url} 
-                              alt={pilot.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-sm font-bold">{getInitials(pilot.name)}</span>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{pilot.name}</div>
-                          <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                            <span className="bg-primary-500/10 text-primary-500 px-1 py-0.5 rounded text-xs mr-2">
-                              #{pilot.number}
-                            </span>
-                            {pilot.category}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
+                  <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
+                  <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
+                  <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
                 </div>
               )}
             </div>

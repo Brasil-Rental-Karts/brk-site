@@ -313,11 +313,6 @@ export function Pilot() {
                 >
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">{club.name}</h4>
-                    {club.primary && (
-                      <span className="text-xs bg-primary-500/10 text-primary-500 px-2 py-0.5 rounded-full">
-                        Principal
-                      </span>
-                    )}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
                     Clique para ver detalhes do clube
