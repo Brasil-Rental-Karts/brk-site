@@ -542,6 +542,21 @@ export function Navbar() {
                       </CardContent>
                     </Card>
                   ))}
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-3"
+                    asChild
+                  >
+                    <Link to="/clubes" onClick={() => {
+                      setDropdownOpen(false);
+                      setMobileMenuOpen(false);
+                    }}>
+                      <Users className="h-4 w-4 mr-2" />
+                      Ver todos os clubes
+                    </Link>
+                  </Button>
                 </div>
               )}
             </div>
