@@ -13,6 +13,9 @@ export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation()
   const { clearClub } = useClub()
   const prevPathRef = useRef(location.pathname)
+  
+  // Verificar se está na página de piloto
+  const isPilotPage = location.pathname.startsWith('/pilotos/')
 
   useEffect(() => {
     // Only clear if we're navigating TO home FROM another page
@@ -25,7 +28,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <SubHeader />
+      {!isPilotPage && <SubHeader />}
       <main className="flex-1">
         {children}
       </main>

@@ -1,21 +1,62 @@
 import { createContext, useContext, useState, ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
+import clubsData from "@/data/clubs.json"
 
-interface Club {
+export interface Club {
   id: number
   name: string
-  city: string
   alias: string
+  logo: string
+  description: string
+  location: {
+    city: string
+    state: string
+    region: string
+  }
+  contact: {
+    phone: string
+    email: string
+    website: string
+  }
+  categories: string[]
+  history: {
+    founded: number
+    totalEvents: number
+    totalPilots: number
+  }
+  championships: {
+    current: number
+    total: number
+    averageParticipants: number
+    categories: string[]
+  }
+  sponsors: Array<{
+    id: number
+    name: string
+    logo: string
+    website: string
+    type: string
+  }>
+  events: Array<{
+    id: number
+    title: string
+    date: string
+    time: string
+    type: string
+    status: string
+    participants: number
+    maxParticipants: number
+  }>
 }
 
-export const CLUBS: Club[] = [
-  { id: 1, name: "Start Racing Livens", city: "Penha-SC", alias: "start-racing-livens" },
-]
+// Exporte os dados dos clubes para uso em outros componentes
+export const CLUBS: Club[] = clubsData as Club[]
 
 interface ClubContextType {
   selectedClub: Club | null
   selectClub: (club: Club) => void
   clearClub: () => void
+  allClubs: Club[]
 }
 
 const ClubContext = createContext<ClubContextType | undefined>(undefined)
@@ -35,7 +76,7 @@ export function ClubProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ClubContext.Provider value={{ selectedClub, selectClub, clearClub }}>
+    <ClubContext.Provider value={{ selectedClub, selectClub, clearClub, allClubs: CLUBS }}>
       {children}
     </ClubContext.Provider>
   )

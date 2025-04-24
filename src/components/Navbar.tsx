@@ -55,7 +55,8 @@ export function Navbar() {
   // Filter clubs based on search query
   const filteredClubs = CLUBS.filter(club => 
     club.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    club.city.toLowerCase().includes(searchQuery.toLowerCase())
+    club.location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    club.location.state.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   // Suggested clubs to make the interface more helpful
@@ -157,7 +158,7 @@ export function Navbar() {
                             <div className="font-medium text-sm">{club.name}</div>
                             <div className="flex items-center mt-1 text-xs text-muted-foreground">
                               <MapPin className="h-3 w-3 mr-1" />
-                              {club.city}
+                              {club.location.city}, {club.location.state}
                             </div>
                           </div>
                         </CardContent>
@@ -182,7 +183,7 @@ export function Navbar() {
                               <div className="font-medium text-sm">{club.name}</div>
                               <div className="flex items-center mt-1 text-xs text-muted-foreground">
                                 <MapPin className="h-3 w-3 mr-1" />
-                                {club.city}
+                                {club.location.city}, {club.location.state}
                               </div>
                             </div>
                           </CardContent>
@@ -329,7 +330,7 @@ export function Navbar() {
                         <div className="font-medium text-sm">{club.name}</div>
                         <div className="flex items-center mt-1 text-xs text-muted-foreground">
                           <MapPin className="h-3 w-3 mr-1" />
-                          {club.city}
+                          {club.location.city}, {club.location.state}
                         </div>
                       </div>
                     </CardContent>
@@ -354,7 +355,7 @@ export function Navbar() {
                           <div className="font-medium text-sm">{club.name}</div>
                           <div className="flex items-center mt-1 text-xs text-muted-foreground">
                             <MapPin className="h-3 w-3 mr-1" />
-                            {club.city}
+                            {club.location.city}, {club.location.state}
                           </div>
                         </div>
                       </CardContent>
@@ -402,7 +403,7 @@ export function Navbar() {
                   <div className="font-medium">{selectedClub.name}</div>
                   <div className="flex items-center mt-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 mr-1" />
-                    {selectedClub.city}
+                    {selectedClub.location.city}, {selectedClub.location.state}
                   </div>
                 </CardContent>
               </Card>
