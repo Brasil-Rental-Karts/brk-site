@@ -36,10 +36,38 @@
       },
       {
         "id": 2,
-        "name": "RaceGear Pro",
+        "name": "BRK",
+        "logo": "https://brk.wernerjr.dev/logo-brk.svg",
+        "website": "https://brk.wernerjr.dev/",
+        "type": "Principal"
+      },
+      {
+        "id": 3,
+        "name": "Togu",
         "logo": "https://placehold.co/200x100/252525/FFF?text=RaceGear",
         "website": "https://example.com/racegear",
         "type": "Oficial"
+      },
+      {
+        "id": 4,
+        "name": "Potato Race",
+        "logo": "https://placehold.co/200x100/252525/FFF?text=RaceGear",
+        "website": "https://example.com/racegear",
+        "type": "Oficial"
+      },
+      {
+        "id": 5,
+        "name": "Contabilidade",
+        "logo": "https://placehold.co/200x100/252525/FFF?text=RaceGear",
+        "website": "https://example.com/racegear",
+        "type": "Oficial"
+      },
+      {
+        "id": 6,
+        "name": "RaceGear Pro",
+        "logo": "https://placehold.co/200x100/252525/FFF?text=RaceGear",
+        "website": "https://example.com/racegear",
+        "type": "Apoio"
       }
     ],
     "events": [

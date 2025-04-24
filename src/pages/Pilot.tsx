@@ -6,6 +6,7 @@ import { useState } from "react"
 import pilotsData from "@/data/pilots.json"
 import rankingsData from "@/data/rankings.json"
 import { useClub, Club, CLUBS } from "@/contexts/ClubContext"
+import { getInitials, normalizeSlug } from "@/utils/pilot-utils"
 
 // Interface para o tipo Pilot
 interface Pilot {
@@ -42,33 +43,11 @@ interface Pilot {
   bio: string;
 }
 
-// Função para obter as iniciais do piloto baseado no nome
-const getInitials = (name: string) => {
-  if (!name) return "";
-  return name
-    .split(' ')
-    .map(part => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-}
-
 export function Pilot() {
   const { pilotSlug } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'stats' | 'races' | 'bio' | 'clubs'>('stats')
   const { selectClub } = useClub() // Importando o contexto do clube
-  
-  // Função para normalizar slug
-  const normalizeSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/--+/g, '-');
-  }
   
   // Encontrar dados do piloto pelo slug - verificando slug explícito ou gerado do nome
   const pilotData = pilotsData.find(pilot => 
