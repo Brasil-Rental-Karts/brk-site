@@ -1,13 +1,16 @@
 import { Instagram, MessageCircle } from "lucide-react"
 import { Button } from "./ui/button"
+import { Link } from "react-router-dom"
 
 export function Footer() {
   return (
     <footer className="border-t bg-background">
       <div className="container py-8 px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex items-center">
-          <span className="text-xl font-bold text-primary-500">BRK</span>
-          <span className="ml-2 text-muted-foreground">Brasil Rental Karts</span>
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Link to="/" className="hover:opacity-80 transition-opacity">
+            <img src="/logo-brk.svg" alt="BRK Logo" className="h-5 w-auto" />
+          </Link>
+          <span className="text-sm text-muted-foreground">Brasil Rental Karts</span>
         </div>
 
         <div className="flex items-center gap-6">

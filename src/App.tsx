@@ -7,6 +7,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 import { ClubProvider } from "@/contexts/ClubContext"
 
+// Create specific route components
+const ClubCalendario = () => <Club section="calendario" />
+const ClubClassificacao = () => <Club section="classificacao" />
+const ClubRegulamento = () => <Club section="regulamento" />
+
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -18,6 +23,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/clube/:alias" element={<Club />} />
+                <Route path="/clube/:alias/calendario" element={<ClubCalendario />} />
+                <Route path="/clube/:alias/classificacao" element={<ClubClassificacao />} />
+                <Route path="/clube/:alias/regulamento" element={<ClubRegulamento />} />
               </Routes>
             </AnimatePresence>
           </MainLayout>
