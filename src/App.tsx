@@ -2,6 +2,7 @@ import { Home } from "@/pages/Home"
 import { About } from "@/pages/About"
 import { Club } from "@/pages/Club"
 import { Pilot } from "@/pages/Pilot"
+import { Clubs } from "@/pages/Clubs"
 import { MainLayout } from "@/components/MainLayout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
@@ -40,6 +41,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/clubes" element={<Clubs />} />
           <Route path="/clube/:alias" element={<Club />} />
           <Route path="/clube/:alias/calendario" element={<ClubCalendario />} />
           <Route path="/clube/:alias/classificacao" element={<ClubClassificacao />} />

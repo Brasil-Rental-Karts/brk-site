@@ -251,10 +251,15 @@ export function Navbar() {
                           variant="link" 
                           size="sm" 
                           className="text-xs text-primary-500"
-                          onClick={() => {}}
+                          asChild
                         >
-                          <Users className="h-3 w-3 mr-1" />
-                          Ver todos os clubes
+                          <Link to="/clubes" onClick={() => {
+                            setDropdownOpen(false);
+                            setMobileMenuOpen(false);
+                          }}>
+                            <Users className="h-3 w-3 mr-1" />
+                            Ver todos os clubes
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -385,7 +390,7 @@ export function Navbar() {
               asChild
             >
               <a href={`${APP_URL}/login`}>
-                Login
+                Entrar
               </a>
             </Button>
             <Button
@@ -393,7 +398,7 @@ export function Navbar() {
               asChild
             >
               <a href={`${APP_URL}/signup`}>
-                Cadastre-se
+                Faça parte
               </a>
             </Button>
           </div>
@@ -480,9 +485,14 @@ export function Navbar() {
                       variant="outline" 
                       size="sm" 
                       className="mt-2"
-                      onClick={clearSearch}
+                      asChild
                     >
-                      Ver todos os clubes
+                      <Link to="/clubes" onClick={() => {
+                        setDropdownOpen(false);
+                        setMobileMenuOpen(false);
+                      }}>
+                        Ver todos os clubes
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -638,7 +648,7 @@ export function Navbar() {
                 asChild
               >
                 <a href={`${APP_URL}/login`}>
-                  Login
+                  Entrar
                 </a>
               </Button>
               <Button
@@ -646,7 +656,7 @@ export function Navbar() {
                 asChild
               >
                 <a href={`${APP_URL}/signup`}>
-                  Cadastre-se
+                Faça parte
                 </a>
               </Button>
             </div>
