@@ -254,7 +254,13 @@ export function Pilot() {
                       variant="ghost" 
                       size="sm" 
                       className="w-full mt-3 text-xs"
-                      onClick={() => navigate(`/clube/${ranking.club.alias}/classificacao`)}
+                      onClick={() => {
+                        const clubData = getFullClubData(ranking.clubId)
+                        if (clubData) {
+                          selectClub(clubData)
+                          navigate(`/clube/${ranking.club.alias}/classificacao`)
+                        }
+                      }}
                     >
                       Ver classificação completa
                     </Button>

@@ -46,7 +46,7 @@
       {
         "id": 1,
         "title": "Treino Livre",
-        "date": "27/03/2024",
+        "date": "27/03/2025",
         "time": "19:00",
         "type": "Treino",
         "status": "Inscrições Abertas",
@@ -56,7 +56,7 @@
       {
         "id": 2,
         "title": "4ª Etapa - Campeonato Light",
-        "date": "30/03/2024",
+        "date": "30/03/2025",
         "time": "14:00",
         "type": "Corrida",
         "status": "Inscrições Abertas",
@@ -112,7 +112,7 @@
       {
         "id": 3,
         "title": "Treino de Desenvolvimento",
-        "date": "26/03/2024",
+        "date": "26/03/2025",
         "time": "18:00",
         "type": "Treino",
         "status": "Inscrições Abertas",
@@ -122,7 +122,7 @@
       {
         "id": 4,
         "title": "6ª Etapa - Campeonato Pro",
-        "date": "02/04/2024",
+        "date": "02/04/2025",
         "time": "19:30",
         "type": "Corrida",
         "status": "Em Breve",
@@ -178,7 +178,7 @@
       {
         "id": 5,
         "title": "Workshop de Técnicas Avançadas",
-        "date": "28/03/2024",
+        "date": "28/03/2025",
         "time": "17:00",
         "type": "Curso",
         "status": "Inscrições Abertas",
@@ -188,7 +188,7 @@
       {
         "id": 6,
         "title": "3ª Etapa - Campeonato Rookie",
-        "date": "31/03/2024",
+        "date": "31/03/2025",
         "time": "15:00",
         "type": "Corrida",
         "status": "Inscrições Abertas",
@@ -244,7 +244,7 @@
       {
         "id": 7,
         "title": "Treino Especializado",
-        "date": "29/03/2024",
+        "date": "29/03/2025",
         "time": "20:00",
         "type": "Treino",
         "status": "Inscrições Abertas",
@@ -254,7 +254,7 @@
       {
         "id": 8,
         "title": "5ª Etapa - Campeonato Elite",
-        "date": "04/04/2024",
+        "date": "04/04/2025",
         "time": "19:00",
         "type": "Corrida",
         "status": "Em Breve",

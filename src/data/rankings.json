@@ -2,8 +2,8 @@
   {
     "clubId": 1,
     "category": "Pro",
-    "championship": "Campeonato Pro 2024",
-    "season": "2024",
+    "championship": "Campeonato Pro 2025",
+    "season": "2025",
     "currentStage": 3,
     "totalStages": 8,
     "pilots": [
@@ -70,8 +70,8 @@
   {
     "clubId": 1,
     "category": "Light",
-    "championship": "Campeonato Light 2024",
-    "season": "2024",
+    "championship": "Campeonato Light 2025",
+    "season": "2025",
     "currentStage": 3,
     "totalStages": 8,
     "pilots": [
@@ -137,8 +137,8 @@
   {
     "clubId": 2,
     "category": "Pro",
-    "championship": "Campeonato Estadual 2024",
-    "season": "2024",
+    "championship": "Campeonato Estadual 2025",
+    "season": "2025",
     "currentStage": 4,
     "totalStages": 10,
     "pilots": [
@@ -204,8 +204,8 @@
   {
     "clubId": 2,
     "category": "Light",
-    "championship": "Light Cup 2024",
-    "season": "2024",
+    "championship": "Light Cup 2025",
+    "season": "2025",
     "currentStage": 4,
     "totalStages": 8,
     "pilots": [
@@ -270,8 +270,8 @@
   {
     "clubId": 2,
     "category": "Master",
-    "championship": "Master Cup 2024",
-    "season": "2024",
+    "championship": "Master Cup 2025",
+    "season": "2025",
     "currentStage": 4,
     "totalStages": 8,
     "pilots": [
@@ -336,8 +336,8 @@
   {
     "clubId": 3,
     "category": "Rookie",
-    "championship": "Campeonato Rookie 2024",
-    "season": "2024",
+    "championship": "Campeonato Rookie 2025",
+    "season": "2025",
     "currentStage": 2,
     "totalStages": 6,
     "pilots": [
@@ -401,8 +401,8 @@
   {
     "clubId": 3,
     "category": "Graduação",
-    "championship": "Graduação Cup 2024",
-    "season": "2024",
+    "championship": "Graduação Cup 2025",
+    "season": "2025",
     "currentStage": 3,
     "totalStages": 6,
     "pilots": [
@@ -468,8 +468,8 @@
   {
     "clubId": 3,
     "category": "Avançado",
-    "championship": "Avançado Cup 2024",
-    "season": "2024",
+    "championship": "Avançado Cup 2025",
+    "season": "2025",
     "currentStage": 4,
     "totalStages": 6,
     "pilots": [
@@ -534,8 +534,8 @@
   {
     "clubId": 4,
     "category": "Elite",
-    "championship": "Elite Series 2024",
-    "season": "2024",
+    "championship": "Elite Series 2025",
+    "season": "2025",
     "currentStage": 3,
     "totalStages": 8,
     "pilots": [
@@ -602,8 +602,8 @@
   {
     "clubId": 4,
     "category": "Super Elite",
-    "championship": "Super Elite Series 2024",
-    "season": "2024",
+    "championship": "Super Elite Series 2025",
+    "season": "2025",
     "currentStage": 3,
     "totalStages": 8,
     "pilots": [

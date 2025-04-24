@@ -45,7 +45,7 @@ export function SubHeader() {
     }
     
     // Check if we're on a subpage
-    if (path !== `/clube/${selectedClub.alias}` && location.pathname.startsWith(path)) {
+    if (path !== `/clube/${selectedClub.alias}` && location.pathname.includes(path)) {
       return true
     }
     

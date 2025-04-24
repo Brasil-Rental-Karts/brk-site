@@ -22,8 +22,8 @@
       "championships": 1
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" }
@@ -53,8 +53,8 @@
       "championships": 1
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
       { "event": "2ª Etapa - Elite Series", "date": "02/12/2023", "result": "6º lugar", "points": 20, "club": "Elite Racing Team" }
@@ -84,9 +84,9 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
-      { "event": "Torneio de Verão", "date": "05/01/2024", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
+      { "event": "Torneio de Verão", "date": "05/01/2025", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
       { "event": "Workshop Avançado", "date": "08/12/2023", "result": "Participação", "points": 0, "club": "Speed Kart Academy" }
     ],
@@ -113,8 +113,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2024", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2024", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2025", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2025", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Light", "date": "15/12/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" }
@@ -127,7 +127,6 @@
     "slug": "matheus-oliveira",
     "nickname": "Mat",
     "number": 23,
-    "avatar_url": "https://images.unsplash.com/photo-1622185135505-2d795097a1eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80",
     "category": "Pro",
     "clubs": [
       { "id": 2, "name": "Kart Club Brasil", "alias": "kart-club-brasil", "primary": true },
@@ -144,10 +143,10 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2024", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Elite Series", "date": "10/02/2024", "result": "3º lugar", "points": 27, "club": "Elite Racing Team" },
-      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
-      { "event": "2ª Etapa - Elite Series", "date": "13/01/2024", "result": "5º lugar", "points": 23, "club": "Elite Racing Team" },
+      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2025", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Elite Series", "date": "10/02/2025", "result": "3º lugar", "points": 27, "club": "Elite Racing Team" },
+      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "2ª Etapa - Elite Series", "date": "13/01/2025", "result": "5º lugar", "points": 23, "club": "Elite Racing Team" },
       { "event": "2ª Etapa - Campeonato Estadual", "date": "28/12/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" }
     ],
     "bio": "Matheus é um piloto versátil que compete em diferentes clubes e campeonatos. Com passagem por competições regionais, traz uma experiência diversificada para as pistas. Sua especialidade são as ultrapassagens precisas e o ritmo de corrida consistente, sendo considerado um dos pilotos mais completos do grid."
@@ -175,10 +174,10 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Light Cup", "date": "20/02/2024", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
-      { "event": "Workshop Intermediário", "date": "12/02/2024", "result": "Participação", "points": 0, "club": "Speed Kart Academy" },
-      { "event": "3ª Etapa - Light Cup", "date": "23/01/2024", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
-      { "event": "2ª Etapa - Graduação Cup", "date": "15/01/2024", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
+      { "event": "4ª Etapa - Light Cup", "date": "20/02/2025", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
+      { "event": "Workshop Intermediário", "date": "12/02/2025", "result": "Participação", "points": 0, "club": "Speed Kart Academy" },
+      { "event": "3ª Etapa - Light Cup", "date": "23/01/2025", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
+      { "event": "2ª Etapa - Graduação Cup", "date": "15/01/2025", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
       { "event": "2ª Etapa - Light Cup", "date": "26/12/2023", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" }
     ],
     "bio": "Bruno iniciou no kartismo há apenas um ano, mas sua rápida evolução chamou atenção. Participa dos treinamentos da Speed Kart Academy para aprimorar sua técnica, enquanto compete regularmente pelo Kart Club Brasil. Sua principal característica é a defesa de posição, sendo difícil de ser ultrapassado mesmo por pilotos mais experientes."
@@ -205,11 +204,11 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Graduação Cup", "date": "25/02/2024", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
-      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2024", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Graduação Cup", "date": "28/01/2024", "result": "2º lugar", "points": 30, "club": "Speed Kart Academy" },
-      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2024", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
-      { "event": "1ª Etapa - Graduação Cup", "date": "03/01/2024", "result": "3º lugar", "points": 27, "club": "Speed Kart Academy" }
+      { "event": "3ª Etapa - Graduação Cup", "date": "25/02/2025", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
+      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2025", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Graduação Cup", "date": "28/01/2025", "result": "2º lugar", "points": 30, "club": "Speed Kart Academy" },
+      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2025", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
+      { "event": "1ª Etapa - Graduação Cup", "date": "03/01/2025", "result": "3º lugar", "points": 27, "club": "Speed Kart Academy" }
     ],
     "bio": "Henrique é um dos pilotos formados pela Speed Kart Academy, onde começou nos cursos básicos há dois anos. Atualmente compete tanto pela academia quanto pelo Start Racing Livens. Especialista em largadas e condução na chuva, tem grande potencial para evoluir rapidamente nas próximas temporadas."
   },
@@ -234,8 +233,8 @@
       "championships": 1
     },
     "last_races": [
-      { "event": "3ª Etapa - Elite Series", "date": "10/02/2024", "result": "1º lugar", "points": 35, "club": "Elite Racing Team" },
-      { "event": "2ª Etapa - Elite Series", "date": "13/01/2024", "result": "2º lugar", "points": 30, "club": "Elite Racing Team" },
+      { "event": "3ª Etapa - Elite Series", "date": "10/02/2025", "result": "1º lugar", "points": 35, "club": "Elite Racing Team" },
+      { "event": "2ª Etapa - Elite Series", "date": "13/01/2025", "result": "2º lugar", "points": 30, "club": "Elite Racing Team" },
       { "event": "1ª Etapa - Elite Series", "date": "16/12/2023", "result": "1º lugar", "points": 35, "club": "Elite Racing Team" },
       { "event": "Elite Cup 2023", "date": "02/12/2023", "result": "3º lugar", "points": 27, "club": "Elite Racing Team" },
       { "event": "Desafio dos Campeões", "date": "18/11/2023", "result": "2º lugar", "points": 30, "club": "Elite Racing Team" }
@@ -264,9 +263,9 @@
       "championships": 2
     },
     "last_races": [
-      { "event": "4ª Etapa - Master Cup", "date": "24/02/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Elite Series (Master)", "date": "10/02/2024", "result": "2º lugar", "points": 30, "club": "Elite Racing Team" },
-      { "event": "3ª Etapa - Master Cup", "date": "27/01/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Master Cup", "date": "24/02/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Elite Series (Master)", "date": "10/02/2025", "result": "2º lugar", "points": 30, "club": "Elite Racing Team" },
+      { "event": "3ª Etapa - Master Cup", "date": "27/01/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Master Cup", "date": "30/12/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Elite Series (Master)", "date": "16/12/2023", "result": "4º lugar", "points": 25, "club": "Elite Racing Team" }
     ],
@@ -294,10 +293,10 @@
       "championships": 1
     },
     "last_races": [
-      { "event": "4ª Etapa - Avançado Cup", "date": "25/02/2024", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
-      { "event": "Desafio Feminino", "date": "15/02/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Avançado Cup", "date": "28/01/2024", "result": "2º lugar", "points": 30, "club": "Speed Kart Academy" },
-      { "event": "2ª Etapa - Avançado Cup", "date": "07/01/2024", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
+      { "event": "4ª Etapa - Avançado Cup", "date": "25/02/2025", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
+      { "event": "Desafio Feminino", "date": "15/02/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Avançado Cup", "date": "28/01/2025", "result": "2º lugar", "points": 30, "club": "Speed Kart Academy" },
+      { "event": "2ª Etapa - Avançado Cup", "date": "07/01/2025", "result": "1º lugar", "points": 35, "club": "Speed Kart Academy" },
       { "event": "Copa de Fim de Ano", "date": "17/12/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" }
     ],
     "bio": "Juliana é instrutora da Speed Kart Academy e também uma pilota de destaque nas competições. Sua habilidade na pista e conhecimento técnico a transformaram em referência, especialmente para outras mulheres no kartismo. Domina todos os tipos de condição de pista e é especialmente forte em voltas rápidas, conquistando o maior número de pole positions da última temporada."
@@ -323,8 +322,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" }
@@ -352,8 +351,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" }
@@ -381,8 +380,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2024", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2024", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2025", "result": "2º lugar", "points": 30, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2025", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Light", "date": "15/12/2023", "result": "1º lugar", "points": 35, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" }
@@ -410,8 +409,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2024", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2024", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2025", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2025", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Light", "date": "15/12/2023", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" }
@@ -439,8 +438,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2024", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2024", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Light", "date": "16/02/2025", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Light", "date": "19/01/2025", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Light", "date": "15/12/2023", "result": "6º lugar", "points": 20, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "6º lugar", "points": 20, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" }
@@ -468,8 +467,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2024", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2025", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Campeonato Estadual", "date": "28/12/2023", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Campeonato Estadual", "date": "30/11/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "Copa Inverno", "date": "15/08/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" }
@@ -497,8 +496,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2024", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2024", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2025", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2025", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Campeonato Estadual", "date": "28/12/2023", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Campeonato Estadual", "date": "30/11/2023", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
       { "event": "Copa Inverno", "date": "15/08/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" }
@@ -526,8 +525,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2024", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2024", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Campeonato Estadual", "date": "22/02/2025", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Campeonato Estadual", "date": "25/01/2025", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Campeonato Estadual", "date": "28/12/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Campeonato Estadual", "date": "30/11/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
       { "event": "Desafio de Classificação", "date": "15/11/2023", "result": "1º lugar", "points": 0, "club": "Kart Club Brasil" }
@@ -555,8 +554,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Light Cup", "date": "20/02/2024", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Light Cup", "date": "23/01/2024", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Light Cup", "date": "20/02/2025", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Light Cup", "date": "23/01/2025", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Light Cup", "date": "26/12/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Light Cup", "date": "28/11/2023", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
       { "event": "Copa Primavera", "date": "15/10/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" }
@@ -584,8 +583,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Light Cup", "date": "20/02/2024", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Light Cup", "date": "23/01/2024", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Light Cup", "date": "20/02/2025", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Light Cup", "date": "23/01/2025", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Light Cup", "date": "26/12/2023", "result": "1º lugar", "points": 35, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Light Cup", "date": "28/11/2023", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
       { "event": "Copa Primavera", "date": "15/10/2023", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" }
@@ -613,8 +612,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Light Cup", "date": "20/02/2024", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Light Cup", "date": "23/01/2024", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Light Cup", "date": "20/02/2025", "result": "4º lugar", "points": 25, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Light Cup", "date": "23/01/2025", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Light Cup", "date": "26/12/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Light Cup", "date": "28/11/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" },
       { "event": "Copa Primavera", "date": "15/10/2023", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" }
@@ -642,8 +641,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "4ª Etapa - Light Cup", "date": "20/02/2024", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
-      { "event": "3ª Etapa - Light Cup", "date": "23/01/2024", "result": "6º lugar", "points": 20, "club": "Kart Club Brasil" },
+      { "event": "4ª Etapa - Light Cup", "date": "20/02/2025", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
+      { "event": "3ª Etapa - Light Cup", "date": "23/01/2025", "result": "6º lugar", "points": 20, "club": "Kart Club Brasil" },
       { "event": "2ª Etapa - Light Cup", "date": "26/12/2023", "result": "5º lugar", "points": 23, "club": "Kart Club Brasil" },
       { "event": "1ª Etapa - Light Cup", "date": "28/11/2023", "result": "3º lugar", "points": 27, "club": "Kart Club Brasil" },
       { "event": "Copa Primavera", "date": "15/10/2023", "result": "2º lugar", "points": 30, "club": "Kart Club Brasil" }
@@ -670,8 +669,8 @@
       "championships": 0
     },
     "last_races": [
-      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2024", "result": "6º lugar", "points": 20, "club": "Start Racing Livens" },
-      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2024", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
+      { "event": "3ª Etapa - Campeonato Pro", "date": "16/02/2025", "result": "6º lugar", "points": 20, "club": "Start Racing Livens" },
+      { "event": "2ª Etapa - Campeonato Pro", "date": "19/01/2025", "result": "5º lugar", "points": 23, "club": "Start Racing Livens" },
       { "event": "1ª Etapa - Campeonato Pro", "date": "15/12/2023", "result": "4º lugar", "points": 25, "club": "Start Racing Livens" },
       { "event": "Corrida Especial de Natal", "date": "10/12/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" },
       { "event": "8ª Etapa - Campeonato 2023", "date": "24/11/2023", "result": "3º lugar", "points": 27, "club": "Start Racing Livens" }
