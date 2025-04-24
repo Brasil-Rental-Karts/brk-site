@@ -12,7 +12,7 @@ import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "./ui/card"
 import pilotsData from "@/data/pilots.json"
-import { getInitials } from "../utils/pilot-utils"
+import { getInitials } from "@/utils/pilot-utils"
 
 const APP_URL = import.meta.env.VITE_APP_URL
 

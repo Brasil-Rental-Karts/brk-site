@@ -9,6 +9,7 @@ import { Tab } from "@/components/ui/Tab"
 import eventsData from "@/data/events.json"
 import rankingsData from "@/data/rankings.json"
 import regulationsData from "@/data/regulations.json"
+import { useLocation } from "react-router-dom"
 
 interface Event {
   id: number
@@ -77,6 +78,7 @@ export function Club({ section }: ClubProps) {
   const [categories, setCategories] = useState<string[]>([])
   const [clubRegulations, setClubRegulations] = useState<Regulation | null>(null)
   const [activeSection, setActiveSection] = useState<string>("")
+  const location = useLocation()
   
   useEffect(() => {
     if (!selectedClub) {
@@ -107,9 +109,19 @@ export function Club({ section }: ClubProps) {
     if (rankings.length > 0) {
       const cats = rankings?.map(r => r.category);
       setCategories(cats);
-      setActiveCategory(cats[0]); // Define a primeira categoria como ativa
+      
+      // Verificar se existe um parâmetro de categoria na URL
+      const params = new URLSearchParams(location.search);
+      const categoryParam = params.get('category');
+      
+      // Se existir e for uma categoria válida, use-a; caso contrário, use a primeira categoria
+      if (categoryParam && cats.includes(categoryParam)) {
+        setActiveCategory(categoryParam);
+      } else {
+        setActiveCategory(cats[0]); // Define a primeira categoria como ativa
+      }
     }
-  }, [selectedClub, alias, selectClub]);
+  }, [selectedClub, alias, selectClub, location.search]);
 
   if (!selectedClub) {
     return null;

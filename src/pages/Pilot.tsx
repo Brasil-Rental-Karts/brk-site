@@ -237,7 +237,7 @@ export function Pilot() {
                         const clubData = getFullClubData(ranking.clubId)
                         if (clubData) {
                           selectClub(clubData)
-                          navigate(`/clube/${ranking.club.alias}/classificacao`)
+                          navigate(`/clube/${ranking.club.alias}/classificacao?category=${encodeURIComponent(ranking.category)}`)
                         }
                       }}
                     >
