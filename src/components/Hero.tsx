@@ -29,11 +29,11 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="space-x-4"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <Button 
             size="lg" 
-            className="rounded-full px-8 py-6 text-lg bg-background text-primary-500 hover:bg-background/90 transition-all duration-300"
+            className="rounded-full px-8 py-6 text-lg bg-background text-primary-500 hover:bg-background/90 transition-all duration-300 w-full sm:w-auto"
           >
             <a href={APP_URL} target="_blank">
               Junte-se à BRK
@@ -41,7 +41,7 @@ export function Hero() {
           </Button>
           <Button 
             size="lg"
-            className="rounded-full px-8 py-6 text-lg bg-transparent border-2 border-background text-background hover:bg-background hover:text-primary-500 transition-all duration-300"
+            className="rounded-full px-8 py-6 text-lg bg-transparent border-2 border-background text-background hover:bg-background hover:text-primary-500 transition-all duration-300 w-full sm:w-auto"
             asChild
           >
             <Link to="/about">

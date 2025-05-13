@@ -389,7 +389,7 @@ export function Navbar() {
               className="bg-primary-500 text-white hover:bg-primary-600"
               asChild
             >
-              <a href={APP_URL}>
+              <a href={APP_URL} target="_blank">
                 Acessar
               </a>
             </Button>
