@@ -85,7 +85,7 @@ export function SubHeader() {
 
   return (
     <div className="bg-background shadow-sm sticky top-0 z-10 border-b">
-      <div className="mx-auto px-4 relative">
+      <div className="container relative">
         <div className="flex items-center justify-between py-2">
           <div className="flex items-center">
             <img

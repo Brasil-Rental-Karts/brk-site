@@ -29,8 +29,10 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       {!isPilotPage && <SubHeader />}
-      <main className="flex-1">
-        {children}
+      <main className="flex-1 container">
+        <div className="max-w-[1920px] w-full mx-auto">
+          {children}
+        </div>
       </main>
       <Footer />
     </div>

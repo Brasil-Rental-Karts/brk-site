@@ -14,6 +14,7 @@ import { Card, CardContent } from "./ui/card"
 import pilotsData from "@/data/pilots.json"
 import { getInitials } from "@/utils/pilot-utils"
 
+// Use the environment variable or default to the production URL if not set
 const APP_URL = import.meta.env.VITE_APP_URL
 
 export function Navbar() {
@@ -127,7 +128,7 @@ export function Navbar() {
 
   return (
     <nav className="border-b bg-background relative z-20">
-      <div className="container px-4 md:px-8 h-16 flex items-center justify-between">
+      <div className="container h-16 flex items-center justify-between">
         <div className="flex items-center gap-4 md:gap-8">
           <Link to="/" className="hover:opacity-80 transition-opacity">
             <img src="/logo-brk.svg" alt="BRK Logo" className="h-6 w-auto" />
@@ -385,20 +386,11 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <div className="flex gap-2">
             <Button
-              variant="ghost"
-              className="text-muted-foreground hover:text-primary-500"
-              asChild
-            >
-              <a href={`${APP_URL}/login`}>
-                Entrar
-              </a>
-            </Button>
-            <Button
               className="bg-primary-500 text-white hover:bg-primary-600"
               asChild
             >
-              <a href={`${APP_URL}/signup`}>
-                Faça parte
+              <a href={APP_URL}>
+                Acessar
               </a>
             </Button>
           </div>
@@ -656,22 +648,13 @@ export function Navbar() {
               <Users className="h-4 w-4 mr-2 text-primary-500" />
               Sua conta
             </h3>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                className="w-full"
-                asChild
-              >
-                <a href={`${APP_URL}/login`}>
-                  Entrar
-                </a>
-              </Button>
+            <div className="grid grid-cols-1 gap-2">
               <Button
                 className="w-full bg-primary-500 text-white hover:bg-primary-600"
                 asChild
               >
-                <a href={`${APP_URL}/signup`}>
-                Faça parte
+                <a href={APP_URL} target="_blank">
+                  Acessar
                 </a>
               </Button>
             </div>

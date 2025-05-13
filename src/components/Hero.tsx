@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 
+const APP_URL = import.meta.env.VITE_APP_URL
+
 export function Hero() {
   return (
     <section className="relative h-[600px] overflow-hidden">
@@ -33,7 +35,9 @@ export function Hero() {
             size="lg" 
             className="rounded-full px-8 py-6 text-lg bg-background text-primary-500 hover:bg-background/90 transition-all duration-300"
           >
-            Junte-se à BRK
+            <a href={APP_URL} target="_blank">
+              Junte-se à BRK
+            </a>
           </Button>
           <Button 
             size="lg"
