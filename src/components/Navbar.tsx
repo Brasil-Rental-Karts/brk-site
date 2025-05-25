@@ -521,17 +521,56 @@ export function Navbar() {
             <Flag className="h-4 w-4 mr-2 text-primary-500" />
             Menu
           </h2>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={toggleMobileMenu}
-            className="h-8 w-8"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </div>
         
         <div className="p-4 space-y-6 overflow-y-auto h-[calc(100vh-4rem)]">
+        <div className="pt-3 border-t space-y-3">
+            <h3 className="text-sm font-medium flex items-center">
+              <Users className="h-4 w-4 mr-2 text-primary-500" />
+              Sua conta
+            </h3>
+            <div className="grid grid-cols-1 gap-2">
+              {!user ? (
+                <Button
+                  className="w-full bg-primary-500 text-white hover:bg-primary-600"
+                  asChild
+                >
+                  <a href={APP_URL} target="_blank">
+                    Acessar
+                  </a>
+                </Button>
+              ) : (
+                <div className="flex flex-col items-center gap-2 py-2">
+                  <Avatar>
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="text-foreground">
+                        {getInitials(user.name || user.email)}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span className="text-sm font-medium">{user.name}</span>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
+                  </Button>
+                  <Button onClick={handleLogout} variant="destructive" className="w-full justify-start">
+                    Sair
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Clube search */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium flex items-center">
@@ -723,53 +762,6 @@ export function Navbar() {
                   <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
                   <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
                   <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <div className="pt-3 border-t space-y-3">
-            <h3 className="text-sm font-medium flex items-center">
-              <Users className="h-4 w-4 mr-2 text-primary-500" />
-              Sua conta
-            </h3>
-            <div className="grid grid-cols-1 gap-2">
-              {!user ? (
-                <Button
-                  className="w-full bg-primary-500 text-white hover:bg-primary-600"
-                  asChild
-                >
-                  <a href={APP_URL} target="_blank">
-                    Acessar
-                  </a>
-                </Button>
-              ) : (
-                <div className="flex flex-col items-center gap-2 py-2">
-                  <Avatar>
-                    {user.avatar_url ? (
-                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <AvatarFallback className="text-foreground">
-                        {getInitials(user.name || user.email)}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                  <span className="text-sm font-medium">{user.name}</span>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
-                  </Button>
-                  <Button onClick={handleLogout} variant="destructive" className="w-full justify-start">
-                    Sair
-                  </Button>
                 </div>
               )}
             </div>
