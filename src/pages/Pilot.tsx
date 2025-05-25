@@ -52,11 +52,16 @@ export function Pilot() {
   const [error, setError] = useState<string | null>(null)
   
   useEffect(() => {
-    // First, fetch all pilots to find the id by slug
-    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot`)
-      .then(res => res.json())
-      .then(pilotsRes => {
+    setLoading(true);
+    setError(null);
+    // Fetch pilots and rankings in parallel
+    Promise.all([
+      fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot`).then(res => res.json()),
+      fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/ranking`).then(res => res.json())
+    ])
+      .then(async ([pilotsRes, rankingsRes]) => {
         const pilots: Pilot[] = pilotsRes.data || [];
+        const allRankings = rankingsRes.data || [];
         const found = pilots.find(pilot => 
           pilot.slug === pilotSlug || 
           normalizeSlug(pilot.name) === pilotSlug
@@ -67,27 +72,21 @@ export function Pilot() {
           return;
         }
         // Fetch the pilot by id
-        fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot/${found.id}`)
-          .then(res => {
-            if (!res.ok) throw new Error('notfound');
-            return res.json();
-          })
-          .then(async pilotData => {
-            setPilot(pilotData);
-            setError(null);
-            // Fetch only the rankings for the clubs the pilot participates in
-            const clubIds = pilotData.clubs.map((club: any) => club.id);
-            // Fetch all rankings and filter by clubId (since cache-api does not support filtering by clubId directly)
-            const rankingsRes = await fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/ranking`).then(res => res.json());
-            const allRankings = rankingsRes.data || [];
-            const filteredRankings = allRankings.filter((ranking: any) => clubIds.includes(ranking.clubId) || clubIds.includes(String(ranking.clubId)));
-            setRankings(filteredRankings);
-            setLoading(false);
-          })
-          .catch(() => {
-            setError('notfound');
-            setLoading(false);
-          });
+        try {
+          const pilotRes = await fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot/${found.id}`);
+          if (!pilotRes.ok) throw new Error('notfound');
+          const pilotData = await pilotRes.json();
+          setPilot(pilotData);
+          setError(null);
+          // Filter rankings for the clubs the pilot participates in
+          const clubIds = pilotData.clubs.map((club: any) => club.id);
+          const filteredRankings = allRankings.filter((ranking: any) => clubIds.includes(ranking.clubId) || clubIds.includes(String(ranking.clubId)));
+          setRankings(filteredRankings);
+          setLoading(false);
+        } catch {
+          setError('notfound');
+          setLoading(false);
+        }
       })
       .catch(() => {
         setError('notfound');
