@@ -444,11 +444,14 @@ export function Navbar() {
                         </AvatarFallback>
                       )}
                     </Avatar>
-                    <span className="text-sm font-medium">{user.name || user.email}</span>
+                    <span className="text-sm font-medium">{user.name}</span>
                     <ChevronDown className="h-4 w-4 transition duration-300 group-data-[state=open]:rotate-180" aria-hidden="true" />
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
                   </DropdownMenuItem>
@@ -457,9 +460,6 @@ export function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
@@ -734,14 +734,44 @@ export function Navbar() {
               Sua conta
             </h3>
             <div className="grid grid-cols-1 gap-2">
-              <Button
-                className="w-full bg-primary-500 text-white hover:bg-primary-600"
-                asChild
-              >
-                <a href={APP_URL} target="_blank">
-                  Acessar
-                </a>
-              </Button>
+              {!user ? (
+                <Button
+                  className="w-full bg-primary-500 text-white hover:bg-primary-600"
+                  asChild
+                >
+                  <a href={APP_URL} target="_blank">
+                    Acessar
+                  </a>
+                </Button>
+              ) : (
+                <div className="flex flex-col items-center gap-2 py-2">
+                  <Avatar>
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="text-foreground">
+                        {getInitials(user.name || user.email)}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span className="text-sm font-medium">{user.name}</span>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full justify-start">
+                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
+                  </Button>
+                  <Button onClick={handleLogout} variant="destructive" className="w-full justify-start">
+                    Sair
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           
