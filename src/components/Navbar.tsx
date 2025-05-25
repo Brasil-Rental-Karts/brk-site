@@ -9,11 +9,10 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown, Flag, Menu, X, Trophy, Info, Users, MapPin, User, LogOut } from "lucide-react"
-import { useClub, CLUBS } from "@/contexts/ClubContext"
+import { useClub } from "@/contexts/ClubContext"
 import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "./ui/card"
-import pilotsData from "@/data/pilots.json"
 import { getInitials } from "@/utils/pilot-utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { fetchWithAuth } from "@/utils/fetchWithAuth"
@@ -24,7 +23,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 export function Navbar() {
   const navigate = useNavigate()
-  const { selectClub, selectedClub } = useClub()
+  const { selectClub, selectedClub, allClubs } = useClub()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -41,14 +40,22 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null)
   const [authLoading, setAuthLoading] = useState(true)
 
-  const handleClubSelect = (club: typeof CLUBS[0]) => {
+  const [pilots, setPilots] = useState<any[]>([])
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot`)
+      .then(res => res.json())
+      .then(data => setPilots(data.data || []))
+      .catch(() => setPilots([]))
+  }, [])
+
+  const handleClubSelect = (club: any) => {
     selectClub(club)
     setMobileMenuOpen(false)
     setDropdownOpen(false)
     setSearchQuery("")
   }
   
-  const handlePilotSelect = (pilot: typeof pilotsData[0]) => {
+  const handlePilotSelect = (pilot: typeof pilots[0]) => {
     setPilotDropdownOpen(false)
     setMobileMenuOpen(false)
     setPilotSearchQuery("")
@@ -96,7 +103,7 @@ export function Navbar() {
   }
 
   // Filter clubs based on search query
-  const filteredClubs = CLUBS.filter(club => 
+  const filteredClubs = allClubs.filter((club: any) => 
     club.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     club.location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
     club.location.state.toLowerCase().includes(searchQuery.toLowerCase())
@@ -104,7 +111,7 @@ export function Navbar() {
   
   // Filter pilots based on search query
   const filteredPilots = pilotSearchQuery.length >= 2 
-    ? pilotsData
+    ? pilots
         .filter(pilot => 
           pilot.name.toLowerCase().includes(pilotSearchQuery.toLowerCase()) || 
           (pilot.nickname && pilot.nickname.toLowerCase().includes(pilotSearchQuery.toLowerCase())) ||
@@ -115,7 +122,7 @@ export function Navbar() {
     : []
 
   // Suggested clubs to make the interface more helpful
-  const suggestedClubs = searchQuery.length === 0 ? CLUBS.slice(0, 5) : []
+  const suggestedClubs = searchQuery.length === 0 ? allClubs.slice(0, 5) : []
 
   // Focus search input when dropdown opens
   useEffect(() => {

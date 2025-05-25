@@ -1,12 +1,12 @@
 import { Hero } from "@/components/Hero"
 import { Features } from "@/components/Features"
-import { useClub, CLUBS } from "@/contexts/ClubContext"
+import { useClub } from "@/contexts/ClubContext"
 import { motion } from "framer-motion"
 import { Trophy, MapPin, Calendar, Users } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export function Home() {
-  const { selectClub } = useClub()
+  const { selectClub, allClubs } = useClub()
 
   return (
     <div className="space-y-16">
@@ -39,7 +39,7 @@ export function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {CLUBS.map((club, index) => (
+          {allClubs.map((club, index) => (
             <motion.div
               key={club.id}
               initial={{ opacity: 0, y: 20 }}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { CLUBS, useClub } from "@/contexts/ClubContext"
+import { useClub } from "@/contexts/ClubContext"
 import { Link } from "react-router-dom"
 import { Flag, MapPin, Trophy, Search, X, Grid, List, ChevronLeft, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -8,9 +8,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export function Clubs() {
-  const { selectClub } = useClub()
+  const { selectClub, allClubs } = useClub()
   const [searchQuery, setSearchQuery] = useState("")
-  const [filteredClubs, setFilteredClubs] = useState(CLUBS)
+  const [filteredClubs, setFilteredClubs] = useState(allClubs)
   const [regionFilter, setRegionFilter] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards')
   
@@ -19,11 +19,11 @@ export function Clubs() {
   const clubsPerPage = 20
   
   // Extrair regiões únicas para o filtro
-  const regions = Array.from(new Set(CLUBS.map(club => club.location.region)))
+  const regions = Array.from(new Set(allClubs.map(club => club.location.region)))
   
   // Filtrar clubes com base na busca e região selecionada
   useEffect(() => {
-    let result = CLUBS
+    let result = allClubs
     
     // Aplicar filtro de busca
     if (searchQuery) {
@@ -43,7 +43,7 @@ export function Clubs() {
     
     setFilteredClubs(result)
     setCurrentPage(1) // Resetar para primeira página quando filtros mudam
-  }, [searchQuery, regionFilter])
+  }, [searchQuery, regionFilter, allClubs])
   
   // Limpar todos os filtros
   const clearFilters = () => {
@@ -217,9 +217,9 @@ export function Clubs() {
                         {category}
                       </span>
                     ))}
-                    {club.championships?.categories?.length > 3 && (
+                    {(club.championships?.categories?.length ?? 0) > 3 && (
                       <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs">
-                        +{club.championships.categories.length - 3}
+                        +{(club.championships?.categories?.length ?? 0) - 3}
                       </span>
                     )}
                   </div>
@@ -293,9 +293,9 @@ export function Clubs() {
                         {category}
                       </span>
                     ))}
-                    {club.championships?.categories?.length > 2 && (
+                    {(club.championships?.categories?.length ?? 0) > 2 && (
                       <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs">
-                        +{club.championships.categories.length - 2}
+                        +{(club.championships?.categories?.length ?? 0) - 2}
                       </span>
                     )}
                   </div>

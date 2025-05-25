@@ -2,10 +2,8 @@ import { useParams, Navigate, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Trophy, Flag, CalendarDays, User, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import pilotsData from "@/data/pilots.json"
-import rankingsData from "@/data/rankings.json"
-import { useClub, Club, CLUBS } from "@/contexts/ClubContext"
+import { useState, useEffect } from "react"
+import { useClub, Club } from "@/contexts/ClubContext"
 import { getInitials, normalizeSlug } from "@/utils/pilot-utils"
 
 // Interface para o tipo Pilot
@@ -47,17 +45,61 @@ export function Pilot() {
   const { pilotSlug } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'stats' | 'races' | 'bio' | 'clubs'>('stats')
-  const { selectClub } = useClub() // Importando o contexto do clube
+  const { selectClub, allClubs } = useClub() // Importando o contexto do clube
+  const [pilot, setPilot] = useState<Pilot | null>(null)
+  const [rankings, setRankings] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   
-  // Encontrar dados do piloto pelo slug - verificando slug explícito ou gerado do nome
-  const pilotData = pilotsData.find(pilot => 
-    pilot.slug === pilotSlug || 
-    normalizeSlug(pilot.name) === pilotSlug
-  )
+  useEffect(() => {
+    // First, fetch all pilots to find the id by slug
+    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot`)
+      .then(res => res.json())
+      .then(pilotsRes => {
+        const pilots: Pilot[] = pilotsRes.data || [];
+        const found = pilots.find(pilot => 
+          pilot.slug === pilotSlug || 
+          normalizeSlug(pilot.name) === pilotSlug
+        );
+        if (!found) {
+          setError('notfound');
+          setLoading(false);
+          return;
+        }
+        // Fetch the pilot by id
+        fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot/${found.id}`)
+          .then(res => {
+            if (!res.ok) throw new Error('notfound');
+            return res.json();
+          })
+          .then(async pilotData => {
+            setPilot(pilotData);
+            setError(null);
+            // Fetch only the rankings for the clubs the pilot participates in
+            const clubIds = pilotData.clubs.map((club: any) => club.id);
+            // Fetch all rankings and filter by clubId (since cache-api does not support filtering by clubId directly)
+            const rankingsRes = await fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/ranking`).then(res => res.json());
+            const allRankings = rankingsRes.data || [];
+            const filteredRankings = allRankings.filter((ranking: any) => clubIds.includes(ranking.clubId) || clubIds.includes(String(ranking.clubId)));
+            setRankings(filteredRankings);
+            setLoading(false);
+          })
+          .catch(() => {
+            setError('notfound');
+            setLoading(false);
+          });
+      })
+      .catch(() => {
+        setError('notfound');
+        setLoading(false);
+      });
+  }, [pilotSlug])
   
-  // Se o piloto não existe, redirecionar para a página inicial
-  if (!pilotData) {
-    return <Navigate to="/" />
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+  if (error === 'notfound' || !pilot) {
+    return <Navigate to="/" />;
   }
   
   // Voltar para a página anterior
@@ -66,13 +108,13 @@ export function Pilot() {
   }
   
   // Função auxiliar para obter os dados completos do clube
-  const getFullClubData = (clubId: number): Club | undefined => {
-    return CLUBS.find(club => club.id === clubId)
+  const getFullClubData = (clubId: string): Club | undefined => {
+    return allClubs.find(club => String(club.id) === String(clubId))
   }
   
   // Função para navegar para a página de um clube
   const navigateToClub = (clubId: number) => {
-    const clubData = getFullClubData(clubId)
+    const clubData = getFullClubData(String(clubId))
     if (clubData) {
       selectClub(clubData) // Atualiza o clube selecionado no contexto
       navigate(`/clube/${clubData.alias}`)
@@ -81,18 +123,13 @@ export function Pilot() {
   
   // Obter classificações do piloto em todos os clubes
   const getPilotRankings = () => {
-    const rankings = [];
-    
-    for (const club of pilotData.clubs) {
-      // Encontrar todos os rankings deste clube
-      const clubRankings = rankingsData.filter(ranking => ranking.clubId === club.id);
-      
+    const result = []
+    for (const club of pilot.clubs) {
+      const clubRankings = rankings.filter(ranking => String(ranking.clubId) === String(club.id))
       for (const ranking of clubRankings) {
-        // Encontrar o piloto neste ranking
-        const pilotInRanking = ranking.pilots.find(p => p.id === pilotData.id);
-        
+        const pilotInRanking = ranking.pilots.find((p: any) => String(p.id) === String(pilot.id))
         if (pilotInRanking) {
-          rankings.push({
+          result.push({
             club: club,
             clubId: club.id,
             category: ranking.category,
@@ -105,12 +142,11 @@ export function Pilot() {
             wins: pilotInRanking.wins,
             podiums: pilotInRanking.podiums,
             lastRace: pilotInRanking.lastRace
-          });
+          })
         }
       }
     }
-    
-    return rankings;
+    return result
   }
   
   // Cores baseadas na posição
@@ -163,27 +199,27 @@ export function Pilot() {
           <div className="space-y-8">
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.wins}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.wins}</div>
                 <div className="text-sm text-muted-foreground">Vitórias</div>
               </div>
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.podiums}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.podiums}</div>
                 <div className="text-sm text-muted-foreground">Pódios</div>
               </div>
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.polePositions}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.polePositions}</div>
                 <div className="text-sm text-muted-foreground">Poles</div>
               </div>
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.fastestLaps}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.fastestLaps}</div>
                 <div className="text-sm text-muted-foreground">Voltas Rápidas</div>
               </div>
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.races}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.races}</div>
                 <div className="text-sm text-muted-foreground">Corridas</div>
               </div>
               <div className="bg-muted/30 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-primary-500">{pilotData.stats.championships}</div>
+                <div className="text-2xl font-bold text-primary-500">{pilot.stats.championships}</div>
                 <div className="text-sm text-muted-foreground">Campeonatos</div>
               </div>
             </div>
@@ -234,7 +270,7 @@ export function Pilot() {
                       size="sm" 
                       className="w-full mt-3 text-xs"
                       onClick={() => {
-                        const clubData = getFullClubData(ranking.clubId)
+                        const clubData = getFullClubData(String(ranking.clubId))
                         if (clubData) {
                           selectClub(clubData)
                           navigate(`/clube/${ranking.club.alias}/classificacao?category=${encodeURIComponent(ranking.category)}`)
@@ -264,7 +300,7 @@ export function Pilot() {
               Últimas Corridas
             </h3>
             <div className="space-y-3">
-              {pilotData.last_races.map((race, index) => (
+              {pilot.last_races.map((race, index) => (
                 <div key={index} className="bg-muted/30 rounded-lg p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex justify-between mb-1">
                     <h4 className="font-medium">{race.event}</h4>
@@ -292,7 +328,7 @@ export function Pilot() {
               Biografia
             </h3>
             <div className="bg-muted/30 rounded-lg p-6">
-              <p className="leading-relaxed">{pilotData.bio}</p>
+              <p className="leading-relaxed">{pilot.bio}</p>
             </div>
           </div>
         )
@@ -305,7 +341,7 @@ export function Pilot() {
               Clubes
             </h3>
             <div className="space-y-3">
-              {pilotData.clubs.map((club) => (
+              {pilot.clubs.map((club) => (
                 <div 
                   key={club.id} 
                   className="bg-muted/30 rounded-lg p-4 hover:bg-muted/50 transition-colors cursor-pointer"
@@ -353,34 +389,34 @@ export function Pilot() {
               {/* Foto do piloto e número */}
               <div className="flex flex-col items-center gap-2">
                 <div className="w-16 h-16 overflow-hidden rounded-full border-2 border-primary-500/30 flex items-center justify-center bg-muted">
-                  {pilotData.avatar_url ? (
+                  {pilot.avatar_url ? (
                     <img 
-                      src={pilotData.avatar_url} 
-                      alt={pilotData.name}
+                      src={pilot.avatar_url} 
+                      alt={pilot.name}
                       className="w-full h-full object-cover"
                     />
                   ) : (
                     <span className="text-xl font-bold text-primary-500">
-                      {getInitials(pilotData.name)}
+                      {getInitials(pilot.name)}
                     </span>
                   )}
                 </div>
                 
-                {pilotData.number && (
+                {pilot.number && (
                   <div className="bg-primary-500 text-white font-bold px-3 py-1 rounded-md text-lg w-full text-center">
-                    #{pilotData.number}
+                    #{pilot.number}
                   </div>
                 )}
               </div>
               
               {/* Informações do piloto */}
               <div className="flex flex-col">
-                <h1 className="text-3xl font-bold">{getStylizedName(pilotData.name)}</h1>
+                <h1 className="text-3xl font-bold">{getStylizedName(pilot.name)}</h1>
                 
                 <div className="flex items-center gap-2 mt-1">
-                  {pilotData.nickname && (
+                  {pilot.nickname && (
                     <span className="bg-muted px-2 py-0.5 rounded-full text-sm">
-                      "{pilotData.nickname}"
+                      "{pilot.nickname}"
                     </span>
                   )}
                 </div>
@@ -388,18 +424,18 @@ export function Pilot() {
                 <div className="flex flex-wrap gap-3 mt-3">
                   <div className="flex items-center bg-muted/30 px-3 py-1 rounded-md">
                     <User className="h-4 w-4 mr-2 text-primary-500" />
-                    <span className="text-sm font-medium">{pilotData.category}</span>
+                    <span className="text-sm font-medium">{pilot.category}</span>
                   </div>
                   
                   <div className="flex items-center bg-muted/30 px-3 py-1 rounded-md">
                     <Trophy className="h-4 w-4 mr-2 text-primary-500" />
-                    <span className="text-sm font-medium">{pilotData.points} pontos</span>
+                    <span className="text-sm font-medium">{pilot.points} pontos</span>
                   </div>
                   
                   <div className="flex items-center bg-muted/30 px-3 py-1 rounded-md">
                     <Flag className="h-4 w-4 mr-2 text-primary-500" />
                     <span className="text-sm font-medium">
-                      {pilotData.clubs.length} {pilotData.clubs.length === 1 ? 'clube' : 'clubes'}
+                      {pilot.clubs.length} {pilot.clubs.length === 1 ? 'clube' : 'clubes'}
                     </span>
                   </div>
                 </div>
@@ -408,7 +444,7 @@ export function Pilot() {
                 <div className="mt-4 space-y-1">
                   <h3 className="text-sm text-muted-foreground mb-1">Participa em:</h3>
                   <div className="flex flex-wrap gap-2">
-                    {pilotData.clubs.map((club) => (
+                    {pilot.clubs.map((club) => (
                       <Button 
                         key={club.id}
                         variant="outline" 

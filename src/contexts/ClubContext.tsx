@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
-import clubsData from "@/data/clubs.json"
 
 export interface Club {
-  id: number
+  id: string
   name: string
   alias: string
   logo: string
@@ -28,17 +27,17 @@ export interface Club {
     current: number
     total: number
     averageParticipants: number
-    categories: string[]
+    categories?: string[]
   }
   sponsors: Array<{
-    id: number
+    id: string
     name: string
     logo: string
     website: string
     type: string
   }>
   events: Array<{
-    id: number
+    id: string
     title: string
     date: string
     time: string
@@ -48,9 +47,6 @@ export interface Club {
     maxParticipants: number
   }>
 }
-
-// Exporte os dados dos clubes para uso em outros componentes
-export const CLUBS: Club[] = clubsData as Club[]
 
 interface ClubContextType {
   selectedClub: Club | null
@@ -63,7 +59,15 @@ const ClubContext = createContext<ClubContextType | undefined>(undefined)
 
 export function ClubProvider({ children }: { children: ReactNode }) {
   const [selectedClub, setSelectedClub] = useState<Club | null>(null)
+  const [allClubs, setAllClubs] = useState<Club[]>([])
   const navigate = useNavigate()
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/club`)
+      .then(res => res.json())
+      .then(data => setAllClubs(data.data || []))
+      .catch(() => setAllClubs([]))
+  }, [])
 
   const selectClub = (club: Club) => {
     setSelectedClub(club)
@@ -76,7 +80,7 @@ export function ClubProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ClubContext.Provider value={{ selectedClub, selectClub, clearClub, allClubs: CLUBS }}>
+    <ClubContext.Provider value={{ selectedClub, selectClub, clearClub, allClubs }}>
       {children}
     </ClubContext.Provider>
   )

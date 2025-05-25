@@ -1,14 +1,10 @@
 import { useClub } from "@/contexts/ClubContext"
 import { motion } from "framer-motion"
 import { useParams, Link } from "react-router-dom"
-import { CLUBS } from "@/contexts/ClubContext"
 import { CalendarDays, Trophy, Users, Medal, MapPin, Phone, Mail, Link as LinkIcon, Hash, Shield, Flag, Award, AlertTriangle, Scale, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { Tab } from "@/components/ui/Tab"
-import eventsData from "@/data/events.json"
-import rankingsData from "@/data/rankings.json"
-import regulationsData from "@/data/regulations.json"
 import { useLocation } from "react-router-dom"
 
 interface Event {
@@ -71,7 +67,7 @@ export interface ClubProps {
 
 export function Club({ section }: ClubProps) {
   const { alias } = useParams()
-  const { selectedClub, selectClub } = useClub()
+  const { selectedClub, selectClub, allClubs } = useClub()
   const [activeCategory, setActiveCategory] = useState<string>("")
   const [clubEvents, setClubEvents] = useState<Event[]>([])
   const [clubRankings, setClubRankings] = useState<RankingData[]>([])
@@ -82,46 +78,39 @@ export function Club({ section }: ClubProps) {
   
   useEffect(() => {
     if (!selectedClub) {
-      const club = CLUBS.find(c => c.alias === alias)
+      const club = allClubs.find(c => c.alias === alias)
       if (!club) return;
       selectClub(club)
       return;
     }
-
-    // Filtrar eventos do clube atual
-    const events = eventsData.filter(event => event.clubId === selectedClub.id) as Event[];
-    setClubEvents(events);
-
-    // Filtrar rankings do clube atual
-    const rankings = rankingsData.filter(ranking => ranking.clubId === selectedClub.id) as RankingData[];
-    setClubRankings(rankings);
-
-    // Filtrar regulamento do clube atual
-    const regulation = regulationsData.find(reg => reg.clubId === selectedClub.id);
-    setClubRegulations(regulation || null);
-    
-    // Definir seção ativa inicial do regulamento se existir
-    if (regulation && regulation.sections && regulation.sections.length > 0) {
-      setActiveSection(regulation.sections[0].id);
-    }
-
-    // Extrair categorias únicas dos rankings
-    if (rankings.length > 0) {
-      const cats = rankings?.map(r => r.category);
-      setCategories(cats);
-      
-      // Verificar se existe um parâmetro de categoria na URL
-      const params = new URLSearchParams(location.search);
-      const categoryParam = params.get('category');
-      
-      // Se existir e for uma categoria válida, use-a; caso contrário, use a primeira categoria
-      if (categoryParam && cats.includes(categoryParam)) {
-        setActiveCategory(categoryParam);
-      } else {
-        setActiveCategory(cats[0]); // Define a primeira categoria como ativa
+    // Fetch all data in parallel
+    Promise.all([
+      fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/event`).then(res => res.json()),
+      fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/ranking`).then(res => res.json()),
+      fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/regulation`).then(res => res.json()),
+    ]).then(([eventsRes, rankingsRes, regulationsRes]) => {
+      const events = (eventsRes.data || []).filter((event: Event) => String(event.clubId) === String(selectedClub.id))
+      setClubEvents(events)
+      const rankings = (rankingsRes.data || []).filter((ranking: RankingData) => String(ranking.clubId) === String(selectedClub.id))
+      setClubRankings(rankings)
+      const regulation = (regulationsRes.data || []).find((reg: Regulation) => String(reg.clubId) === String(selectedClub.id))
+      setClubRegulations(regulation || null)
+      if (regulation && regulation.sections && regulation.sections.length > 0) {
+        setActiveSection(regulation.sections[0].id)
       }
-    }
-  }, [selectedClub, alias, selectClub, location.search]);
+      if (rankings.length > 0) {
+        const cats = rankings.map((r: RankingData) => r.category)
+        setCategories(cats)
+        const params = new URLSearchParams(location.search)
+        const categoryParam = params.get('category')
+        if (categoryParam && cats.includes(categoryParam)) {
+          setActiveCategory(categoryParam)
+        } else {
+          setActiveCategory(cats[0])
+        }
+      }
+    })
+  }, [selectedClub, alias, selectClub, location.search, allClubs])
 
   if (!selectedClub) {
     return null;
