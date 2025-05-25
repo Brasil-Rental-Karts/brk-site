@@ -450,13 +450,13 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link to="/perfil">Perfil</Link>
+                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <a href="#" tabIndex={-1}>Plano</a>
+                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <a href="#" tabIndex={-1}>Ajuda</a>
+                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
