@@ -16,6 +16,7 @@ import { Card, CardContent } from "./ui/card"
 import pilotsData from "@/data/pilots.json"
 import { getInitials } from "@/utils/pilot-utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { fetchWithAuth } from "@/utils/fetchWithAuth"
 
 // Use the environment variable or default to the production URL if not set
 const APP_URL = import.meta.env.VITE_APP_URL
@@ -138,9 +139,7 @@ export function Navbar() {
     const checkAuth = async () => {
       setAuthLoading(true)
       try {
-        const res = await fetch(`${API_URL}/auth/me`, {
-          credentials: "include",
-        })
+        const res = await fetchWithAuth(`${API_URL}/auth/me`)
         if (res.ok) {
           const data = await res.json()
           setUser(data)
