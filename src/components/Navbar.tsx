@@ -473,7 +473,7 @@ export function Navbar() {
                 className="bg-primary-500 text-white hover:bg-primary-600"
                 asChild
               >
-                <a href={APP_URL} target="_blank">
+                <a href={APP_URL} target="_self">
                   Acessar
                 </a>
               </Button>
@@ -535,7 +535,7 @@ export function Navbar() {
                   className="w-full bg-primary-500 text-white hover:bg-primary-600"
                   asChild
                 >
-                  <a href={APP_URL} target="_blank">
+                  <a href={APP_URL} target="_self">
                     Acessar
                   </a>
                 </Button>
