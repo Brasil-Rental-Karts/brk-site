@@ -458,6 +458,9 @@ export function Navbar() {
                   <DropdownMenuItem asChild>
                     <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
                     <LogOut className="h-4 w-4" />
