@@ -5,17 +5,21 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, Flag, Menu, X, Trophy, Info, Users, MapPin, User } from "lucide-react"
+import { ChevronDown, Flag, Menu, X, Trophy, Info, Users, MapPin, User, LogOut } from "lucide-react"
 import { useClub, CLUBS } from "@/contexts/ClubContext"
 import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "./ui/card"
 import pilotsData from "@/data/pilots.json"
 import { getInitials } from "@/utils/pilot-utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 // Use the environment variable or default to the production URL if not set
 const APP_URL = import.meta.env.VITE_APP_URL
+const API_URL = import.meta.env.VITE_API_URL
 
 export function Navbar() {
   const navigate = useNavigate()
@@ -31,6 +35,10 @@ export function Navbar() {
   const [pilotDropdownOpen, setPilotDropdownOpen] = useState(false)
   const pilotSearchInputRef = useRef<HTMLInputElement>(null)
   const [showPilotEmptyMessage, setShowPilotEmptyMessage] = useState(false)
+
+  // Auth state for brk-site
+  const [user, setUser] = useState<any>(null)
+  const [authLoading, setAuthLoading] = useState(true)
 
   const handleClubSelect = (club: typeof CLUBS[0]) => {
     selectClub(club)
@@ -125,6 +133,40 @@ export function Navbar() {
       }, 100)
     }
   }, [pilotDropdownOpen])
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      setAuthLoading(true)
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          credentials: "include",
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setUser(data)
+        } else {
+          setUser(null)
+        }
+      } catch {
+        setUser(null)
+      } finally {
+        setAuthLoading(false)
+      }
+    }
+    checkAuth()
+  }, [])
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      })
+    } catch {}
+    setUser(null)
+    navigate("/")
+  }
 
   return (
     <nav className="border-b bg-background relative z-20">
@@ -385,14 +427,54 @@ export function Navbar() {
         {/* Desktop buttons */}
         <div className="hidden md:flex items-center gap-4">
           <div className="flex gap-2">
-            <Button
-              className="bg-primary-500 text-white hover:bg-primary-600"
-              asChild
-            >
-              <a href={APP_URL} target="_blank">
-                Acessar
-              </a>
-            </Button>
+            {authLoading ? null : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none flex">
+                  <div className="flex items-center gap-2">
+                    <Avatar>
+                      {user.avatar_url ? (
+                        <img
+                          src={user.avatar_url}
+                          alt={user.name || user.email}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <AvatarFallback className="text-foreground">
+                          {getInitials(user.name || user.email)}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    <span className="text-sm font-medium">{user.name || user.email}</span>
+                    <ChevronDown className="h-4 w-4 transition duration-300 group-data-[state=open]:rotate-180" aria-hidden="true" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/perfil">Perfil</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="#" tabIndex={-1}>Plano</a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="#" tabIndex={-1}>Ajuda</a>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
+                    <LogOut className="h-4 w-4" />
+                    <span>Sair</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                className="bg-primary-500 text-white hover:bg-primary-600"
+                asChild
+              >
+                <a href={APP_URL} target="_blank">
+                  Acessar
+                </a>
+              </Button>
+            )}
           </div>
           <ModeToggle />
         </div>
