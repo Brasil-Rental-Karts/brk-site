@@ -481,7 +481,7 @@ export function PreLaunch() {
                 campeonatos. Tudo ficou mais profissional e organizado."
               </p>
               <div className="flex items-center gap-4">
-                <img src="public/ronan-avatar.png" alt="Ronan Avatar" className="w-12 h-12 rounded-full" />
+                <img src="/ronan-avatar.png" alt="Ronan Avatar" className="w-12 h-12 rounded-full" />
                 <div>
                   <p className="font-semibold">Ronan</p>
                   <p className="text-sm text-muted-foreground">
@@ -497,7 +497,7 @@ export function PreLaunch() {
                 com outros pilotos. Isso me motiva a melhorar cada vez mais."
               </p>
               <div className="flex items-center gap-4">
-                <img src="public/eduardo-avatar.png" alt="Eduardo Avatar" className="w-12 h-12 rounded-full" />
+                <img src="/eduardo-avatar.png" alt="Eduardo Avatar" className="w-12 h-12 rounded-full" />
                 <div>
                   <p className="font-semibold">Eduardo</p>
                   <p className="text-sm text-muted-foreground">Piloto Amador</p>
