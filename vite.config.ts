@@ -4,7 +4,21 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'html-env-vars',
+      transformIndexHtml: {
+        enforce: 'pre',
+        transform: (html, context) => {
+          return html.replace(
+            /%VITE_CLARITY_ID%/g,
+            process.env.VITE_CLARITY_ID || ''
+          )
+        }
+      }
+    }
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

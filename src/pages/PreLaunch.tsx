@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Trophy, Users, Calendar, Timer, CheckCircle, AlertCircle } from "lucide-react";
 import { apiService } from "@/lib/api";
 import { validateVipPreregister } from "@/lib/validation";
+import { clarityEvents, setClarityTag } from "@/utils/clarity";
 
 export function PreLaunch() {
   // Estado do primeiro formulário
@@ -18,6 +19,12 @@ export function PreLaunch() {
     name?: string;
     email?: string;
   }>({});
+
+  // Tracking do page view quando o componente carrega
+  useEffect(() => {
+    clarityEvents.pageView('pre_launch');
+    setClarityTag('page_type', 'pre_launch');
+  }, []);
 
   // Estado do segundo formulário
   const [email2, setEmail2] = useState("");
@@ -33,6 +40,7 @@ export function PreLaunch() {
   // Função de submit do primeiro formulário
   const handleSubmit1 = async (e: React.FormEvent) => {
     e.preventDefault();
+    clarityEvents.heroFormStart();
     setIsLoading1(true);
     setError1(null);
     setValidationErrors1({});
@@ -43,10 +51,13 @@ export function PreLaunch() {
     if (!validation.success) {
       const errors: { name?: string; email?: string } = {};
       validation.error.errors.forEach((err) => {
-        if (err.path[0] === 'name') {
+        const field = err.path[0] as string;
+        if (field === 'name') {
           errors.name = err.message;
-        } else if (err.path[0] === 'email') {
+          clarityEvents.heroFormValidationError('name', err.message);
+        } else if (field === 'email') {
           errors.email = err.message;
+          clarityEvents.heroFormValidationError('email', err.message);
         }
       });
       setValidationErrors1(errors);
@@ -56,12 +67,15 @@ export function PreLaunch() {
 
     try {
       await apiService.registerVip(validation.data);
+      clarityEvents.heroFormSuccess();
       setIsSuccess1(true);
       setName1("");
       setEmail1("");
       setValidationErrors1({});
     } catch (err) {
-      setError1(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
+      const errorMessage = err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.";
+      clarityEvents.heroFormError(errorMessage);
+      setError1(errorMessage);
     } finally {
       setIsLoading1(false);
     }
@@ -70,6 +84,7 @@ export function PreLaunch() {
   // Função de submit do segundo formulário
   const handleSubmit2 = async (e: React.FormEvent) => {
     e.preventDefault();
+    clarityEvents.finalFormStart();
     setIsLoading2(true);
     setError2(null);
     setValidationErrors2({});
@@ -80,10 +95,13 @@ export function PreLaunch() {
     if (!validation.success) {
       const errors: { name?: string; email?: string } = {};
       validation.error.errors.forEach((err) => {
-        if (err.path[0] === 'name') {
+        const field = err.path[0] as string;
+        if (field === 'name') {
           errors.name = err.message;
-        } else if (err.path[0] === 'email') {
+          clarityEvents.finalFormValidationError('name', err.message);
+        } else if (field === 'email') {
           errors.email = err.message;
+          clarityEvents.finalFormValidationError('email', err.message);
         }
       });
       setValidationErrors2(errors);
@@ -93,12 +111,15 @@ export function PreLaunch() {
 
     try {
       await apiService.registerVip(validation.data);
+      clarityEvents.finalFormSuccess();
       setIsSuccess2(true);
       setName2("");
       setEmail2("");
       setValidationErrors2({});
     } catch (err) {
-      setError2(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
+      const errorMessage = err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.";
+      clarityEvents.finalFormError(errorMessage);
+      setError2(errorMessage);
     } finally {
       setIsLoading2(false);
     }
@@ -147,6 +168,7 @@ export function PreLaunch() {
                  </p>
                  <Button
                    onClick={() => {
+                     clarityEvents.backToFormClick('hero');
                      setIsSuccess1(false);
                      setValidationErrors1({});
                      setError1(null);
@@ -259,12 +281,13 @@ export function PreLaunch() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          onClick={() =>
+          onClick={() => {
+            clarityEvents.scrollToSection('about_section');
             window.scrollTo({
               top: window.innerHeight,
               behavior: "smooth",
-            })
-          }
+            });
+          }}
         >
           <svg
             width="24"
@@ -387,7 +410,10 @@ export function PreLaunch() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <Card 
+                  className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
+                  onMouseEnter={() => clarityEvents.cardHover('gestao_profissional')}
+                >
                   <Trophy className="w-12 h-12 text-primary-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">
                     Gestão Profissional
@@ -404,7 +430,10 @@ export function PreLaunch() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <Card 
+                  className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
+                  onMouseEnter={() => clarityEvents.cardHover('comunidade_unida')}
+                >
                   <Users className="w-12 h-12 text-primary-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">Comunidade Unida</h3>
                   <p className="text-muted-foreground">
@@ -418,7 +447,10 @@ export function PreLaunch() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <Card 
+                  className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow"
+                  onMouseEnter={() => clarityEvents.cardHover('calendario_integrado')}
+                >
                   <Calendar className="w-12 h-12 text-primary-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">
                     Calendário Integrado
@@ -511,6 +543,7 @@ export function PreLaunch() {
                  </p>
                  <Button
                    onClick={() => {
+                     clarityEvents.backToFormClick('final');
                      setIsSuccess2(false);
                      setValidationErrors2({});
                      setError2(null);
@@ -630,6 +663,7 @@ export function PreLaunch() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary"
+                onClick={() => clarityEvents.socialMediaClick('instagram')}
               >
                 Instagram
               </a>
