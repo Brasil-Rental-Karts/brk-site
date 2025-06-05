@@ -63,10 +63,25 @@ export function ClubProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/club`)
-      .then(res => res.json())
+    const cacheApiUrl = import.meta.env.VITE_CACHE_API_URL;
+    if (!cacheApiUrl) {
+      console.warn('VITE_CACHE_API_URL not configured');
+      setAllClubs([]);
+      return;
+    }
+    
+    fetch(`${cacheApiUrl}/cache/club`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => setAllClubs(data.data || []))
-      .catch(() => setAllClubs([]))
+      .catch(error => {
+        console.error('Failed to fetch clubs:', error);
+        setAllClubs([]);
+      })
   }, [])
 
   const selectClub = (club: Club) => {

@@ -279,7 +279,7 @@ export function PreLaunch() {
             {/* Center mockup image */}
             <div className="hidden lg:block w-full md:w-[750px]">
               <motion.img 
-                src="/public/brk-mockup.png" 
+                src="/brk-mockup.png" 
                 alt="Hero Image" 
                 className="w-full"
                 initial={{ opacity: 0, scale: 0.8 }}

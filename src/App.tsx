@@ -19,9 +19,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Router>
-        <ClubProvider>
-          <AppContent />
-        </ClubProvider>
+        <AppContent />
       </Router>
     </ThemeProvider>
   )
@@ -39,13 +37,13 @@ function AppContent() {
     <AnimatePresence mode="wait">
       <Routes>
         <Route path="/" element={<PreLaunch />} />
-        <Route path="/about" element={<MainLayout><About /></MainLayout>} />
-        <Route path="/clubes" element={<MainLayout><Clubs /></MainLayout>} />
-        <Route path="/clube/:alias" element={<MainLayout><Club /></MainLayout>} />
-        <Route path="/clube/:alias/calendario" element={<MainLayout><ClubCalendario /></MainLayout>} />
-        <Route path="/clube/:alias/classificacao" element={<MainLayout><ClubClassificacao /></MainLayout>} />
-        <Route path="/clube/:alias/regulamento" element={<MainLayout><ClubRegulamento /></MainLayout>} />
-        <Route path="/pilotos/:pilotSlug" element={<MainLayout><Pilot /></MainLayout>} />
+        <Route path="/about" element={<ClubProvider><MainLayout><About /></MainLayout></ClubProvider>} />
+        <Route path="/clubes" element={<ClubProvider><MainLayout><Clubs /></MainLayout></ClubProvider>} />
+        <Route path="/clube/:alias" element={<ClubProvider><MainLayout><Club /></MainLayout></ClubProvider>} />
+        <Route path="/clube/:alias/calendario" element={<ClubProvider><MainLayout><ClubCalendario /></MainLayout></ClubProvider>} />
+        <Route path="/clube/:alias/classificacao" element={<ClubProvider><MainLayout><ClubClassificacao /></MainLayout></ClubProvider>} />
+        <Route path="/clube/:alias/regulamento" element={<ClubProvider><MainLayout><ClubRegulamento /></MainLayout></ClubProvider>} />
+        <Route path="/pilotos/:pilotSlug" element={<ClubProvider><MainLayout><Pilot /></MainLayout></ClubProvider>} />
       </Routes>
     </AnimatePresence>
   );

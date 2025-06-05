@@ -42,10 +42,25 @@ export function Navbar() {
 
   const [pilots, setPilots] = useState<any[]>([])
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_CACHE_API_URL}/cache/pilot`)
-      .then(res => res.json())
+    const cacheApiUrl = import.meta.env.VITE_CACHE_API_URL;
+    if (!cacheApiUrl) {
+      console.warn('VITE_CACHE_API_URL not configured');
+      setPilots([]);
+      return;
+    }
+    
+    fetch(`${cacheApiUrl}/cache/pilot`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => setPilots(data.data || []))
-      .catch(() => setPilots([]))
+      .catch(error => {
+        console.error('Failed to fetch pilots:', error);
+        setPilots([]);
+      })
   }, [])
 
   const handleClubSelect = (club: any) => {
