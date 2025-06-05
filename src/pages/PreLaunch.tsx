@@ -3,16 +3,54 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Trophy, Users, Calendar, Timer } from "lucide-react";
+import { Trophy, Users, Calendar, Timer, CheckCircle, AlertCircle } from "lucide-react";
+import { apiService } from "@/lib/api";
+import { validateVipPreregister } from "@/lib/validation";
 
 export function PreLaunch() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    email?: string;
+  }>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implementar lógica de captura de leads
-    console.log({ name, email });
+    setIsLoading(true);
+    setError(null);
+    setValidationErrors({});
+
+    // Validação com Zod
+    const validation = validateVipPreregister({ name, email });
+    
+    if (!validation.success) {
+      const errors: { name?: string; email?: string } = {};
+      validation.error.errors.forEach((err) => {
+        if (err.path[0] === 'name') {
+          errors.name = err.message;
+        } else if (err.path[0] === 'email') {
+          errors.email = err.message;
+        }
+      });
+      setValidationErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      await apiService.registerVip(validation.data);
+      setIsSuccess(true);
+      setName("");
+      setEmail("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,34 +83,112 @@ export function PreLaunch() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="max-w-md mx-auto"
           >
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Seu nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
-                required
-              />
-              <Input
-                type="email"
-                placeholder="Seu melhor e-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
-                required
-              />
-              <Button
-                type="submit"
-                className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
-                size="lg"
+            {isSuccess ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center space-y-4"
               >
-                Entrar para a Lista VIP
-              </Button>
-            </form>
-            <p className="text-xs text-white/70 mt-3">
-              Não enviamos spam. Seus dados estão seguros conosco.
-            </p>
+                <CheckCircle className="w-16 h-16 text-black mx-auto" />
+                <h3 className="text-xl font-semibold">Bem-vindo à Lista VIP!</h3>
+                <p className="text-primary-foreground/80">
+                  Você receberá em primeira mão todas as novidades sobre o lançamento da plataforma BRK.
+                </p>
+                <Button
+                  onClick={() => setIsSuccess(false)}
+                  variant="outline"
+                  className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
+                >
+                  Cadastrar outro e-mail
+                </Button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <Input
+                    type="text"
+                    placeholder="Seu nome"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      // Limpar erro de validação quando o usuário começar a digitar
+                      if (validationErrors.name) {
+                        setValidationErrors(prev => ({ ...prev, name: undefined }));
+                      }
+                    }}
+                    className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
+                      validationErrors.name ? 'border-black/50' : ''
+                    }`}
+                    disabled={isLoading}
+                  />
+                  {validationErrors.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center space-x-2 text-black text-sm"
+                    >
+                      <AlertCircle className="w-4 h-4" />
+                      <span>{validationErrors.name}</span>
+                    </motion.div>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <Input
+                    type="email"
+                    placeholder="Seu melhor e-mail"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      // Limpar erro de validação quando o usuário começar a digitar
+                      if (validationErrors.email) {
+                        setValidationErrors(prev => ({ ...prev, email: undefined }));
+                      }
+                    }}
+                    className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
+                      validationErrors.email ? 'border-black/50' : ''
+                    }`}
+                    disabled={isLoading}
+                  />
+                  {validationErrors.email && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center space-x-2 text-black text-sm"
+                    >
+                      <AlertCircle className="w-4 h-4" />
+                      <span>{validationErrors.email}</span>
+                    </motion.div>
+                  )}
+                </div>
+                
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center space-x-2 text-black text-sm"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
+                  size="lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Cadastrando..." : "Entrar para a Lista VIP"}
+                </Button>
+              </form>
+            )}
+            
+            {!isSuccess && (
+              <p className="text-xs text-white/70 mt-3">
+                Não enviamos spam. Seus dados estão seguros conosco.
+              </p>
+            )}
           </motion.div>
         </div>
         {/* Scroll Indicator */}

@@ -1,4 +1,3 @@
-import { Home } from "@/pages/Home"
 import { PreLaunch } from "@/pages/PreLaunch"
 import { About } from "@/pages/About"
 import { Club } from "@/pages/Club"
