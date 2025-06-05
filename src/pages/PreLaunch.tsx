@@ -104,10 +104,10 @@ export function PreLaunch() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <h1 className="font-heading text-3xl md:text-5xl font-bold mb-6">
+            <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl font-bold mb-6">
               A plataforma feita pra quem vive o kart além da pista
             </h1>
-            <p className="text-xl mb-12 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl mb-8 sm:mb-12 max-w-2xl mx-auto">
            Acompanhe campeonatos, inscreva-se em corridas, acesse telemetria, rankings e muito mais. Tudo em um só lugar, para acelerar sua paixão pelas pistas.
             </p>
           </div>
@@ -264,39 +264,111 @@ export function PreLaunch() {
       </section>
 
       {/* Sobre o BRK */}
-      <section className="py-20 bg-background">
+      <section className="py-12 sm:py-16 lg:py-20 bg-background">
         <div className="container max-w-6xl mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="font-heading text-3xl text-center"
+            className="font-heading text-2xl sm:text-3xl text-center mb-8 sm:mb-12"
           >
             De Piloto.<br />Para Piloto.
           </motion.h2>
 
-          <div className="relative flex justify-center items-center">
-            {/* Center mockup image */}
-            <div className="hidden lg:block w-full md:w-[750px]">
+          {/* Desktop Layout with absolute positioned cards */}
+          <div className="hidden lg:block">
+            <div className="relative flex justify-center items-center min-h-[600px]">
+              {/* Center mockup image */}
+              <div className="w-full md:w-[750px]">
+                <motion.img 
+                  src="/brk-mockup.png" 
+                  alt="Hero Image" 
+                  className="w-full"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+
+              {/* Left side cards */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 space-y-8">
+                <motion.div
+                  initial={{ opacity: 0, x: -100 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card className="p-6 w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
+                        style={{ transform: 'rotate(-5deg)' }}>
+                    <Trophy className="w-12 h-12 text-primary-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">
+                      Gestão Profissional
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Sistema completo para gerenciar campeonatos, pontuações e
+                      rankings.
+                    </p>
+                  </Card>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: -100 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <Card className="p-6 w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
+                        style={{ transform: 'rotate(3deg)' }}>
+                    <Users className="w-12 h-12 text-primary-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Comunidade Unida</h3>
+                    <p className="text-muted-foreground">
+                      Conecte-se com pilotos e organizadores de todo o Brasil.
+                    </p>
+                  </Card>
+                </motion.div>
+              </div>
+
+              {/* Right side card */}
+              <motion.div
+                className="absolute right-0 top-1/2 -translate-y-1/2"
+                initial={{ opacity: 0, x: 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Card className="p-6 w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
+                      style={{ transform: 'rotate(5deg)' }}>
+                  <Calendar className="w-12 h-12 text-primary-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Calendário Integrado
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Acompanhe eventos e não perca nenhuma corrida importante.
+                  </p>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Mobile Layout with stacked cards */}
+          <div className="lg:hidden">
+            {/* Mobile mockup image */}
+            <div className="mb-8 sm:mb-12 flex justify-center">
               <motion.img 
                 src="/brk-mockup.png" 
                 alt="Hero Image" 
-                className="w-full"
+                className="w-full max-w-sm sm:max-w-md"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
               />
             </div>
 
-            {/* Left side cards */}
-            <div className="absolute left-0 space-y-60 md:space-y-8">
+            {/* Mobile cards grid */}
+            <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <motion.div
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Card className="p-6 w-full md:w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
-                      style={{ transform: 'rotate(-5deg)' }}>
+                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
                   <Trophy className="w-12 h-12 text-primary-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">
                     Gestão Profissional
@@ -309,12 +381,11 @@ export function PreLaunch() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card className="p-6 w-full md:w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
-                      style={{ transform: 'rotate(3deg)' }}>
+                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
                   <Users className="w-12 h-12 text-primary-500 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">Comunidade Unida</h3>
                   <p className="text-muted-foreground">
@@ -322,26 +393,23 @@ export function PreLaunch() {
                   </p>
                 </Card>
               </motion.div>
-            </div>
 
-            {/* Right side card */}
-            <motion.div
-              className="absolute right-0"
-              initial={{ opacity: 0, x: 100 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <Card className="p-6 w-full md:w-[250px] text-center shadow-lg hover:shadow-xl transition-shadow"
-                    style={{ transform: 'rotate(5deg)' }}>
-                <Calendar className="w-12 h-12 text-primary-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">
-                  Calendário Integrado
-                </h3>
-                <p className="text-muted-foreground">
-                  Acompanhe eventos e não perca nenhuma corrida importante.
-                </p>
-              </Card>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
+                  <Calendar className="w-12 h-12 text-primary-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Calendário Integrado
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Acompanhe eventos e não perca nenhuma corrida importante.
+                  </p>
+                </Card>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
