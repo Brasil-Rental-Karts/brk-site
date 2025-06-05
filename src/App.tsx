@@ -1,4 +1,5 @@
 import { Home } from "@/pages/Home"
+import { PreLaunch } from "@/pages/PreLaunch"
 import { About } from "@/pages/About"
 import { Club } from "@/pages/Club"
 import { Pilot } from "@/pages/Pilot"
@@ -36,20 +37,18 @@ function AppContent() {
   }, [pathname]);
   
   return (
-    <MainLayout>
-      <AnimatePresence mode="wait">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/clubes" element={<Clubs />} />
-          <Route path="/clube/:alias" element={<Club />} />
-          <Route path="/clube/:alias/calendario" element={<ClubCalendario />} />
-          <Route path="/clube/:alias/classificacao" element={<ClubClassificacao />} />
-          <Route path="/clube/:alias/regulamento" element={<ClubRegulamento />} />
-          <Route path="/pilotos/:pilotSlug" element={<Pilot />} />
-        </Routes>
-      </AnimatePresence>
-    </MainLayout>
+    <AnimatePresence mode="wait">
+      <Routes>
+        <Route path="/" element={<PreLaunch />} />
+        <Route path="/about" element={<MainLayout><About /></MainLayout>} />
+        <Route path="/clubes" element={<MainLayout><Clubs /></MainLayout>} />
+        <Route path="/clube/:alias" element={<MainLayout><Club /></MainLayout>} />
+        <Route path="/clube/:alias/calendario" element={<MainLayout><ClubCalendario /></MainLayout>} />
+        <Route path="/clube/:alias/classificacao" element={<MainLayout><ClubClassificacao /></MainLayout>} />
+        <Route path="/clube/:alias/regulamento" element={<MainLayout><ClubRegulamento /></MainLayout>} />
+        <Route path="/pilotos/:pilotSlug" element={<MainLayout><Pilot /></MainLayout>} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
