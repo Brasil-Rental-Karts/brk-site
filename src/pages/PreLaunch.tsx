@@ -8,24 +8,33 @@ import { apiService } from "@/lib/api";
 import { validateVipPreregister } from "@/lib/validation";
 
 export function PreLaunch() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<{
+  // Estado do primeiro formulário
+  const [email1, setEmail1] = useState("");
+  const [name1, setName1] = useState("");
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [isSuccess1, setIsSuccess1] = useState(false);
+  const [error1, setError1] = useState<string | null>(null);
+  const [validationErrors1, setValidationErrors1] = useState<{
     name?: string;
     email?: string;
   }>({});
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Estado do segundo formulário
+  const [email2, setEmail2] = useState("");
+  const [name2, setName2] = useState("");
+  const [isLoading2, setIsLoading2] = useState(false);
+  const [isSuccess2, setIsSuccess2] = useState(false);
+  const [error2, setError2] = useState<string | null>(null);
+
+  // Função de submit do primeiro formulário
+  const handleSubmit1 = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    setValidationErrors({});
+    setIsLoading1(true);
+    setError1(null);
+    setValidationErrors1({});
 
     // Validação com Zod
-    const validation = validateVipPreregister({ name, email });
+    const validation = validateVipPreregister({ name: name1, email: email1 });
     
     if (!validation.success) {
       const errors: { name?: string; email?: string } = {};
@@ -36,20 +45,47 @@ export function PreLaunch() {
           errors.email = err.message;
         }
       });
-      setValidationErrors(errors);
-      setIsLoading(false);
+      setValidationErrors1(errors);
+      setIsLoading1(false);
       return;
     }
 
     try {
       await apiService.registerVip(validation.data);
-      setIsSuccess(true);
-      setName("");
-      setEmail("");
+      setIsSuccess1(true);
+      setName1("");
+      setEmail1("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
+      setError1(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
     } finally {
-      setIsLoading(false);
+      setIsLoading1(false);
+    }
+  };
+
+  // Função de submit do segundo formulário
+  const handleSubmit2 = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading2(true);
+    setError2(null);
+
+    // Validação com Zod
+    const validation = validateVipPreregister({ name: name2, email: email2 });
+    
+    if (!validation.success) {
+      setError2("Por favor, preencha todos os campos corretamente.");
+      setIsLoading2(false);
+      return;
+    }
+
+    try {
+      await apiService.registerVip(validation.data);
+      setIsSuccess2(true);
+      setName2("");
+      setEmail2("");
+    } catch (err) {
+      setError2(err instanceof Error ? err.message : "Erro ao registrar. Tente novamente.");
+    } finally {
+      setIsLoading2(false);
     }
   };
 
@@ -83,112 +119,112 @@ export function PreLaunch() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="max-w-md mx-auto"
           >
-            {isSuccess ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center space-y-4"
-              >
-                <CheckCircle className="w-16 h-16 text-black mx-auto" />
-                <h3 className="text-xl font-semibold">Bem-vindo à Lista VIP!</h3>
-                <p className="text-primary-foreground/80">
-                  Você receberá em primeira mão todas as novidades sobre o lançamento da plataforma BRK.
-                </p>
-                <Button
-                  onClick={() => setIsSuccess(false)}
-                  variant="outline"
-                  className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
-                >
-                  Cadastrar outro e-mail
-                </Button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+                         {isSuccess1 ? (
+               <motion.div
+                 initial={{ opacity: 0, scale: 0.8 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 className="text-center space-y-4"
+               >
+                 <CheckCircle className="w-16 h-16 text-black mx-auto" />
+                 <h3 className="text-xl font-semibold">Bem vindo à Lista VIP!</h3>
+                 <p className="text-primary-foreground/80">
+                   Você receberá em primeira mão todas as novidades sobre o lançamento da plataforma BRK.
+                 </p>
+                 <Button
+                   onClick={() => setIsSuccess1(false)}
+                   variant="outline"
+                   className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
+                 >
+                   Voltar
+                 </Button>
+               </motion.div>
+             ) : (
+               <form onSubmit={handleSubmit1} className="space-y-4">
                 <div className="space-y-1">
-                  <Input
-                    type="text"
-                    placeholder="Seu nome"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      // Limpar erro de validação quando o usuário começar a digitar
-                      if (validationErrors.name) {
-                        setValidationErrors(prev => ({ ...prev, name: undefined }));
-                      }
-                    }}
-                    className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
-                      validationErrors.name ? 'border-black/50' : ''
-                    }`}
-                    disabled={isLoading}
-                  />
-                  {validationErrors.name && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center space-x-2 text-black text-sm"
-                    >
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{validationErrors.name}</span>
-                    </motion.div>
-                  )}
+                                     <Input
+                     type="text"
+                     placeholder="Seu nome"
+                     value={name1}
+                     onChange={(e) => {
+                       setName1(e.target.value);
+                       // Limpar erro de validação quando o usuário começar a digitar
+                       if (validationErrors1.name) {
+                         setValidationErrors1(prev => ({ ...prev, name: undefined }));
+                       }
+                     }}
+                     className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
+                       validationErrors1.name ? 'border-black/50' : ''
+                     }`}
+                     disabled={isLoading1}
+                   />
+                   {validationErrors1.name && (
+                     <motion.div
+                       initial={{ opacity: 0, y: -10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       className="flex items-center space-x-2 text-black text-sm"
+                     >
+                       <AlertCircle className="w-4 h-4" />
+                       <span>{validationErrors1.name}</span>
+                     </motion.div>
+                   )}
                 </div>
 
                 <div className="space-y-1">
-                  <Input
-                    type="email"
-                    placeholder="Seu melhor e-mail"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      // Limpar erro de validação quando o usuário começar a digitar
-                      if (validationErrors.email) {
-                        setValidationErrors(prev => ({ ...prev, email: undefined }));
-                      }
-                    }}
-                    className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
-                      validationErrors.email ? 'border-black/50' : ''
-                    }`}
-                    disabled={isLoading}
-                  />
-                  {validationErrors.email && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center space-x-2 text-black text-sm"
-                    >
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{validationErrors.email}</span>
-                    </motion.div>
-                  )}
-                </div>
-                
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center space-x-2 text-black text-sm"
-                  >
-                    <AlertCircle className="w-4 h-4" />
-                    <span>{error}</span>
-                  </motion.div>
-                )}
+                                     <Input
+                     type="email"
+                     placeholder="Seu melhor e-mail"
+                     value={email1}
+                     onChange={(e) => {
+                       setEmail1(e.target.value);
+                       // Limpar erro de validação quando o usuário começar a digitar
+                       if (validationErrors1.email) {
+                         setValidationErrors1(prev => ({ ...prev, email: undefined }));
+                       }
+                     }}
+                     className={`bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg ${
+                       validationErrors1.email ? 'border-black/50' : ''
+                     }`}
+                     disabled={isLoading1}
+                   />
+                   {validationErrors1.email && (
+                     <motion.div
+                       initial={{ opacity: 0, y: -10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       className="flex items-center space-x-2 text-black text-sm"
+                     >
+                       <AlertCircle className="w-4 h-4" />
+                       <span>{validationErrors1.email}</span>
+                     </motion.div>
+                   )}
+                 </div>
+                 
+                 {error1 && (
+                   <motion.div
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="flex items-center space-x-2 text-black text-sm"
+                   >
+                     <AlertCircle className="w-4 h-4" />
+                     <span>{error1}</span>
+                   </motion.div>
+                 )}
 
-                <Button
-                  type="submit"
-                  className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
-                  size="lg"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Cadastrando..." : "Entrar para a Lista VIP"}
-                </Button>
+                 <Button
+                   type="submit"
+                   className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
+                   size="lg"
+                   disabled={isLoading1}
+                 >
+                   {isLoading1 ? "Cadastrando..." : "Entrar para a Lista VIP"}
+                 </Button>
               </form>
             )}
-            
-            {!isSuccess && (
-              <p className="text-xs text-white/70 mt-3">
-                Não enviamos spam. Seus dados estão seguros conosco.
-              </p>
-            )}
+                         
+             {!isSuccess1 && (
+               <p className="text-xs text-white/70 mt-3">
+                 Não enviamos spam. Seus dados estão seguros conosco.
+               </p>
+             )}
           </motion.div>
         </div>
         {/* Scroll Indicator */}
@@ -375,34 +411,70 @@ export function PreLaunch() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="max-w-md mx-auto"
           >
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Seu nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
-                required
-              />
-              <Input
-                type="email"
-                placeholder="Seu melhor e-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
-                required
-              />
-              <Button
-                type="submit"
-                className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
-                size="lg"
-              >
-                Entrar para a Lista VIP
-              </Button>
-            </form>
-            <p className="text-xs text-white/70 mt-3">
-              Não enviamos spam. Seus dados estão seguros conosco.
-            </p>
+                         {isSuccess2 ? (
+               <motion.div
+                 initial={{ opacity: 0, scale: 0.8 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 className="text-center space-y-4"
+               >
+                 <CheckCircle className="w-16 h-16 text-black mx-auto" />
+                 <h3 className="text-xl font-semibold">Bem vindo à Lista VIP!</h3>
+                 <p className="text-primary-foreground/80">
+                  Você receberá em primeira mão todas as novidades sobre o lançamento da plataforma BRK.
+                 </p>
+                 <Button
+                   onClick={() => setIsSuccess2(false)}
+                   variant="outline"
+                   className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
+                 >
+                   Voltar
+                 </Button>
+               </motion.div>
+             ) : (
+               <form onSubmit={handleSubmit2} className="space-y-4">
+                 <Input
+                   type="text"
+                   placeholder="Seu nome"
+                   value={name2}
+                   onChange={(e) => setName2(e.target.value)}
+                   className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
+                   disabled={isLoading2}
+                   required
+                 />
+                 <Input
+                   type="email"
+                   placeholder="Seu melhor e-mail"
+                   value={email2}
+                   onChange={(e) => setEmail2(e.target.value)}
+                   className="bg-white/10 text-primary-foreground placeholder:text-primary-foreground/70 border-white/20 rounded-lg"
+                   disabled={isLoading2}
+                   required
+                 />
+                 {error2 && (
+                   <motion.div
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="flex items-center space-x-2 text-black text-sm"
+                   >
+                     <AlertCircle className="w-4 h-4" />
+                     <span>{error2}</span>
+                   </motion.div>
+                 )}
+                 <Button
+                   type="submit"
+                   className="w-full bg-primary-foreground text-primary font-bold hover:bg-primary-foreground/90 rounded-2xl"
+                   size="lg"
+                   disabled={isLoading2}
+                 >
+                   {isLoading2 ? "Cadastrando..." : "Entrar para a Lista VIP"}
+                 </Button>
+               </form>
+                          )}
+             {!isSuccess2 && (
+               <p className="text-xs text-white/70 mt-3">
+                 Não enviamos spam. Seus dados estão seguros conosco.
+               </p>
+             )}
           </motion.div>
         </div>
       </section>
