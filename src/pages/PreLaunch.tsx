@@ -174,7 +174,7 @@ export function PreLaunch() {
                      setError1(null);
                    }}
                    variant="outline"
-                   className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
+                   className="bg-transparent border-white text-primary-foreground hover:bg-white/10 rounded-2xl border-2"
                  >
                    Voltar
                  </Button>
@@ -549,7 +549,7 @@ export function PreLaunch() {
                      setError2(null);
                    }}
                    variant="outline"
-                   className="bg-transparent border-white/20 text-primary-foreground hover:bg-white/10"
+                   className="bg-transparent border-white text-primary-foreground hover:bg-white/10 rounded-2xl border-2"
                  >
                    Voltar
                  </Button>
