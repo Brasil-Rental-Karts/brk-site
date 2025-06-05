@@ -655,7 +655,7 @@ export function PreLaunch() {
               </span>
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary">
+              <a href="/privacidade" className="hover:text-primary">
                 Política de Privacidade
               </a>
               <a

@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { AnimatePresence } from "framer-motion"
 import { ClubProvider } from "@/contexts/ClubContext"
 import { useEffect } from "react"
+import { Privacy } from "./pages/Privacy"
 
 // Create specific route components
 const ClubCalendario = () => <Club section="calendario" />
@@ -37,6 +38,7 @@ function AppContent() {
     <AnimatePresence mode="wait">
       <Routes>
         <Route path="/" element={<PreLaunch />} />
+        <Route path="/privacidade" element={<Privacy />} />
         <Route path="/about" element={<ClubProvider><MainLayout><About /></MainLayout></ClubProvider>} />
         <Route path="/clubes" element={<ClubProvider><MainLayout><Clubs /></MainLayout></ClubProvider>} />
         <Route path="/clube/:alias" element={<ClubProvider><MainLayout><Club /></MainLayout></ClubProvider>} />
