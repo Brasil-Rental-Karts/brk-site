@@ -4,8 +4,8 @@ import { useClub } from "@/contexts/ClubContext"
 import { Link } from "react-router-dom"
 import { Flag, MapPin, Trophy, Search, X, Grid, List, ChevronLeft, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "brk-design-system"
+import { Button } from "brk-design-system"
 
 export function Clubs() {
   const { selectClub, allClubs } = useClub()

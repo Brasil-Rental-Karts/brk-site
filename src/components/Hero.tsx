@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "brk-design-system"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 

@@ -1,5 +1,5 @@
 import { Instagram, MessageCircle } from "lucide-react"
-import { Button } from "./ui/button"
+import { Button } from "brk-design-system"
 import { Link } from "react-router-dom"
 
 export function Footer() {

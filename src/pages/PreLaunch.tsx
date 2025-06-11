@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "brk-design-system";
+import { Card } from "brk-design-system";
 import { Trophy, Users, Calendar, Timer, CheckCircle, AlertCircle } from "lucide-react";
 import { apiService } from "@/lib/api";
 import { validateVipPreregister } from "@/lib/validation";

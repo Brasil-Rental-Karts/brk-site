@@ -1,7 +1,7 @@
 import { useParams, Navigate, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Trophy, Flag, CalendarDays, User, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "brk-design-system"
 import { useState, useEffect } from "react"
 import { useClub, Club } from "@/contexts/ClubContext"
 import { getInitials, normalizeSlug } from "@/utils/pilot-utils"

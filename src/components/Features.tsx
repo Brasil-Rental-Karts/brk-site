@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card"
+import { Card } from "brk-design-system"
 import { Trophy, BarChart2, Calendar } from "lucide-react"
 import { motion } from "framer-motion"
 

@@ -1,5 +1,5 @@
 import { ModeToggle } from "./mode-toggle"
-import { Button } from "./ui/button"
+import { Button } from "brk-design-system"
 import { Link, useNavigate } from "react-router-dom"
 import {
   DropdownMenu,
@@ -7,14 +7,14 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+} from "brk-design-system"
 import { ChevronDown, Flag, Menu, X, Trophy, Info, Users, MapPin, User, LogOut } from "lucide-react"
 import { useClub } from "@/contexts/ClubContext"
 import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
-import { Card, CardContent } from "./ui/card"
+import { Card, CardContent } from "brk-design-system"
 import { getInitials } from "@/utils/pilot-utils"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "brk-design-system"
 import { fetchWithAuth } from "@/utils/fetchWithAuth"
 
 // Use the environment variable or default to the production URL if not set
