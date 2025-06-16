@@ -1,5 +1,4 @@
 import { Navbar } from "./Navbar"
-import { Footer } from "./Footer"
 import { useLocation } from "react-router-dom"
 import { useEffect, useRef } from "react"
 
@@ -18,12 +17,20 @@ export function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 container">
-        <div className="max-w-[1920px] w-full mx-auto">
-          {children}
-        </div>
+      
+      {/* Main content */}
+      <main className="flex-1 w-full px-6 py-8">
+        {children}
       </main>
-      <Footer />
+
+      {/* Footer */}
+      <footer className="bg-muted py-4 px-6">
+        <div className="w-full text-center text-muted-foreground">
+          <p>
+            &copy; {new Date().getFullYear()} BRK. Todos os direitos reservados.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 } 

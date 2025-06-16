@@ -8,7 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "brk-design-system"
-import { ChevronDown, Menu, X, Trophy, Info, User, LogOut } from "lucide-react"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "brk-design-system"
+import { ChevronDown, Menu } from "lucide-react"
 import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "brk-design-system"
@@ -22,7 +29,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 export function Navbar() {
   const navigate = useNavigate()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   
   // Estados para a pesquisa de pilotos
   const [pilotSearchQuery, setPilotSearchQuery] = useState("")
@@ -59,15 +66,9 @@ export function Navbar() {
   
   const handlePilotSelect = (pilot: typeof pilots[0]) => {
     setPilotDropdownOpen(false)
-    setMobileMenuOpen(false)
+    setIsOpen(false)
     setPilotSearchQuery("")
     navigate(`/pilotos/${pilot.slug}`)
-  }
-
-  const toggleMobileMenu = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setMobileMenuOpen(!mobileMenuOpen)
   }
   
   // Handle pilot search input change
@@ -98,15 +99,6 @@ export function Navbar() {
         )
         .slice(0, 5)
     : []
-  
-  // Focus pilot search input when dropdown opens
-  useEffect(() => {
-    if (pilotDropdownOpen && pilotSearchInputRef.current) {
-      setTimeout(() => {
-        pilotSearchInputRef.current?.focus()
-      }, 100)
-    }
-  }, [pilotDropdownOpen])
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -141,23 +133,34 @@ export function Navbar() {
   }
 
   return (
-    <nav className="border-b bg-background relative z-20">
-      <div className="container h-16 flex items-center justify-between">
-        <div className="flex items-center gap-4 md:gap-8">
+    <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md">
+      <div className="w-full flex justify-between items-center">
+        <div className="flex items-center gap-4">
           <Link to="/" className="hover:opacity-80 transition-opacity">
-            <img src="/logo-brk.svg" alt="BRK Logo" className="h-6 w-auto" />
+            <img
+              src="/logo-brk-marca-horizontal-black.svg"
+              alt="BRK Logo"
+              className="h-6 w-auto"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/logo-brk.svg";
+              }}
+            />
           </Link>
 
-          {/* Desktop navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/campeonato">
-              <Button 
-                variant="ghost" 
-                className="flex items-center gap-2 text-muted-foreground hover:text-primary-500 transition-all duration-200 ease-in-out"
-              >
-                <Trophy className="h-4 w-4" />
-                Campeonato
-              </Button>
+          {/* Menu para Desktop */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <Link
+              to="/"
+              className="inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
+            >
+              Início
+                          </Link>
+            
+            <Link
+              to="/campeonato"
+              className="inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
+            >
+              Campeonato
             </Link>
             
             {/* Desktop pilots dropdown */}
@@ -165,9 +168,8 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="flex items-center gap-2 text-muted-foreground hover:text-primary-500 transition-all duration-200 ease-in-out"
+                  className="inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none text-primary-foreground"
                 >
-                  <User className="h-4 w-4" />
                   <span className="flex items-center">
                     Pilotos
                     <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200" 
@@ -177,8 +179,8 @@ export function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               
-              <DropdownMenuContent align="end" className="w-[350px] p-4">
-                <div className="sticky top-0 bg-background pt-1 space-y-3">
+              <DropdownMenuContent align="end" className="w-[400px] p-4">
+                <div className="space-y-3">
                   <div className="text-sm font-medium">Buscar pilotos</div>
                   <SearchInput
                     ref={pilotSearchInputRef}
@@ -198,47 +200,37 @@ export function Navbar() {
                   )}
                 </div>
                 
-                <div className="max-h-[50vh] overflow-y-auto mt-3 pr-1">
+                <div className="max-h-[300px] overflow-y-auto mt-3">
                   {pilotSearchQuery ? (
                     filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                      <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
-                        <Info className="h-8 w-8 text-muted-foreground/50" />
-                        <div>
-                          <p className="font-medium text-sm">Nenhum piloto encontrado</p>
-                          <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou explore os pilotos disponíveis</p>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="mt-2"
-                          onClick={clearPilotSearch}
-                        >
-                          Ver todos os pilotos
-                        </Button>
+                      <div className="py-6 text-center text-sm text-muted-foreground">
+                        Nenhum piloto encontrado
                       </div>
                     ) : (
-                      filteredPilots.map((pilot) => (
+                      <div className="space-y-2">
+                        {filteredPilots.map((pilot) => (
                         <Card 
                           key={pilot.id}
-                          className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
+                            className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80"
                           onClick={() => handlePilotSelect(pilot)}
                         >
                           <CardContent className="p-3 flex items-start space-x-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
-                                {getInitials(pilot.name)}
-                              </AvatarFallback>
-                            </Avatar>
+                              <Avatar className="h-10 w-10">
+                                <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
+                                  {getInitials(pilot.name)}
+                                </AvatarFallback>
+                              </Avatar>
                             <div className="flex-1">
                               <div className="font-medium text-sm">{pilot.name}</div>
                               <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                <span className="mr-2">#{pilot.number}</span>
-                                <span>{pilot.category}</span>
-                              </div>
+                                  <span className="mr-2">#{pilot.number}</span>
+                                  <span>{pilot.category}</span>
+                                </div>
                             </div>
                           </CardContent>
                         </Card>
-                      ))
+                        ))}
+                      </div>
                     )
                   ) : (
                     <div className="py-6 text-center text-sm text-muted-foreground">
@@ -248,134 +240,238 @@ export function Navbar() {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </nav>
         </div>
-
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-          
-          {/* Auth section */}
+        
+        {/* Menu para Mobile */}
+        <div className="flex items-center gap-4">
           {authLoading ? (
-            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+            <div className="w-8 h-8 rounded-full bg-primary-foreground/20 animate-pulse" />
           ) : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary-500/10 text-primary-500 text-xs">
-                      {getInitials(user.name || user.email)}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    {user.name && <p className="font-medium">{user.name}</p>}
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      {user.email}
-                    </p>
+              <DropdownMenu>
+              <DropdownMenuTrigger className="focus:outline-none hidden md:flex">
+                  <div className="flex items-center gap-2">
+                    <Avatar>
+                        <AvatarFallback className="text-foreground">
+                      {user?.name ? user.name.split(' ').filter(Boolean).map((n: string) => n[0]).join('').toUpperCase().slice(0,2) : (user?.email ? user.email[0].toUpperCase() : 'U')}
+                        </AvatarFallback>
+                    </Avatar>
+                  <span className="text-sm font-medium">{user?.name}</span>
+                  <ChevronDown
+                    className="h-4 w-4 transition duration-300 group-data-[state=open]:rotate-180"
+                    aria-hidden="true"
+                  />
                   </div>
-                </div>
-                <DropdownMenuSeparator />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                  <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">
+                    Dashboard
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                  <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">
+                    Perfil
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                  <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">
+                    Plano
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                  <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">
+                    Ajuda
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sair</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button size="sm" asChild>
+                  Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+              size="sm" 
+              variant="ghost"
+              className="hidden md:flex text-primary-foreground hover:bg-primary-foreground/10"
+                asChild
+              >
               <a href={`${APP_URL}/login`}>Entrar</a>
-            </Button>
-          )}
+              </Button>
+            )}
 
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
-            onClick={toggleMobileMenu}
-          >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          {/* Theme Toggle */}
+          <ModeToggle />
+
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon"
+                className="md:hidden text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Abrir menu</span>
           </Button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t bg-background">
-          <div className="container py-4 space-y-4">
-            <Link 
-              to="/campeonato" 
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Trophy className="h-5 w-5 text-primary-500" />
-              <span className="font-medium">Campeonato</span>
-            </Link>
-            
-            {/* Mobile pilot search */}
-            <div className="space-y-3">
-              <div className="text-sm font-medium px-3">Buscar pilotos</div>
-              <SearchInput
-                placeholder="Digite o nome, número ou categoria..."
-                value={pilotSearchQuery}
-                onChange={handlePilotSearchChange}
-                clearable={!!pilotSearchQuery}
-                onClear={clearPilotSearch}
-                variant="muted"
-                inputSize="default"
-                className="rounded-lg"
-              />
-              
-              {pilotSearchQuery && (
-                <div className="text-xs text-muted-foreground px-3">
-                  {filteredPilots.length} {filteredPilots.length === 1 ? 'piloto encontrado' : 'pilotos encontrados'}
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                {pilotSearchQuery ? (
-                  filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                    <div className="py-4 text-center">
-                      <p className="font-medium text-sm">Nenhum piloto encontrado</p>
-                      <p className="text-xs text-muted-foreground mt-1">Tente outro termo</p>
-                    </div>
-                  ) : (
-                    filteredPilots.map((pilot) => (
-                      <Card 
-                        key={pilot.id}
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200"
-                        onClick={() => handlePilotSelect(pilot)}
-                      >
-                        <CardContent className="p-3 flex items-start space-x-3">
-                          <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
-                              {getInitials(pilot.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm">{pilot.name}</div>
-                            <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                              <span className="mr-2">#{pilot.number}</span>
-                              <span>{pilot.category}</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )
-                ) : (
-                  <div className="py-4 text-center text-sm text-muted-foreground">
-                    Digite pelo menos 2 caracteres para buscar pilotos
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 mt-6">
+                {user && (
+                  <div className="flex items-center gap-2 p-2">
+                  <Avatar>
+                      <AvatarFallback className="text-foreground">
+                        {user?.name ? user.name.split(' ').filter(Boolean).map((n: string) => n[0]).join('').toUpperCase().slice(0,2) : (user?.email ? user.email[0].toUpperCase() : 'U')}
+                      </AvatarFallback>
+                  </Avatar>
+                    <span className="text-sm font-medium">{user?.name}</span>
                   </div>
                 )}
-              </div>
+                <nav className="flex flex-col gap-2">
+                  <Link
+                    to="/"
+                    className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Início
+                  </Link>
+                  <Link
+                    to="/campeonato"
+                    className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Campeonato
+                    </Link>
+                  
+                  {/* Mobile pilot search */}
+                  <div className="space-y-3 mt-4">
+                    <div className="text-sm font-medium px-2">Buscar pilotos</div>
+            <SearchInput
+              placeholder="Digite o nome, número ou categoria..."
+              value={pilotSearchQuery}
+              onChange={handlePilotSearchChange}
+              clearable={!!pilotSearchQuery}
+              onClear={clearPilotSearch}
+              variant="muted"
+              inputSize="default"
+                      className="rounded-lg"
+                    />
+                    
+                    {pilotSearchQuery && (
+                      <div className="text-xs text-muted-foreground px-2">
+                        {filteredPilots.length} {filteredPilots.length === 1 ? 'piloto encontrado' : 'pilotos encontrados'}
+                      </div>
+                    )}
+                    
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+              {pilotSearchQuery ? (
+                filteredPilots.length === 0 && showPilotEmptyMessage ? (
+                          <div className="py-4 text-center text-sm text-muted-foreground">
+                            Nenhum piloto encontrado
+                    </div>
+                        ) : (
+                  filteredPilots.map((pilot) => (
+                    <Card 
+                      key={pilot.id}
+                              className="cursor-pointer hover:bg-muted/50 transition-colors duration-200"
+                      onClick={() => handlePilotSelect(pilot)}
+                    >
+                      <CardContent className="p-3 flex items-start space-x-3">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
+                                    {getInitials(pilot.name)}
+                                  </AvatarFallback>
+                                </Avatar>
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{pilot.name}</div>
+                          <div className="flex items-center mt-1 text-xs text-muted-foreground">
+                                    <span className="mr-2">#{pilot.number}</span>
+                                    <span>{pilot.category}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                        )
+                      ) : (
+                        <div className="py-4 text-center text-sm text-muted-foreground">
+                          Digite pelo menos 2 caracteres para buscar pilotos
+                </div>
+              )}
             </div>
           </div>
+          
+                  {user && (
+                    <>
+                      <div className="h-px bg-border my-2" />
+                      <a
+                        href={`${APP_URL}/dashboard`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Dashboard
+                      </a>
+                      <a
+                        href={`${APP_URL}/perfil`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Perfil
+                      </a>
+                      <a
+                        href={`${APP_URL}/plano`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Plano
+                      </a>
+                      <a
+                        href={`${APP_URL}/ajuda`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Ajuda
+                      </a>
+                      <div className="h-px bg-border my-2" />
+                      <button
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors text-destructive text-left"
+                        onClick={() => { setIsOpen(false); handleLogout(); }}
+                        type="button"
+                      >
+                        Sair
+                      </button>
+                    </>
+                  )}
+                  
+                  {!user && (
+                    <>
+                      <div className="h-px bg-border my-2" />
+                      <a
+                        href={`${APP_URL}/login`}
+                        className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Entrar
+                      </a>
+                    </>
+                  )}
+                </nav>
+                  </div>
+            </SheetContent>
+          </Sheet>
         </div>
-      )}
-    </nav>
+      </div>
+    </header>
   )
 } 

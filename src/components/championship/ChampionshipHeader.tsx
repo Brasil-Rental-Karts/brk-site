@@ -1,5 +1,5 @@
 import { Button } from "brk-design-system";
-import { motion } from "framer-motion";
+import { Avatar, AvatarFallback } from "brk-design-system";
 
 interface ChampionshipHeaderProps {
   championship: {
@@ -18,109 +18,75 @@ interface ChampionshipHeaderProps {
 
 /**
  * Header da página do campeonato
- * Exibe a imagem de destaque, nome, descrição e estatísticas
+ * Subheader simples com avatar, nome e botão de ação
  */
 export const ChampionshipHeader = ({ championship }: ChampionshipHeaderProps) => {
+  // Gerar iniciais do nome do campeonato para o avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
-    <div className="relative bg-dark-900 text-white w-full overflow-hidden">
-      {/* Hero Section com imagem e informações */}
-      <div className="relative h-[600px] flex items-center">
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0">
-          <img 
-            src="/championship-hero-image.jpg" 
-            alt="Escola da Velocidade"
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              // Fallback para cor sólida se a imagem não carregar
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-          />
-          {/* Overlay escuro para legibilidade */}
-          <div className="absolute inset-0 bg-black/50"></div>
+    <div className="bg-dark-900 text-white w-full">
+      <div className="w-full px-6 py-4">
+        {/* Layout Desktop */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Avatar e nome */}
+          <div className="flex items-center gap-4">
+            <Avatar className="h-12 w-12 border-2 border-white/20">
+              <AvatarFallback className="text-sm font-bold text-black bg-white">
+                {getInitials(championship.name)}
+              </AvatarFallback>
+            </Avatar>
+            
+            <h1 className="text-2xl font-bold">
+              {championship.name}
+            </h1>
+          </div>
+
+          {/* Ações */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent"
+            >
+              Fazer Inscrição
+            </Button>
+          </div>
         </div>
 
-        {/* Conteúdo principal */}
-        <div className="relative z-10 container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center h-full">
-          {/* Lado esquerdo - Imagem do evento */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="hidden md:flex justify-center"
-          >
-            <div className="w-full max-w-md">
-              <img 
-                src="/escola-velocidade-main.jpg"
-                alt="Pilotos da Escola da Velocidade"
-                className="w-full h-auto rounded-lg shadow-2xl"
-                onError={(e) => {
-                  // Placeholder se imagem não carregar
-                  (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3EEscola da Velocidade%3C/text%3E%3C/svg%3E";
-                }}
-              />
-            </div>
-          </motion.div>
-
-          {/* Lado direito - Informações */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-6"
-          >
-            {/* Badge "Sobre a Escola da Velocidade" */}
-            <div className="inline-block">
-              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium border border-primary/30">
-                SOBRE A ESCOLA DA VELOCIDADE
-              </span>
-            </div>
-
-            {/* Título */}
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              {championship.description}
+        {/* Layout Mobile */}
+        <div className="md:hidden space-y-4">
+          {/* Linha 1: Avatar e nome */}
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 border-2 border-white/20">
+              <AvatarFallback className="text-xs font-bold text-black bg-white">
+                {getInitials(championship.name)}
+              </AvatarFallback>
+            </Avatar>
+            
+            <h1 className="text-lg font-bold flex-1 min-w-0">
+              <span className="truncate block">{championship.name}</span>
             </h1>
+          </div>
 
-            {/* Descrição */}
-            <p className="text-lg text-white/80 leading-relaxed">
-              {championship.longDescription}
-            </p>
-
-            {/* Estatísticas */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4">
-              {championship.stats.map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 + (index * 0.1) }}
-                  className="text-center"
-                >
-                  <div className="text-2xl md:text-3xl font-bold text-primary mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs md:text-sm text-white/70 font-medium tracking-wider">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Botão CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              className="pt-4"
+          {/* Linha 2: Botão */}
+          <div className="flex items-center gap-2 w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent text-xs"
             >
-              <Button 
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full"
-              >
-                Fazer Inscrição
-              </Button>
-            </motion.div>
-          </motion.div>
+              Fazer Inscrição
+            </Button>
+          </div>
         </div>
       </div>
     </div>

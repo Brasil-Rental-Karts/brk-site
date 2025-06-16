@@ -1,13 +1,7 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "brk-design-system";
 import { ChampionshipHeader } from "@/components/championship/ChampionshipHeader";
 import { HomeTab } from "@/components/championship/tabs/HomeTab";
-import { CalendarioTab } from "@/components/championship/tabs/CalendarioTab";
-import { ClassificacaoTab } from "@/components/championship/tabs/ClassificacaoTab";
-import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
-import { FotosTab } from "@/components/championship/tabs/FotosTab";
-// import { useClub } from "@/contexts/ClubContext";
 
 /**
  * Página principal do campeonato (Escola da Velocidade)
@@ -16,7 +10,6 @@ import { FotosTab } from "@/components/championship/tabs/FotosTab";
  */
 export const Championship = () => {
   const [activeTab, setActiveTab] = useState("home");
-  // const { selectedClub } = useClub();
 
   // Dados mockados do campeonato baseados na imagem fornecida
   const championship = {
@@ -97,21 +90,16 @@ export const Championship = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header do campeonato */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
-      >
+      {/* Header do campeonato - colado com as tabs */}
+      <div className="-mx-6 -mt-8">
         <ChampionshipHeader championship={championship} />
-      </motion.div>
+      </div>
 
-      {/* Sistema de tabs unificado */}
+      {/* Sistema de tabs unificado - colado com o header */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-        {/* Seção das tabs com fundo escuro */}
-        <div className="bg-dark-900 border-b border-white/10 w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-          <div className="container mx-auto px-4">
+        {/* Seção das tabs com fundo escuro - sem espaçamento do header */}
+        <div className="bg-dark-900 border-b border-white/10 -mx-6">
+          <div className="px-6">
             <TabsList className="bg-transparent border-0 h-auto p-0 space-x-0">
               <TabsTrigger 
                 value="home" 
@@ -147,26 +135,38 @@ export const Championship = () => {
           </div>
         </div>
 
-        {/* Conteúdo das tabs com espaçamento fixo */}
-        <div className="container mx-auto px-4 pt-6">
+        {/* Conteúdo das tabs */}
+        <div className="px-6 pt-6">
           <TabsContent value="home" className="mt-0 ring-0 focus-visible:outline-none">
             <HomeTab championship={championship} />
           </TabsContent>
 
           <TabsContent value="calendario" className="mt-0 ring-0 focus-visible:outline-none">
-            <CalendarioTab championship={championship} />
+            <div className="p-8 text-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-2">Calendário</h3>
+              <p>Conteúdo do calendário em desenvolvimento...</p>
+            </div>
           </TabsContent>
 
           <TabsContent value="classificacao" className="mt-0 ring-0 focus-visible:outline-none">
-            <ClassificacaoTab championship={championship} />
+            <div className="p-8 text-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-2">Classificação</h3>
+              <p>Conteúdo da classificação em desenvolvimento...</p>
+            </div>
           </TabsContent>
 
           <TabsContent value="regulamento" className="mt-0 ring-0 focus-visible:outline-none">
-            <RegulamentoTab championship={championship} />
+            <div className="p-8 text-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-2">Regulamento</h3>
+              <p>Conteúdo do regulamento em desenvolvimento...</p>
+            </div>
           </TabsContent>
 
           <TabsContent value="fotos" className="mt-0 ring-0 focus-visible:outline-none">
-            <FotosTab championship={championship} />
+            <div className="p-8 text-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-2">Fotos</h3>
+              <p>Galeria de fotos em desenvolvimento...</p>
+            </div>
           </TabsContent>
         </div>
       </Tabs>
