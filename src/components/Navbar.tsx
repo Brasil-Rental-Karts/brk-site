@@ -317,12 +317,12 @@ export function Navbar() {
                           className="text-xs text-primary-500"
                           asChild
                         >
-                          <Link to="/clubes" onClick={() => {
+                          <Link to="/campeonato" onClick={() => {
                             setDropdownOpen(false);
                             setMobileMenuOpen(false);
                           }}>
-                            <Users className="h-3 w-3 mr-1" />
-                            Ver todos os clubes
+                            <Trophy className="h-3 w-3 mr-1" />
+                            Ver Campeonato
                           </Link>
                         </Button>
                       </div>
@@ -624,11 +624,11 @@ export function Navbar() {
                       className="mt-2"
                       asChild
                     >
-                      <Link to="/clubes" onClick={() => {
+                      <Link to="/campeonato" onClick={() => {
                         setDropdownOpen(false);
                         setMobileMenuOpen(false);
                       }}>
-                        Ver todos os clubes
+                        Ver Campeonato
                       </Link>
                     </Button>
                   </div>
@@ -686,12 +686,12 @@ export function Navbar() {
                     className="w-full mt-3"
                     asChild
                   >
-                    <Link to="/clubes" onClick={() => {
+                    <Link to="/campeonato" onClick={() => {
                       setDropdownOpen(false);
                       setMobileMenuOpen(false);
                     }}>
-                      <Users className="h-4 w-4 mr-2" />
-                      Ver todos os clubes
+                      <Trophy className="h-4 w-4 mr-2" />
+                      Ver Campeonato
                     </Link>
                   </Button>
                 </div>

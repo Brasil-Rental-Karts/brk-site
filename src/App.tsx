@@ -1,8 +1,8 @@
-import { PreLaunch } from "@/pages/PreLaunch"
+import { Home } from "@/pages/Home"
 import { About } from "@/pages/About"
 import { Club } from "@/pages/Club"
 import { Pilot } from "@/pages/Pilot"
-import { Clubs } from "@/pages/Clubs"
+import { Championship } from "@/pages/Championship"
 import { MainLayout } from "@/components/MainLayout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
@@ -37,10 +37,10 @@ function AppContent() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        <Route path="/" element={<PreLaunch />} />
+        <Route path="/" element={<ClubProvider><MainLayout><Home /></MainLayout></ClubProvider>} />
         <Route path="/privacidade" element={<Privacy />} />
         <Route path="/about" element={<ClubProvider><MainLayout><About /></MainLayout></ClubProvider>} />
-        <Route path="/clubes" element={<ClubProvider><MainLayout><Clubs /></MainLayout></ClubProvider>} />
+        <Route path="/campeonato" element={<ClubProvider><MainLayout><Championship /></MainLayout></ClubProvider>} />
         <Route path="/clube/:alias" element={<ClubProvider><MainLayout><Club /></MainLayout></ClubProvider>} />
         <Route path="/clube/:alias/calendario" element={<ClubProvider><MainLayout><ClubCalendario /></MainLayout></ClubProvider>} />
         <Route path="/clube/:alias/classificacao" element={<ClubProvider><MainLayout><ClubClassificacao /></MainLayout></ClubProvider>} />

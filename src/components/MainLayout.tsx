@@ -14,8 +14,9 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { clearClub } = useClub()
   const prevPathRef = useRef(location.pathname)
   
-  // Verificar se está na página de piloto
+  // Verificar se está na página de piloto ou campeonato
   const isPilotPage = location.pathname.startsWith('/pilotos/')
+  const isChampionshipPage = location.pathname === '/campeonato'
 
   useEffect(() => {
     // Only clear if we're navigating TO home FROM another page
@@ -28,7 +29,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      {!isPilotPage && <SubHeader />}
+      {!isPilotPage && !isChampionshipPage && <SubHeader />}
       <main className="flex-1 container">
         <div className="max-w-[1920px] w-full mx-auto">
           {children}
