@@ -8,8 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "brk-design-system"
-import { ChevronDown, Flag, Menu, X, Trophy, Info, Users, MapPin, User, LogOut } from "lucide-react"
-import { useClub } from "@/contexts/ClubContext"
+import { ChevronDown, Menu, X, Trophy, Info, User, LogOut } from "lucide-react"
 import { useState, useRef, useEffect, ChangeEvent } from "react"
 import { SearchInput } from "./ui/input"
 import { Card, CardContent } from "brk-design-system"
@@ -23,12 +22,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 export function Navbar() {
   const navigate = useNavigate()
-  const { selectClub, selectedClub, allClubs } = useClub()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-  const [showEmptyMessage, setShowEmptyMessage] = useState(false)
   
   // Estados para a pesquisa de pilotos
   const [pilotSearchQuery, setPilotSearchQuery] = useState("")
@@ -62,13 +56,6 @@ export function Navbar() {
         setPilots([]);
       })
   }, [])
-
-  const handleClubSelect = (club: any) => {
-    selectClub(club)
-    setMobileMenuOpen(false)
-    setDropdownOpen(false)
-    setSearchQuery("")
-  }
   
   const handlePilotSelect = (pilot: typeof pilots[0]) => {
     setPilotDropdownOpen(false)
@@ -81,23 +68,6 @@ export function Navbar() {
     e.preventDefault()
     e.stopPropagation()
     setMobileMenuOpen(!mobileMenuOpen)
-  }
-
-  // Handle search input change
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-    // Reset empty message timer on each input change
-    setShowEmptyMessage(false)
-    if (e.target.value && filteredClubs.length === 0) {
-      // Show empty message after slight delay
-      setTimeout(() => setShowEmptyMessage(true), 300)
-    }
-  }
-
-  // Clear search input
-  const clearSearch = () => {
-    setSearchQuery("")
-    setShowEmptyMessage(false)
   }
   
   // Handle pilot search input change
@@ -116,13 +86,6 @@ export function Navbar() {
     setPilotSearchQuery("")
     setShowPilotEmptyMessage(false)
   }
-
-  // Filter clubs based on search query
-  const filteredClubs = allClubs.filter((club: any) => 
-    club.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    club.location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    club.location.state.toLowerCase().includes(searchQuery.toLowerCase())
-  )
   
   // Filter pilots based on search query
   const filteredPilots = pilotSearchQuery.length >= 2 
@@ -135,18 +98,6 @@ export function Navbar() {
         )
         .slice(0, 5)
     : []
-
-  // Suggested clubs to make the interface more helpful
-  const suggestedClubs = searchQuery.length === 0 ? allClubs.slice(0, 5) : []
-
-  // Focus search input when dropdown opens
-  useEffect(() => {
-    if (dropdownOpen && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus()
-      }, 100)
-    }
-  }, [dropdownOpen])
   
   // Focus pilot search input when dropdown opens
   useEffect(() => {
@@ -197,140 +148,17 @@ export function Navbar() {
             <img src="/logo-brk.svg" alt="BRK Logo" className="h-6 w-auto" />
           </Link>
 
-          {/* Desktop club dropdown */}
+          {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  className="flex items-center gap-2 text-muted-foreground hover:text-primary-500 transition-all duration-200 ease-in-out"
-                >
-                  <Flag className="h-4 w-4" />
-                  {selectedClub ? (
-                    <span className="flex items-center">
-                      {selectedClub.name}
-                      <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200" 
-                        style={{ transform: dropdownOpen ? 'rotate(-180deg)' : 'rotate(0)' }}
-                      />
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      Descubra um Clube
-                      <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200" 
-                        style={{ transform: dropdownOpen ? 'rotate(-180deg)' : 'rotate(0)' }}
-                      />
-                    </span>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              
-              <DropdownMenuContent align="end" className="w-[350px] p-4">
-                <div className="sticky top-0 bg-background pt-1 space-y-3">
-                  <div className="text-sm font-medium">Encontre o melhor clube para você</div>
-                  <SearchInput
-                    ref={searchInputRef}
-                    placeholder="Digite o nome do clube ou cidade..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    clearable={!!searchQuery}
-                    onClear={clearSearch}
-                    variant="muted"
-                    inputSize="default"
-                    className="rounded-lg transition-all focus-visible:ring-primary-500/20 focus-visible:border-primary-500/50"
-                  />
-                  {searchQuery && (
-                    <div className="text-xs text-muted-foreground">
-                      {filteredClubs.length} {filteredClubs.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="max-h-[50vh] overflow-y-auto mt-3 pr-1">
-                  {searchQuery ? (
-                    filteredClubs.length === 0 && showEmptyMessage ? (
-                      <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
-                        <Info className="h-10 w-10 text-muted-foreground/50" />
-                        <div>
-                          <p className="font-medium">Nenhum clube encontrado</p>
-                          <p className="text-sm text-muted-foreground mt-1">Tente outro termo ou explore os clubes disponíveis</p>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="mt-2"
-                          onClick={clearSearch}
-                        >
-                          Ver todos os clubes
-                        </Button>
-                      </div>
-                    ) : (
-                      filteredClubs.map((club) => (
-                        <Card 
-                          key={club.id}
-                          className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
-                          onClick={() => handleClubSelect(club)}
-                        >
-                          <CardContent className="p-3 flex items-start space-x-3">
-                            <div className="bg-primary-500/10 rounded-lg p-2 text-primary-500">
-                              <Trophy className="h-5 w-5" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-sm">{club.name}</div>
-                              <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                {club.location.city}, {club.location.state}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
-                    )
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="text-xs uppercase font-medium text-muted-foreground tracking-wider mt-2">
-                        Clubes em destaque
-                      </div>
-                      {suggestedClubs.map((club) => (
-                        <Card 
-                          key={club.id}
-                          className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
-                          onClick={() => handleClubSelect(club)}
-                        >
-                          <CardContent className="p-3 flex items-start space-x-3">
-                            <div className="bg-primary-500/10 rounded-lg p-2 text-primary-500">
-                              <Trophy className="h-5 w-5" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-sm">{club.name}</div>
-                              <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                {club.location.city}, {club.location.state}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                      <div className="pt-2 pb-1 text-center">
-                        <Button 
-                          variant="link" 
-                          size="sm" 
-                          className="text-xs text-primary-500"
-                          asChild
-                        >
-                          <Link to="/campeonato" onClick={() => {
-                            setDropdownOpen(false);
-                            setMobileMenuOpen(false);
-                          }}>
-                            <Trophy className="h-3 w-3 mr-1" />
-                            Ver Campeonato
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link to="/campeonato">
+              <Button 
+                variant="ghost" 
+                className="flex items-center gap-2 text-muted-foreground hover:text-primary-500 transition-all duration-200 ease-in-out"
+              >
+                <Trophy className="h-4 w-4" />
+                Campeonato
+              </Button>
+            </Link>
             
             {/* Desktop pilots dropdown */}
             <DropdownMenu open={pilotDropdownOpen} onOpenChange={setPilotDropdownOpen}>
@@ -388,13 +216,7 @@ export function Navbar() {
                           Ver todos os pilotos
                         </Button>
                       </div>
-                    ) : pilotSearchQuery.length === 1 ? (
-                      <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                        <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                        <p className="font-medium text-sm text-foreground mb-1">Continue digitando...</p>
-                        <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
-                      </div>
-                    ) : filteredPilots.length > 0 ? (
+                    ) : (
                       filteredPilots.map((pilot) => (
                         <Card 
                           key={pilot.id}
@@ -402,41 +224,25 @@ export function Navbar() {
                           onClick={() => handlePilotSelect(pilot)}
                         >
                           <CardContent className="p-3 flex items-start space-x-3">
-                            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-500/30 flex items-center justify-center bg-muted text-primary-500">
-                              {pilot.avatar_url ? (
-                                <img 
-                                  src={pilot.avatar_url} 
-                                  alt={pilot.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <span className="text-sm font-bold">{getInitials(pilot.name)}</span>
-                              )}
-                            </div>
+                            <Avatar className="h-10 w-10">
+                              <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
+                                {getInitials(pilot.name)}
+                              </AvatarFallback>
+                            </Avatar>
                             <div className="flex-1">
                               <div className="font-medium text-sm">{pilot.name}</div>
                               <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                <span className="bg-primary-500/10 text-primary-500 px-1 py-0.5 rounded text-xs mr-2">
-                                  #{pilot.number}
-                                </span>
-                                {pilot.category}
+                                <span className="mr-2">#{pilot.number}</span>
+                                <span>{pilot.category}</span>
                               </div>
                             </div>
                           </CardContent>
                         </Card>
                       ))
-                    ) : (
-                      <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                        <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                        <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
-                        <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
-                      </div>
                     )
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                      <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                      <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
-                      <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                    <div className="py-6 text-center text-sm text-muted-foreground">
+                      Digite pelo menos 2 caracteres para buscar pilotos
                     </div>
                   )}
                 </div>
@@ -444,369 +250,132 @@ export function Navbar() {
             </DropdownMenu>
           </div>
         </div>
-        
-        {/* Desktop buttons */}
-        <div className="hidden md:flex items-center gap-4">
-          <div className="flex gap-2">
-            {authLoading ? null : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="focus:outline-none flex">
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      {user.avatar_url ? (
-                        <img
-                          src={user.avatar_url}
-                          alt={user.name || user.email}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <AvatarFallback className="text-foreground">
-                          {getInitials(user.name || user.email)}
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
-                    <span className="text-sm font-medium">{user.name}</span>
-                    <ChevronDown className="h-4 w-4 transition duration-300 group-data-[state=open]:rotate-180" aria-hidden="true" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
-                    <LogOut className="h-4 w-4" />
-                    <span>Sair</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                className="bg-primary-500 text-white hover:bg-primary-600"
-                asChild
-              >
-                <a href={APP_URL} target="_self">
-                  Acessar
-                </a>
-              </Button>
-            )}
-          </div>
-          <ModeToggle />
-        </div>
 
-        {/* Mobile menu button */}
-        <div className="flex items-center md:hidden z-30">
+        <div className="flex items-center gap-2">
           <ModeToggle />
-          <Button 
-            variant="ghost" 
-            size="icon"
-            type="button" 
+          
+          {/* Auth section */}
+          {authLoading ? (
+            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+          ) : user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary-500/10 text-primary-500 text-xs">
+                      {getInitials(user.name || user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    {user.name && <p className="font-medium">{user.name}</p>}
+                    <p className="w-[200px] truncate text-sm text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sair</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button size="sm" asChild>
+              <a href={`${APP_URL}/login`}>Entrar</a>
+            </Button>
+          )}
+
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
             onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
-            className="ml-2 relative"
           >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </Button>
         </div>
       </div>
 
-      {/* Mobile menu overlay to prevent clicks underneath */}
-      {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-10 md:hidden"
-          onClick={toggleMobileMenu}
-        />
-      )}
-
       {/* Mobile menu */}
-      <div 
-        className={`fixed inset-y-0 right-0 w-full max-w-xs bg-background border-l shadow-xl z-20 transform transition-all duration-300 ease-in-out md:hidden ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="h-16 border-b flex items-center justify-between px-4">
-          <h2 className="font-medium flex items-center">
-            <Flag className="h-4 w-4 mr-2 text-primary-500" />
-            Menu
-          </h2>
-        </div>
-        
-        <div className="p-4 space-y-6 overflow-y-auto h-[calc(100vh-4rem)]">
-        <div className="pt-3 border-t space-y-3">
-            <h3 className="text-sm font-medium flex items-center">
-              <Users className="h-4 w-4 mr-2 text-primary-500" />
-              Sua conta
-            </h3>
-            <div className="grid grid-cols-1 gap-2">
-              {!user ? (
-                <Button
-                  className="w-full bg-primary-500 text-white hover:bg-primary-600"
-                  asChild
-                >
-                  <a href={APP_URL} target="_self">
-                    Acessar
-                  </a>
-                </Button>
-              ) : (
-                <div className="flex flex-col items-center gap-2 py-2">
-                  <Avatar>
-                    {user.avatar_url ? (
-                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <AvatarFallback className="text-foreground">
-                        {getInitials(user.name || user.email)}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                  <span className="text-sm font-medium">{user.name}</span>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/dashboard`} target="_blank" rel="noopener noreferrer">Dashboard</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/perfil`} target="_blank" rel="noopener noreferrer">Perfil</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/plano`} target="_blank" rel="noopener noreferrer">Plano</a>
-                  </Button>
-                  <Button asChild variant="ghost" className="w-full justify-start">
-                    <a href={`${APP_URL}/ajuda`} target="_blank" rel="noopener noreferrer">Ajuda</a>
-                  </Button>
-                  <Button onClick={handleLogout} variant="destructive" className="w-full justify-start">
-                    Sair
-                  </Button>
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t bg-background">
+          <div className="container py-4 space-y-4">
+            <Link 
+              to="/campeonato" 
+              className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Trophy className="h-5 w-5 text-primary-500" />
+              <span className="font-medium">Campeonato</span>
+            </Link>
+            
+            {/* Mobile pilot search */}
+            <div className="space-y-3">
+              <div className="text-sm font-medium px-3">Buscar pilotos</div>
+              <SearchInput
+                placeholder="Digite o nome, número ou categoria..."
+                value={pilotSearchQuery}
+                onChange={handlePilotSearchChange}
+                clearable={!!pilotSearchQuery}
+                onClear={clearPilotSearch}
+                variant="muted"
+                inputSize="default"
+                className="rounded-lg"
+              />
+              
+              {pilotSearchQuery && (
+                <div className="text-xs text-muted-foreground px-3">
+                  {filteredPilots.length} {filteredPilots.length === 1 ? 'piloto encontrado' : 'pilotos encontrados'}
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Clube search */}
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium flex items-center">
-              <Trophy className="h-4 w-4 mr-2 text-primary-500" />
-              Encontre seu clube
-            </h3>
-            
-            <SearchInput
-              placeholder="Digite o nome do clube ou cidade..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              clearable={!!searchQuery}
-              onClear={clearSearch}
-              variant="muted"
-              inputSize="default"
-            />
-            
-            <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-              {searchQuery ? (
-                filteredClubs.length === 0 && showEmptyMessage ? (
-                  <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
-                    <Info className="h-8 w-8 text-muted-foreground/50" />
-                    <div>
-                      <p className="font-medium text-sm">Nenhum clube encontrado</p>
-                      <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou explore os clubes disponíveis</p>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-2"
-                      asChild
-                    >
-                      <Link to="/campeonato" onClick={() => {
-                        setDropdownOpen(false);
-                        setMobileMenuOpen(false);
-                      }}>
-                        Ver Campeonato
-                      </Link>
-                    </Button>
-                  </div>
-                ) : (
-                  filteredClubs.map((club) => (
-                    <Card 
-                      key={club.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80"
-                      onClick={() => handleClubSelect(club)}
-                    >
-                      <CardContent className="p-3 flex items-start space-x-3">
-                        <div className="bg-primary-500/10 rounded-lg p-2 text-primary-500">
-                          <Trophy className="h-5 w-5" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{club.name}</div>
-                          <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {club.location.city}, {club.location.state}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )
-              ) : (
-                <div className="space-y-3">
-                  <div className="text-xs uppercase font-medium text-muted-foreground tracking-wider mt-2">
-                    Clubes em destaque
-                  </div>
-                  {suggestedClubs.map((club) => (
-                    <Card 
-                      key={club.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80"
-                      onClick={() => handleClubSelect(club)}
-                    >
-                      <CardContent className="p-3 flex items-start space-x-3">
-                        <div className="bg-primary-500/10 rounded-lg p-2 text-primary-500">
-                          <Trophy className="h-5 w-5" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{club.name}</div>
-                          <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {club.location.city}, {club.location.state}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full mt-3"
-                    asChild
-                  >
-                    <Link to="/campeonato" onClick={() => {
-                      setDropdownOpen(false);
-                      setMobileMenuOpen(false);
-                    }}>
-                      <Trophy className="h-4 w-4 mr-2" />
-                      Ver Campeonato
-                    </Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Pilots search */}
-          <div className="space-y-3 mt-6 pt-6 border-t">
-            <h3 className="text-sm font-medium flex items-center">
-              <User className="h-4 w-4 mr-2 text-primary-500" />
-              Buscar pilotos
-            </h3>
-            
-            <SearchInput
-              placeholder="Digite o nome, número ou categoria..."
-              value={pilotSearchQuery}
-              onChange={handlePilotSearchChange}
-              clearable={!!pilotSearchQuery}
-              onClear={clearPilotSearch}
-              variant="muted"
-              inputSize="default"
-            />
-            
-            <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-              {pilotSearchQuery ? (
-                filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                  <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
-                    <Info className="h-8 w-8 text-muted-foreground/50" />
-                    <div>
+              
+              <div className="space-y-2">
+                {pilotSearchQuery ? (
+                  filteredPilots.length === 0 && showPilotEmptyMessage ? (
+                    <div className="py-4 text-center">
                       <p className="font-medium text-sm">Nenhum piloto encontrado</p>
-                      <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou explore os pilotos disponíveis</p>
+                      <p className="text-xs text-muted-foreground mt-1">Tente outro termo</p>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-2"
-                      onClick={clearPilotSearch}
-                    >
-                      Ver todos os pilotos
-                    </Button>
-                  </div>
-                ) : pilotSearchQuery.length === 1 ? (
-                  <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                    <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                    <p className="font-medium text-sm text-foreground mb-1">Continue digitando...</p>
-                    <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
-                  </div>
-                ) : filteredPilots.length > 0 ? (
-                  filteredPilots.map((pilot) => (
-                    <Card 
-                      key={pilot.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80 mb-2"
-                      onClick={() => handlePilotSelect(pilot)}
-                    >
-                      <CardContent className="p-3 flex items-start space-x-3">
-                        <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-500/30 flex items-center justify-center bg-muted text-primary-500">
-                          {pilot.avatar_url ? (
-                            <img 
-                              src={pilot.avatar_url} 
-                              alt={pilot.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-sm font-bold">{getInitials(pilot.name)}</span>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{pilot.name}</div>
-                          <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                            <span className="bg-primary-500/10 text-primary-500 px-1 py-0.5 rounded text-xs mr-2">
-                              #{pilot.number}
-                            </span>
-                            {pilot.category}
+                  ) : (
+                    filteredPilots.map((pilot) => (
+                      <Card 
+                        key={pilot.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200"
+                        onClick={() => handlePilotSelect(pilot)}
+                      >
+                        <CardContent className="p-3 flex items-start space-x-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
+                              {getInitials(pilot.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">{pilot.name}</div>
+                            <div className="flex items-center mt-1 text-xs text-muted-foreground">
+                              <span className="mr-2">#{pilot.number}</span>
+                              <span>{pilot.category}</span>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
+                        </CardContent>
+                      </Card>
+                    ))
+                  )
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                    <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                    <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
-                    <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
+                  <div className="py-4 text-center text-sm text-muted-foreground">
+                    Digite pelo menos 2 caracteres para buscar pilotos
                   </div>
-                )
-              ) : (
-                <div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground">
-                  <User className="h-8 w-8 mb-2 text-muted-foreground/50" />
-                  <p className="font-medium text-sm text-foreground mb-1">Digite para buscar pilotos</p>
-                  <p className="text-xs">A pesquisa começa a partir da segunda letra</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-          
-          {selectedClub && (
-            <div className="pt-3 border-t space-y-3">
-              <h3 className="text-sm font-medium flex items-center">
-                <Flag className="h-4 w-4 mr-2 text-primary-500" />
-                Clube atual
-              </h3>
-              <Card className="border-primary-500/30 bg-primary-500/5">
-                <CardContent className="p-3">
-                  <div className="font-medium">{selectedClub.name}</div>
-                  <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {selectedClub.location.city}, {selectedClub.location.state}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
         </div>
-      </div>
+      )}
     </nav>
   )
 } 

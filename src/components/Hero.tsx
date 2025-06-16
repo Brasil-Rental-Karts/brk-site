@@ -2,8 +2,6 @@ import { Button } from "brk-design-system"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 
-const APP_URL = import.meta.env.VITE_APP_URL
-
 export function Hero() {
   return (
     <section className="relative h-[600px] overflow-hidden">
@@ -23,7 +21,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-xl text-background/90 mb-8 max-w-2xl mx-auto"
         >
-          Conectando clubes amadores e profissionalizando a gestão de ligas e pilotos em todo o Brasil.
+          Profissionalizando a gestão de campeonatos e pilotos de kart em todo o Brasil.
         </motion.p>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -34,10 +32,11 @@ export function Hero() {
           <Button 
             size="lg" 
             className="rounded-full px-8 py-6 text-lg bg-background text-primary-500 hover:bg-background/90 transition-all duration-300 w-full sm:w-auto"
+            asChild
           >
-            <a href={APP_URL} target="_blank">
-              Junte-se à BRK
-            </a>
+            <Link to="/campeonato">
+              Ver Campeonato
+            </Link>
           </Button>
           <Button 
             size="lg"
