@@ -2,6 +2,7 @@ import { Home } from "@/pages/Home"
 import { About } from "@/pages/About"
 import { Pilot } from "@/pages/Pilot"
 import { Championship } from "@/pages/Championship"
+import { Championships } from "@/pages/Championships"
 import { MainLayout } from "@/components/MainLayout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
@@ -33,7 +34,8 @@ function AppContent() {
         <Route path="/" element={<MainLayout><Home /></MainLayout>} />
         <Route path="/privacidade" element={<Privacy />} />
         <Route path="/about" element={<MainLayout><About /></MainLayout>} />
-        <Route path="/campeonato" element={<MainLayout><Championship /></MainLayout>} />
+        <Route path="/campeonatos" element={<MainLayout><Championships /></MainLayout>} />
+        <Route path="/campeonato/:slug" element={<MainLayout><Championship /></MainLayout>} />
         <Route path="/pilotos/:pilotSlug" element={<MainLayout><Pilot /></MainLayout>} />
       </Routes>
     </AnimatePresence>

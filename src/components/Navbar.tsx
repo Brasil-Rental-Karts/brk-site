@@ -157,10 +157,10 @@ export function Navbar() {
                           </Link>
             
             <Link
-              to="/campeonato"
+              to="/campeonatos"
               className="inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
             >
-              Campeonato
+              Campeonatos
             </Link>
             
             {/* Desktop pilots dropdown */}
@@ -339,11 +339,11 @@ export function Navbar() {
                     Início
                   </Link>
                   <Link
-                    to="/campeonato"
+                    to="/campeonatos"
                     className="px-2 py-1 rounded-md hover:bg-accent/50 transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
-                    Campeonato
+                    Campeonatos
                     </Link>
                   
                   {/* Mobile pilot search */}
