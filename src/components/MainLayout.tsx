@@ -19,7 +19,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Navbar />
       
       {/* Main content */}
-      <main className="flex-1 w-full px-6 py-8">
+      <main className="flex-1 w-full">
         {children}
       </main>
 

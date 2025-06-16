@@ -1,172 +1,538 @@
-import { Hero } from "@/components/Hero"
-import { Features } from "@/components/Features"
 import { motion } from "framer-motion"
-import { Trophy, Calendar } from "lucide-react"
+import { Trophy, Calendar, Users, MapPin, ArrowRight, Star, Zap, Target } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "brk-design-system"
+import { Card, CardContent } from "brk-design-system"
+import { Badge } from "brk-design-system"
 
 export function Home() {
+  // Dados dos campeonatos em destaque
+  const featuredChampionships = [
+    {
+      id: "escola-da-velocidade",
+      slug: "escola-da-velocidade",
+      name: "Escola da Velocidade",
+      description: "Onde a paixão por kart ganha forma!",
+      location: "Kartódromo Beto Carrero",
+      pilots: 100,
+      status: "Inscrições Abertas",
+      image: "/escola-velocidade-card.jpg",
+      featured: true
+    },
+    {
+      id: "copa-sul-brasileira",
+      slug: "copa-sul-brasileira", 
+      name: "Copa Sul Brasileira",
+      description: "O maior campeonato da região Sul",
+      location: "Kartódromo Internacional",
+      pilots: 150,
+      status: "Em Andamento",
+      image: "/copa-sul-card.jpg",
+      featured: false
+    },
+    {
+      id: "desafio-das-estrelas",
+      slug: "desafio-das-estrelas",
+      name: "Desafio das Estrelas", 
+      description: "Para pilotos experientes",
+      location: "Autódromo de Interlagos",
+      pilots: 80,
+      status: "Programado",
+      image: "/desafio-estrelas-card.jpg",
+      featured: false
+    }
+  ];
+
+  // Próximos eventos
+  const upcomingEvents = [
+    {
+      date: "14",
+      month: "JUN",
+      day: "Sábado",
+      championship: "Escola da Velocidade",
+      stage: "Etapa JFK",
+      location: "Kartódromo Beto Carrero",
+      status: "Inscrição Aberta"
+    },
+    {
+      date: "21",
+      month: "JUN", 
+      day: "Sábado",
+      championship: "Copa Sul Brasileira",
+      stage: "Etapa Speed",
+      location: "Kartódromo Internacional",
+      status: "Programado"
+    },
+    {
+      date: "28",
+      month: "JUN",
+      day: "Sábado",
+      championship: "Desafio das Estrelas", 
+      stage: "Etapa Elite",
+      location: "Autódromo de Interlagos",
+      status: "Programado"
+    }
+  ];
+
   return (
-    <div className="space-y-16">
-      <Hero />
-      <Features />
-      
-      {/* Seção do Campeonato Principal */}
-      <section className="container py-12">
-        <div className="text-center mb-12">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl font-bold mb-3"
-          >
-            Escola da Velocidade
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-muted-foreground max-w-2xl mx-auto"
-          >
-            Onde a paixão por kart ganha forma! Participe do principal campeonato de kart amador do Brasil
-          </motion.p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary via-primary-600 to-primary-700 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
         </div>
-        
-        {/* Destaque do Campeonato */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 mb-12"
-        >
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Lado esquerdo - Informações */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Trophy className="h-6 w-6 text-primary" />
-                <span className="text-sm font-medium text-primary uppercase tracking-wider">
-                  Campeonato Oficial 2025
-                </span>
+
+        <div className="relative container py-20 md:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Lado esquerdo - Conteúdo principal */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <Badge className="bg-white/20 text-white border-white/30 mb-4">
+                    🏁 Plataforma Oficial de Campeonatos
+                  </Badge>
+                </motion.div>
+                
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="text-4xl md:text-6xl font-bold leading-tight"
+                >
+                  Brasil Rental
+                  <span className="block text-primary-200">Karts</span>
+                </motion.h1>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-xl md:text-2xl text-white/90 leading-relaxed"
+                >
+                  A plataforma que conecta pilotos, organiza campeonatos e 
+                  profissionaliza o kartismo brasileiro.
+                </motion.p>
               </div>
-              
-              <h3 className="text-2xl md:text-3xl font-bold">
-                Temporada 1 - 2025
-              </h3>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                Uma copa de kart que vem acelerando corações há 3 anos no lendário 
-                Kartódromo Beto Carrero, reunindo pilotos de todas as idades e níveis 
-                de experiência em disputas eletrizantes.
-              </p>
-              
-              {/* Estatísticas */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+              {/* Estatísticas rápidas */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="grid grid-cols-3 gap-6"
+              >
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">2021</div>
-                  <div className="text-xs text-muted-foreground">Fundação</div>
+                  <div className="text-3xl font-bold">6</div>
+                  <div className="text-sm text-white/70">Campeonatos</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">100</div>
-                  <div className="text-xs text-muted-foreground">Pilotos</div>
+                  <div className="text-3xl font-bold">500+</div>
+                  <div className="text-sm text-white/70">Pilotos</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">6</div>
-                  <div className="text-xs text-muted-foreground">Temporadas</div>
+                  <div className="text-3xl font-bold">25+</div>
+                  <div className="text-sm text-white/70">Etapas</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">4</div>
-                  <div className="text-xs text-muted-foreground">Categorias</div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="flex-1 sm:flex-none">
-                  <Link to="/campeonato">
-                    Ver Campeonato
+              </motion.div>
+
+              {/* CTAs */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <Button 
+                  size="lg" 
+                  className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
+                  asChild
+                >
+                  <Link to="/campeonatos">
+                    Ver Campeonatos
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="flex-1 sm:flex-none">
-                  <Link to="/campeonato?tab=calendario">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Ver Calendário
+                <Button 
+                  size="lg"
+                  variant="outline"
+                  className="border-white/50 text-white bg-transparent hover:bg-white/10 hover:border-white/70 hover:text-white"
+                  asChild
+                >
+                  <Link to="/about">
+                    Saiba Mais
                   </Link>
                 </Button>
+              </motion.div>
+            </motion.div>
+
+            {/* Lado direito - Visual/Imagem */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative">
+                <div className="aspect-square bg-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+                  <img 
+                    src="/hero-kart-image.jpg"
+                    alt="Kartismo Brasileiro"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3EBrasil Rental%3C/text%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3EKarts%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                
+                {/* Elementos flutuantes */}
+                <div className="absolute -top-4 -right-4 bg-white text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                  🏆 #1 Plataforma
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-primary-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                  ⚡ Inscrições Abertas
+                </div>
               </div>
-            </div>
-            
-            {/* Lado direito - Imagem/Visual */}
-            <div className="relative">
-              <div className="aspect-square bg-muted/30 rounded-xl overflow-hidden">
-                <img 
-                  src="/escola-velocidade-hero.jpg"
-                  alt="Escola da Velocidade"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23374151'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3EEscola da%3C/text%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3EVelocidade%3C/text%3E%3C/svg%3E";
-                  }}
-                />
-              </div>
-              
-              {/* Badge flutuante */}
-              <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-                Inscrições Abertas!
-              </div>
-            </div>
+            </motion.div>
           </div>
-        </motion.div>
-        
-        {/* Próximas Etapas */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center"
-        >
-          <h3 className="text-xl font-bold mb-6 flex items-center justify-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            Próximas Etapas
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {[
-              { date: "14", month: "JUN", day: "Sábado", stage: "Etapa JFK", status: "Inscrição Aberta" },
-              { date: "14", month: "JUL", day: "Sábado", stage: "Etapa JFK", status: "Programado" },
-              { date: "14", month: "AGO", day: "Sábado", stage: "Etapa JFK", status: "Programado" }
-            ].map((event, index) => (
-              <div key={index} className="bg-muted/30 rounded-lg p-4">
-                <div className="text-center mb-3">
-                  <div className="text-xl font-bold">{event.date}</div>
-                  <div className="text-sm text-muted-foreground uppercase">{event.month}</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="font-medium text-sm">{event.day}</div>
-                  <div className="font-bold">{event.stage}</div>
-                  <div className={`text-xs px-2 py-1 rounded-full ${
-                    event.status === "Inscrição Aberta" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-muted text-muted-foreground"
-                  }`}>
-                    {event.status}
+        </div>
+      </section>
+      
+      {/* Seção de Campeonatos em Destaque */}
+      <section className="py-20 bg-background">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Campeonatos em Destaque
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Descubra os principais campeonatos de kart do Brasil e encontre a competição perfeita para você
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Campeonato Principal - Card Grande */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="lg:col-span-2"
+            >
+              <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                <div className="relative h-64 lg:h-80">
+                  <img
+                    src={featuredChampionships[0].image}
+                    alt={featuredChampionships[0].name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Crect width='600' height='300' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3E" + featuredChampionships[0].name + "%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-primary text-white">
+                      {featuredChampionships[0].status}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-6 left-6 right-6 text-white">
+                    <h3 className="text-2xl lg:text-3xl font-bold mb-2">
+                      {featuredChampionships[0].name}
+                    </h3>
+                    <p className="text-white/90 mb-4">
+                      {featuredChampionships[0].description}
+                    </p>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {featuredChampionships[0].location}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {featuredChampionships[0].pilots} pilotos
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+                <CardContent className="p-6">
+                  <Button asChild className="w-full">
+                    <Link to={`/campeonato/${featuredChampionships[0].slug}`}>
+                      Ver Campeonato
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Campeonatos Secundários */}
+            <div className="space-y-6">
+              {featuredChampionships.slice(1).map((championship, index) => (
+                <motion.div
+                  key={championship.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 + (index * 0.1) }}
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <div className="relative h-32">
+                      <img
+                        src={championship.image}
+                        alt={championship.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect width='300' height='150' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='14' font-family='Arial'%3E" + championship.name + "%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute top-2 right-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {championship.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <h4 className="font-bold mb-1">{championship.name}</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {championship.description}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {championship.pilots}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {championship.location.split(' ')[0]}
+                        </span>
+                      </div>
+                      <Button asChild size="sm" variant="outline" className="w-full">
+                        <Link to={`/campeonato/${championship.slug}`}>
+                          Ver Detalhes
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Link para ver todos */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-12"
+          >
+            <Button asChild variant="outline" size="lg">
+              <Link to="/campeonatos">
+                Ver Todos os Campeonatos
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Seção de Próximos Eventos */}
+      <section className="py-20 bg-muted/30">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+              <Calendar className="h-8 w-8 text-primary" />
+              Próximos Eventos
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Não perca as próximas etapas dos campeonatos. Inscreva-se e participe!
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {upcomingEvents.map((event, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="hover:shadow-lg transition-all duration-300">
+                  <CardContent className="p-6">
+                    {/* Data */}
+                    <div className="text-center mb-4">
+                      <div className="bg-primary/10 rounded-lg p-4 inline-block">
+                        <div className="text-3xl font-bold text-primary">{event.date}</div>
+                        <div className="text-sm text-muted-foreground uppercase font-medium">
+                          {event.month}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Informações */}
+                    <div className="space-y-3 text-center">
+                      <div>
+                        <div className="font-bold text-lg">{event.stage}</div>
+                        <div className="text-sm text-muted-foreground">{event.day}</div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="font-medium text-primary">{event.championship}</div>
+                        <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {event.location}
+                        </div>
+                      </div>
+
+                      <Badge 
+                        className={`${
+                          event.status === "Inscrição Aberta" 
+                            ? "bg-primary text-white" 
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {event.status}
+                      </Badge>
+                    </div>
+
+                    {/* Ação */}
+                    <div className="mt-4">
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        variant={event.status === "Inscrição Aberta" ? "default" : "outline"}
+                        disabled={event.status !== "Inscrição Aberta"}
+                      >
+                        {event.status === "Inscrição Aberta" ? "Inscrever-se" : "Ver Detalhes"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center"
-        >
-          <Link 
-            to="/about"
-            className="text-primary-500 hover:underline text-sm flex items-center justify-center"
+        </div>
+      </section>
+
+      {/* Seção de Recursos/Benefícios */}
+      <section className="py-20 bg-background">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            Saiba mais sobre nosso projeto
-          </Link>
-        </motion.div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Por que escolher a BRK?
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              A plataforma mais completa para o kartismo brasileiro
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Trophy,
+                title: "Campeonatos Profissionais",
+                description: "Organização e gestão profissional de campeonatos com sistema de pontuação unificado"
+              },
+              {
+                icon: Zap,
+                title: "Inscrições Simplificadas", 
+                description: "Processo de inscrição rápido e seguro, com pagamento integrado e confirmação automática"
+              },
+              {
+                icon: Target,
+                title: "Rankings Atualizados",
+                description: "Acompanhe sua evolução com rankings em tempo real e estatísticas detalhadas"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="p-8 text-center hover:shadow-lg transition-all duration-300 h-full">
+                  <feature.icon className="h-12 w-12 text-primary mx-auto mb-6" />
+                  <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Final */}
+      <section className="py-20 bg-primary text-white">
+        <div className="container text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl mx-auto"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Pronto para acelerar sua carreira no kart?
+            </h2>
+            <p className="text-xl text-white/90 mb-8">
+              Junte-se a centenas de pilotos que já fazem parte da maior plataforma de kartismo do Brasil
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
+                asChild
+              >
+                <Link to="/campeonatos">
+                  Explorar Campeonatos
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-white/50 text-white bg-transparent hover:bg-white/10 hover:border-white/70 hover:text-white"
+                asChild
+              >
+                <Link to="/about">
+                  Saiba Mais
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       </section>
     </div>
   )

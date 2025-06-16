@@ -33,7 +33,7 @@ export const ChampionshipHeader = ({ championship }: ChampionshipHeaderProps) =>
   };
 
   return (
-    <div className="bg-dark-900 text-white w-full">
+    <div className="bg-dark-900 text-white w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       <div className="w-full px-6 py-4">
         {/* Layout Desktop */}
         <div className="hidden md:flex items-center justify-between">

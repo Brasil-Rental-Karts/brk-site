@@ -210,14 +210,13 @@ export const Championship = () => {
       transition={{ duration: 0.3 }}
       className="min-h-screen bg-background"
     >
-      {/* Header e Tabs com largura total */}
-      <div className="-mx-6 -mt-8">
-        {/* Header do campeonato */}
-        <ChampionshipHeader championship={championshipForComponents} />
+      {/* Header do campeonato - fullwidth */}
+      <ChampionshipHeader championship={championshipForComponents} />
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full justify-start rounded-none bg-dark-900 border-b border-border h-12">
+      {/* Tabs - fullwidth */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+          <TabsList className="w-full justify-start rounded-none bg-dark-900 border-border h-12 px-6">
             <TabsTrigger value="home" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
               Home
             </TabsTrigger>
@@ -234,31 +233,31 @@ export const Championship = () => {
               Fotos
             </TabsTrigger>
           </TabsList>
+        </div>
 
-          {/* Conteúdo das tabs */}
-          <div className="px-6 py-8">
-            <TabsContent value="home" className="mt-0">
-              <HomeTab championship={championshipForComponents} />
-            </TabsContent>
+        {/* Conteúdo das tabs - sem espaçamento superior */}
+        <div>
+          <TabsContent value="home" className="mt-0">
+            <HomeTab championship={championshipForComponents} />
+          </TabsContent>
 
-            <TabsContent value="calendario" className="mt-0">
-              <CalendarioTab championship={championshipForComponents} />
-            </TabsContent>
+          <TabsContent value="calendario" className="mt-0 px-6 py-8">
+            <CalendarioTab championship={championshipForComponents} />
+          </TabsContent>
 
-            <TabsContent value="classificacao" className="mt-0">
-              <ClassificacaoTab championship={championshipForComponents} />
-            </TabsContent>
+          <TabsContent value="classificacao" className="mt-0 px-6 py-8">
+            <ClassificacaoTab championship={championshipForComponents} />
+          </TabsContent>
 
-            <TabsContent value="regulamento" className="mt-0">
-              <RegulamentoTab championship={championshipForComponents} />
-            </TabsContent>
+          <TabsContent value="regulamento" className="mt-0 px-6 py-8">
+            <RegulamentoTab championship={championshipForComponents} />
+          </TabsContent>
 
-            <TabsContent value="fotos" className="mt-0">
-              <FotosTab championship={championshipForComponents} />
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
+          <TabsContent value="fotos" className="mt-0 px-6 py-8">
+            <FotosTab championship={championshipForComponents} />
+          </TabsContent>
+        </div>
+      </Tabs>
     </motion.div>
   );
 }; 
