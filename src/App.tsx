@@ -3,7 +3,7 @@ import { About } from "@/pages/About"
 import { Pilot } from "@/pages/Pilot"
 import { Championship } from "@/pages/Championship"
 import { Championships } from "@/pages/Championships"
-//import { MainLayout } from "@/components/MainLayout"
+import { MainFullWidhtLayout } from "@/layouts/MainFullWidhtLayout"
 import { MainLayout } from "@/layouts/MainLayout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
@@ -33,10 +33,10 @@ function AppContent() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+        <Route path="/" element={<MainFullWidhtLayout><Home /></MainFullWidhtLayout>} />
         <Route path="/privacidade" element={<MainLayout><Privacy /></MainLayout>} />
-        <Route path="/termos" element={<MainLayout><Terms /></MainLayout>} />
-        <Route path="/about" element={<MainLayout><About /></MainLayout>} />
+        <Route path="/termos-de-uso" element={<MainLayout><Terms /></MainLayout>} />
+        <Route path="/sobre-brk" element={<MainLayout><About /></MainLayout>} />
         <Route path="/campeonatos" element={<MainLayout><Championships /></MainLayout>} />
         <Route path="/campeonato/:slug" element={<MainLayout><Championship /></MainLayout>} />
         <Route path="/pilotos/:pilotSlug" element={<MainLayout><Pilot /></MainLayout>} />

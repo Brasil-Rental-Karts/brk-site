@@ -1,47 +1,103 @@
-import { Instagram, MessageCircle } from "lucide-react"
-import { Button } from "brk-design-system"
-import { Link } from "react-router-dom"
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-export function Footer() {
+interface FooterProps extends React.HTMLAttributes<HTMLElement> {
+  className?: string
+}
+
+export function Footer({ className, ...props }: FooterProps) {
   return (
-    <footer className="border-t bg-background">
-      <div className="container py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Link to="/" className="hover:opacity-80 transition-opacity">
-              <img src="/logo-brk.svg" alt="BRK Logo" className="h-5 w-auto" />
-            </Link>
-            <span className="text-sm text-muted-foreground">Brasil Rental Karts</span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="flex gap-4">
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary-500 transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </a>
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 rounded-full border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white"
-              asChild
+    <footer
+      className={cn(
+        "bg-secondary text-secondary-foreground dark:bg-secondary dark:text-secondary-foreground border-t border-border",
+        className
+      )}
+      {...props}
+    >
+      <div className="mx-auto w-full max-w-screen-xl p-4 py-12 lg:py-12">
+        <div className="md:flex md:justify-between">
+          <div className="mb-6 md:mb-0">
+            <a
+              href="/"
+              className="flex items-center focus:outline focus:outline-2 focus:outline-primary rounded"
             >
-              <a
-                href="https://wa.me/5511999999999"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>Contato</span>
-              </a>
-            </Button>
+              <img
+                src="/logo-brk-marca-horizontal.svg"
+                alt="BRK Logo"
+                className="h-8"
+              />
+            </a>
+            <p className="mt-2 text-sm text-muted-foreground">
+              CNPJ: 61.324.049/0001-94
+              <br />© {new Date().getFullYear()} BRK Soluções em Tecnologia™
+              <br />
+              Todos os direitos reservados.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-12 sm:gap-12 sm:grid-cols-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase mb-2">A BRK</h2>
+              <ul className="text-muted-foreground space-y-2">
+                <li>
+                  <a
+                    href="/sobre-brk"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    Sobre a BRK
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/termos-de-uso"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    Termos de Uso
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/privacidade"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    Política de Privacidade
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold uppercase mb-2">Contato</h2>
+              <ul className="text-muted-foreground space-y-2">
+                <li>
+                  <a
+                    href="mailto:falecom@brasilrentalkarts.com.br"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    falecom@brasilrentalkarts.com.br
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.brasilrentalkarts.com.br"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    www.brasilrentalkarts.com.br
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold uppercase mb-2">Siga-nos</h2>
+              <ul className="text-muted-foreground space-y-2">
+                <li>
+                  <a
+                    href="https://www.instagram.com/brasilrentalkarts/"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                  >
+                    Instagram
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -3,11 +3,11 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { Footer } from "@/components/Footer";
 
-interface MainLayoutProps {
+interface MainFullWidhtLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+export function MainFullWidhtLayout({ children }: MainFullWidhtLayoutProps) {
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
 
@@ -20,8 +20,8 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Navbar />
 
       {/* Main content */}
-      <main className="container flex-1 py-16">{children}</main>
-      
+      <main className="flex-1 w-full">{children}</main>
+
       <Footer />
     </div>
   );

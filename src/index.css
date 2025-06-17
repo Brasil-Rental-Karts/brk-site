@@ -38,7 +38,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 14 100% 60%;
+    --ring: 345 6% 13%;
     --radius: 0.5rem;
 
     --chart-1: 12 76% 61%;
@@ -54,6 +54,7 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --navbar-foreground: 345 6% 13%;
   }
   .dark {
     --background: 0 0% 10%;
@@ -89,6 +90,7 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --navbar-foreground: 345 6% 13%;
   }
 }
 

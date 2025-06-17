@@ -2,14 +2,8 @@ import { motion } from "framer-motion";
 
 export function Privacy() {
   return (
-    <div className="min-h-screen bg-background py-12 md:py-20">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="prose prose-lg dark:prose-invert"
-        >
           <h1 className="font-heading text-3xl md:text-4xl mb-8">
             Política de Privacidade – BRK Soluções em Tecnologia
           </h1>
@@ -218,7 +212,6 @@ export function Privacy() {
           <p>
             <strong>E-mail:</strong> falecom@brasilrentalkarts.com.br
           </p>
-        </motion.div>
       </div>
     </div>
   );
