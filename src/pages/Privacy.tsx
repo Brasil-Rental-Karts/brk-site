@@ -3,25 +3,18 @@ import { motion } from "framer-motion";
 export function Privacy() {
   return (
     <div className="min-h-screen bg-background py-12 md:py-20">
-      <div className="flex justify-center mb-12">
-        <img
-          src="/logo-brk-marca-horizontal.svg"
-          alt="BRK Logo"
-          className="h-8 w-auto"
-        />
-      </div>
-      <div className="container max-w-4xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="prose prose-lg dark:prose-invert mx-auto"
+          className="prose prose-lg dark:prose-invert"
         >
-          <h1 className="font-heading text-3xl md:text-4xl text-center mb-8">
+          <h1 className="font-heading text-3xl md:text-4xl mb-8">
             Política de Privacidade – BRK Soluções em Tecnologia
           </h1>
 
-          <p className="text-muted-foreground text-center mb-12">
+          <p className="text-muted-foreground mt-4 mb-8">
             Data da última atualização: 05 de junho de 2025
           </p>
 
@@ -41,7 +34,7 @@ export function Privacy() {
               <strong>Razão Social:</strong> BRK Soluções em Tecnologia
             </li>
             <li>
-              <strong>E-mail de contato para assuntos de privacidade:</strong>{" "}
+              <strong>E-mail de contato para assuntos de privacidade:</strong>
               falecom@brasilrentalkarts.com.br
             </li>
           </ul>

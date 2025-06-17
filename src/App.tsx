@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { AnimatePresence } from "framer-motion"
 import { useEffect } from "react"
 import { Privacy } from "./pages/Privacy"
+import { Terms } from "./pages/Terms"
 
 function App() {
   return (
@@ -32,7 +33,8 @@ function AppContent() {
     <AnimatePresence mode="wait">
       <Routes>
         <Route path="/" element={<MainLayout><Home /></MainLayout>} />
-        <Route path="/privacidade" element={<Privacy />} />
+        <Route path="/privacidade" element={<MainLayout><Privacy /></MainLayout>} />
+        <Route path="/termos" element={<MainLayout><Terms /></MainLayout>} />
         <Route path="/about" element={<MainLayout><About /></MainLayout>} />
         <Route path="/campeonatos" element={<MainLayout><Championships /></MainLayout>} />
         <Route path="/campeonato/:slug" element={<MainLayout><Championship /></MainLayout>} />
