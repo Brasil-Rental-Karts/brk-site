@@ -1,25 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
 import { Link } from "react-router-dom";
-import { Trophy, Users, Calendar, MapPin, Search } from "lucide-react";
+import { Trophy, Users, Calendar, MapPin, Search, AlertCircle, Loader2 } from "lucide-react";
 import { SearchInput } from "@/components/ui/input";
-
-interface Championship {
-  id: string;
-  slug: string;
-  name: string;
-  shortDescription: string;
-  location: string;
-  founded: string;
-  pilots: number;
-  seasons: number;
-  categories: number;
-  status: "active" | "upcoming" | "finished";
-  image: string;
-}
+import { useChampionships } from "@/hooks/useChampionships";
+import { 
+  mapApiChampionshipToUI, 
+  filterChampionshipsByStatus, 
+  searchChampionships,
+  calculateChampionshipStats,
+  type ChampionshipUI 
+} from "@/utils/championship.utils";
 
 /**
  * Página de listagem de todos os campeonatos
@@ -28,101 +22,37 @@ interface Championship {
 export const Championships = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  
+  // Buscar dados dos campeonatos da API
+  const { 
+    championships: apiChampionships, 
+    loading, 
+    error, 
+    refetch,
+    getActiveSeasonsCount,
+    getActiveCategoriesCount
+  } = useChampionships();
 
-  // Dados mockados dos campeonatos
-  const championships: Championship[] = [
-    {
-      id: "1",
-      slug: "escola-da-velocidade",
-      name: "Escola da Velocidade",
-      shortDescription: "Onde a paixão por kart ganha forma! Copa de kart no lendário Kartódromo Beto Carrero.",
-      location: "Kartódromo Beto Carrero",
-      founded: "2021",
-      pilots: 100,
-      seasons: 6,
-      categories: 4,
-      status: "active",
-      image: "/escola-velocidade-thumb.jpg"
-    },
-    {
-      id: "2",
-      slug: "copa-sul-brasileira",
-      name: "Copa Sul Brasileira de Kart",
-      shortDescription: "O maior campeonato de kart da região Sul, reunindo os melhores pilotos em disputas emocionantes.",
-      location: "Kartódromo Internacional",
-      founded: "2019",
-      pilots: 150,
-      seasons: 8,
-      categories: 6,
-      status: "active",
-      image: "/copa-sul-thumb.jpg"
-    },
-    {
-      id: "3",
-      slug: "desafio-das-estrelas",
-      name: "Desafio das Estrelas",
-      shortDescription: "Campeonato exclusivo para pilotos experientes, com as melhores disputas do kartismo nacional.",
-      location: "Autódromo de Interlagos",
-      founded: "2020",
-      pilots: 80,
-      seasons: 5,
-      categories: 3,
-      status: "active",
-      image: "/desafio-estrelas-thumb.jpg"
-    },
-    {
-      id: "4",
-      slug: "rookie-championship",
-      name: "Rookie Championship",
-      shortDescription: "Campeonato voltado para novos talentos do kartismo, com foco no desenvolvimento de pilotos iniciantes.",
-      location: "Kartódromo Speed Park",
-      founded: "2022",
-      pilots: 60,
-      seasons: 3,
-      categories: 2,
-      status: "upcoming",
-      image: "/rookie-championship-thumb.jpg"
-    },
-    {
-      id: "5",
-      slug: "masters-series",
-      name: "Masters Series",
-      shortDescription: "Série especial para pilotos veteranos, celebrando a experiência e paixão pelo kartismo.",
-      location: "Kartódromo Granja Viana",
-      founded: "2018",
-      pilots: 45,
-      seasons: 7,
-      categories: 2,
-      status: "finished",
-      image: "/masters-series-thumb.jpg"
-    },
-    {
-      id: "6",
-      slug: "junior-kart-league",
-      name: "Junior Kart League",
-      shortDescription: "Liga dedicada aos jovens talentos, formando a próxima geração de pilotos de kart.",
-      location: "Kartódromo Aldeia da Serra",
-      founded: "2023",
-      pilots: 75,
-      seasons: 2,
-      categories: 3,
-      status: "active",
-      image: "/junior-league-thumb.jpg"
-    }
-  ];
+  // Converter dados da API para o formato do UI
+  const championships = useMemo(() => {
+    return apiChampionships.map(apiChampionship => {
+      const activeSeasonsCount = getActiveSeasonsCount(apiChampionship.id);
+      const activeCategoriesCount = getActiveCategoriesCount(apiChampionship.id);
+      return mapApiChampionshipToUI(apiChampionship, activeSeasonsCount, activeCategoriesCount);
+    });
+  }, [apiChampionships, getActiveSeasonsCount, getActiveCategoriesCount]);
 
   // Filtrar campeonatos baseado na busca e status
-  const filteredChampionships = championships.filter(championship => {
-    const matchesSearch = championship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         championship.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         championship.location.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = filterStatus === "all" || championship.status === filterStatus;
-    
-    return matchesSearch && matchesStatus;
-  });
+  const filteredChampionships = useMemo(() => {
+    let filtered = filterChampionshipsByStatus(championships, filterStatus);
+    filtered = searchChampionships(filtered, searchQuery);
+    return filtered;
+  }, [championships, filterStatus, searchQuery]);
 
-  const getStatusBadge = (status: Championship["status"]) => {
+  // Calcular estatísticas
+  const stats = useMemo(() => calculateChampionshipStats(championships), [championships]);
+
+  const getStatusBadge = (status: ChampionshipUI["status"]) => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-500 text-white">Ativo</Badge>;
@@ -191,32 +121,26 @@ export const Championships = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">{championships.length}</div>
+                <div className="text-2xl font-bold text-primary mb-1">{stats.total}</div>
                 <div className="text-sm text-muted-foreground">Total de Campeonatos</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {championships.filter(c => c.status === "active").length}
-                </div>
-                <div className="text-sm text-muted-foreground">Ativos</div>
+                <div className="text-2xl font-bold text-primary mb-1">{stats.active}</div>
+                <div className="text-sm text-muted-foreground">Campeonatos Ativos</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {championships.reduce((sum, c) => sum + c.pilots, 0)}
-                </div>
-                <div className="text-sm text-muted-foreground">Total de Pilotos</div>
+                <div className="text-2xl font-bold text-primary mb-1">{stats.totalActiveSeasons}</div>
+                <div className="text-sm text-muted-foreground">Temporadas Ativas</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {championships.reduce((sum, c) => sum + c.categories, 0)}
-                </div>
-                <div className="text-sm text-muted-foreground">Categorias</div>
+                <div className="text-2xl font-bold text-primary mb-1">{stats.totalActiveCategories}</div>
+                <div className="text-sm text-muted-foreground">Categorias Ativas</div>
               </CardContent>
             </Card>
           </div>
@@ -225,8 +149,34 @@ export const Championships = () => {
 
       {/* Grid de campeonatos - com margens */}
       <div className="px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredChampionships.map((championship, index) => (
+        {/* Estado de loading */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="ml-2 text-muted-foreground">Carregando campeonatos...</span>
+          </div>
+        )}
+
+        {/* Estado de erro */}
+        {error && !loading && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
+          >
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Erro ao carregar campeonatos</h3>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={refetch} variant="outline">
+              Tentar novamente
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Grid de campeonatos */}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredChampionships.map((championship, index) => (
             <motion.div
               key={championship.id}
               initial={{ opacity: 0, y: 20 }}
@@ -259,31 +209,15 @@ export const Championships = () => {
                     </p>
                   </div>
 
-                  {/* Informações */}
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      {championship.location}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      Fundado em {championship.founded}
-                    </div>
-                  </div>
-
                   {/* Estatísticas */}
-                  <div className="grid grid-cols-3 gap-4 mb-4 p-3 bg-muted/30 rounded-lg">
+                  <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/30 rounded-lg">
                     <div className="text-center">
-                      <div className="font-bold text-primary">{championship.pilots}</div>
-                      <div className="text-xs text-muted-foreground">Pilotos</div>
+                      <div className="font-bold text-primary">{championship.activeSeasons || 0}</div>
+                      <div className="text-xs text-muted-foreground">Temporadas Ativas</div>
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-primary">{championship.seasons}</div>
-                      <div className="text-xs text-muted-foreground">Temporadas</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-bold text-primary">{championship.categories}</div>
-                      <div className="text-xs text-muted-foreground">Categorias</div>
+                      <div className="font-bold text-primary">{championship.activeCategories || 0}</div>
+                      <div className="text-xs text-muted-foreground">Categorias Ativas</div>
                     </div>
                   </div>
 
@@ -294,26 +228,27 @@ export const Championships = () => {
                     </Link>
                   </Button>
                 </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                                </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
-        {/* Mensagem quando não há resultados */}
-        {filteredChampionships.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
-            <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Nenhum campeonato encontrado</h3>
-            <p className="text-muted-foreground">
-              Tente ajustar os filtros ou termos de busca para encontrar campeonatos.
-            </p>
-          </motion.div>
-        )}
-      </div>
+          {/* Mensagem quando não há resultados */}
+          {!loading && !error && filteredChampionships.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Nenhum campeonato encontrado</h3>
+              <p className="text-muted-foreground">
+                Tente ajustar os filtros ou termos de busca para encontrar campeonatos.
+              </p>
+            </motion.div>
+          )}
+        </div>
     </div>
   );
 }; 

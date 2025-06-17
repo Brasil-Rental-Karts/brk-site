@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "brk-design-system";
@@ -8,6 +8,15 @@ import { CalendarioTab } from "@/components/championship/tabs/CalendarioTab";
 import { ClassificacaoTab } from "@/components/championship/tabs/ClassificacaoTab";
 import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
 import { FotosTab } from "@/components/championship/tabs/FotosTab";
+import { useChampionships } from "@/hooks/useChampionships";
+import { 
+  mapApiChampionshipToUI, 
+  findChampionshipBySlug, 
+  type ChampionshipUI 
+} from "@/utils/championship.utils";
+import { championshipService } from "@/services/championship.service";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Button } from "brk-design-system";
 
 interface ChampionshipData {
   id: string;
@@ -33,7 +42,68 @@ export const Championship = () => {
   const { slug } = useParams<{ slug: string }>();
   const [activeTab, setActiveTab] = useState("home");
 
-  // Dados mockados dos campeonatos (em uma aplicação real, viria de uma API)
+  // Buscar dados dos campeonatos da API
+  const { 
+    championships: apiChampionships, 
+    seasons,
+    stages,
+    loading, 
+    error, 
+    refetch,
+    getActiveSeasonsCount,
+    getActiveCategoriesCount,
+    getSeasonsForChampionship,
+    getStagesForChampionship
+  } = useChampionships();
+
+  // Converter dados da API para o formato do UI
+  const championships = useMemo(() => {
+    return apiChampionships.map(apiChampionship => {
+      const activeSeasonsCount = getActiveSeasonsCount(apiChampionship.id);
+      const activeCategoriesCount = getActiveCategoriesCount(apiChampionship.id);
+      return mapApiChampionshipToUI(apiChampionship, activeSeasonsCount, activeCategoriesCount);
+    });
+  }, [apiChampionships, getActiveSeasonsCount, getActiveCategoriesCount]);
+
+  // Encontrar o campeonato pelo slug
+  const currentChampionship = useMemo(() => {
+    if (!slug || championships.length === 0) return null;
+    return findChampionshipBySlug(championships, slug);
+  }, [championships, slug]);
+
+  // Estados de loading e erro
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Carregando campeonato...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Erro ao carregar campeonato</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={refetch} variant="outline">
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Se o campeonato não for encontrado, redirecionar para a página de listagem
+  if (!currentChampionship) {
+    return <Navigate to="/campeonatos" replace />;
+  }
+
+  // Dados mockados dos campeonatos (mantendo a estrutura original para compatibilidade)
   const championshipsData: ChampionshipData[] = [
     {
       id: "1",
@@ -127,79 +197,37 @@ export const Championship = () => {
     }
   ];
 
-  // Buscar o campeonato pelo slug
-  const championship = championshipsData.find(c => c.slug === slug);
-
-  // Se o campeonato não for encontrado, redirecionar para a página de listagem
-  if (!championship) {
-    return <Navigate to="/campeonatos" replace />;
-  }
+  // Buscar temporadas e etapas do campeonato
+  const championshipSeasons = getSeasonsForChampionship(currentChampionship.id);
+  const championshipStages = getStagesForChampionship(currentChampionship.id);
 
   // Criar objeto no formato esperado pelos componentes
   const championshipForComponents = {
-    id: championship.id,
-    name: championship.name,
-    description: championship.description,
-    founded: championship.founded,
-    pilots: championship.pilots.toString(),
-    seasons: championship.seasons.toString(),
-    categories: championship.categories.toString(),
-    kartodromo: championship.location,
-    longDescription: `A ${championship.name} é uma copa de kart que vem acelerando 
-    corações há ${new Date().getFullYear() - parseInt(championship.founded)} anos no lendário ${championship.location}, reunindo 
-    pilotos de todas as idades e níveis de experiência em disputas 
-    eletrizantes. Com um ambiente que une competição saudável, 
-    aprendizado e adrenalina, o campeonato se consolida como 
-    referência para quem quer evoluir no kartismo e viver a verdadeira 
-    emoção das pistas.`,
+    id: currentChampionship.id,
+    name: currentChampionship.name,
+    description: currentChampionship.shortDescription, // Usar descrição curta
+    founded: currentChampionship.founded || '2024',
+    pilots: (currentChampionship.pilots || 0).toString(),
+    seasons: (currentChampionship.seasons || 0).toString(),
+    categories: (currentChampionship.categories || 0).toString(),
+    kartodromo: currentChampionship.location || 'Kartódromo',
+    longDescription: currentChampionship.fullDescription || currentChampionship.shortDescription, // Usar descrição completa
+    image: currentChampionship.image, // Imagem do campeonato
+    avatar: currentChampionship.avatar, // Avatar do campeonato
     stats: [
-      { label: "FUNDAÇÃO", value: championship.founded },
-      { label: "PILOTOS", value: championship.pilots.toString() },
-      { label: "TEMPORADAS", value: championship.seasons.toString() },
-      { label: "CATEGORIAS", value: championship.categories.toString() }
+      { label: "FUNDAÇÃO", value: currentChampionship.founded || '2024' },
+      { label: "PILOTOS", value: (currentChampionship.pilots || 0).toString() },
+      { label: "TEMPORADAS ATIVAS", value: (currentChampionship.activeSeasons || 0).toString() },
+      { label: "CATEGORIAS ATIVAS", value: (currentChampionship.activeCategories || 0).toString() }
     ],
     currentSeason: {
-      name: "2025 - Temporada 1",
-      year: "2025",
-      season: "Temporada 1"
+      name: championshipSeasons.length > 0 ? championshipSeasons[0].name : "Temporada Atual",
+      year: championshipSeasons.length > 0 ? new Date(championshipSeasons[0].startDate).getUTCFullYear().toString() : "2025",
+      season: championshipSeasons.length > 0 ? championshipSeasons[0].name : "Temporada 1"
     },
-    events: [
-      {
-        id: 1,
-        date: "14",
-        month: "jun",
-        day: "Sábado",
-        stage: "Etapa JFK",
-        location: championship.location,
-        time: "A partir das 14h",
-        status: "Inscrição Aberta"
-      },
-      {
-        id: 2,
-        date: "21",
-        month: "jun", 
-        day: "Sábado",
-        stage: "Etapa Speed",
-        location: championship.location,
-        time: "A partir das 14h",
-        status: "Programado"
-      },
-      {
-        id: 3,
-        date: "28",
-        month: "jun",
-        day: "Sábado", 
-        stage: "Etapa Final",
-        location: championship.location,
-        time: "A partir das 14h",
-        status: "Programado"
-      }
-    ],
-    sponsors: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      name: `Patrocinador ${i + 1}`,
-      logo: "/patrocinador-placeholder.png"
-    }))
+    availableSeasons: championshipSeasons,
+    events: championshipStages.map(stage => championshipService.formatStageForUI(stage)),
+    sponsors: Array.isArray(currentChampionship.sponsors) ? currentChampionship.sponsors : []
   };
 
   return (

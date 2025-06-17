@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
-import { MapPin, Clock, Calendar, ChevronRight } from "lucide-react";
+import { MapPin, Clock, Calendar, ChevronRight, Video } from "lucide-react";
 
 interface CalendarioTabProps {
   championship: {
@@ -11,6 +12,13 @@ interface CalendarioTabProps {
       year: string;
       season: string;
     };
+    availableSeasons?: Array<{
+      id: string;
+      name: string;
+      startDate: string;
+      endDate: string;
+      championshipId: string;
+    }>;
     events: Array<{
       id: number;
       date: string;
@@ -20,11 +28,67 @@ interface CalendarioTabProps {
       location: string;
       time: string;
       status: string;
+      streamLink?: string;
     }>;
   };
 }
 
 export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
+  // Determinar ano inicial baseado nas temporadas disponíveis
+  const getInitialYear = () => {
+    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+      return new Date(championship.availableSeasons[0].startDate).getUTCFullYear().toString();
+    }
+    return championship.currentSeason.year;
+  };
+
+  // Determinar temporada inicial baseada nas temporadas disponíveis
+  const getInitialSeason = () => {
+    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+      return championship.availableSeasons[0].name;
+    }
+    return championship.currentSeason.season;
+  };
+
+  const [selectedYear, setSelectedYear] = useState<string>(getInitialYear());
+  const [selectedSeason, setSelectedSeason] = useState<string>(getInitialSeason());
+
+  // Obter anos únicos das temporadas disponíveis
+  const availableYears = championship.availableSeasons 
+    ? [...new Set(championship.availableSeasons.map(season => 
+        new Date(season.startDate).getUTCFullYear().toString()
+      ))].sort()
+    : [championship.currentSeason.year];
+
+  // Obter temporadas do ano selecionado
+  const seasonsForYear = championship.availableSeasons 
+    ? championship.availableSeasons.filter(season => 
+        new Date(season.startDate).getUTCFullYear().toString() === selectedYear
+      )
+    : [];
+
+  // Atualizar estados quando os dados do campeonato mudarem
+  useEffect(() => {
+    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+      const firstSeason = championship.availableSeasons[0];
+      const yearFromSeason = new Date(firstSeason.startDate).getUTCFullYear().toString();
+      setSelectedYear(yearFromSeason);
+      setSelectedSeason(firstSeason.name);
+    }
+  }, [championship.availableSeasons]);
+
+  // Filtrar eventos baseado na temporada selecionada
+  const filteredEvents = championship.events.filter(event => {
+    if (!championship.availableSeasons) return true;
+    
+    const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
+    if (!selectedSeasonData) return true;
+    
+    // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
+    // Por enquanto, mostramos todos os eventos
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -51,21 +115,38 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
       >
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Ano</label>
-          <select className="px-4 py-2 rounded-lg border border-border bg-background min-w-32">
-            <option value="2025">{championship.currentSeason.year}</option>
+          <select 
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-border bg-background min-w-32"
+          >
+            {availableYears.map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
           </select>
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Temporada</label>
-          <select className="px-4 py-2 rounded-lg border border-border bg-background min-w-40">
-            <option value="temporada1">{championship.currentSeason.season}</option>
+          <select 
+            value={selectedSeason}
+            onChange={(e) => setSelectedSeason(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-border bg-background min-w-40"
+          >
+            {seasonsForYear.length > 0 ? (
+              seasonsForYear.map(season => (
+                <option key={season.id} value={season.name}>{season.name}</option>
+              ))
+            ) : (
+              <option value={championship.currentSeason.season}>{championship.currentSeason.season}</option>
+            )}
           </select>
         </div>
       </motion.div>
 
       {/* Lista de Eventos - Layout de Lista */}
       <div className="space-y-4">
-        {championship.events.map((event, index) => (
+        {filteredEvents.length > 0 ? (
+          filteredEvents.map((event, index) => (
           <motion.div
             key={event.id}
             initial={{ opacity: 0, x: -20 }}
@@ -112,6 +193,19 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                         <Clock className="h-4 w-4 text-muted-foreground" />
                         <span>{event.time}</span>
                       </div>
+                      {event.streamLink && (
+                        <div className="flex items-center gap-2">
+                          <Video className="h-4 w-4 text-muted-foreground" />
+                          <a 
+                            href={event.streamLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            Assistir transmissão
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -130,8 +224,13 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
-        ))}
+                      </motion.div>
+          ))
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Nenhuma etapa encontrada para os filtros selecionados.</p>
+          </div>
+        )}
       </div>
 
       {/* Informações adicionais */}
