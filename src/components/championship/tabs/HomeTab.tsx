@@ -91,7 +91,7 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
     : [];
 
   // Filtrar eventos baseado na temporada selecionada
-  const filteredEvents = championship.events.filter(event => {
+  const filteredEvents = championship.events.filter(_event => {
     if (!championship.availableSeasons) return true;
     
     const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);

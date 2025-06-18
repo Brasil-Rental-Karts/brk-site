@@ -1,78 +1,89 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion"
-import { Trophy, Calendar, Users, MapPin, ArrowRight, Star, Zap, Target } from "lucide-react"
+import { Trophy, Calendar, Users, MapPin, ArrowRight, Zap, Target } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "brk-design-system"
 import { Card, CardContent } from "brk-design-system"
 import { Badge } from "brk-design-system"
+import { championshipService, Championship, Stage } from "@/services/championship.service";
+
+interface HomeChampionship extends Championship {
+  featured?: string;
+  location?: string;
+  pilots?: number;
+  status?: string;
+}
+
+interface UpcomingEventUI {
+  date: string;
+  month: string;
+  stage: string;
+  championship: string;
+  location: string;
+  status: string;
+}
 
 export function Home() {
-  // Dados dos campeonatos em destaque
-  const featuredChampionships = [
-    {
-      id: "escola-da-velocidade",
-      slug: "escola-da-velocidade",
-      name: "Escola da Velocidade",
-      description: "Onde a paixão por kart ganha forma!",
-      location: "Kartódromo Beto Carrero",
-      pilots: 100,
-      status: "Inscrições Abertas",
-      image: "/escola-velocidade-card.jpg",
-      featured: true
-    },
-    {
-      id: "copa-sul-brasileira",
-      slug: "copa-sul-brasileira", 
-      name: "Copa Sul Brasileira",
-      description: "O maior campeonato da região Sul",
-      location: "Kartódromo Internacional",
-      pilots: 150,
-      status: "Em Andamento",
-      image: "/copa-sul-card.jpg",
-      featured: false
-    },
-    {
-      id: "desafio-das-estrelas",
-      slug: "desafio-das-estrelas",
-      name: "Desafio das Estrelas", 
-      description: "Para pilotos experientes",
-      location: "Autódromo de Interlagos",
-      pilots: 80,
-      status: "Programado",
-      image: "/desafio-estrelas-card.jpg",
-      featured: false
-    }
-  ];
+  const [featuredChampionships, setFeaturedChampionships] = useState<HomeChampionship[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<UpcomingEventUI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Próximos eventos
-  const upcomingEvents = [
-    {
-      date: "14",
-      month: "JUN",
-      day: "Sábado",
-      championship: "Escola da Velocidade",
-      stage: "Etapa JFK",
-      location: "Kartódromo Beto Carrero",
-      status: "Inscrição Aberta"
-    },
-    {
-      date: "21",
-      month: "JUN", 
-      day: "Sábado",
-      championship: "Copa Sul Brasileira",
-      stage: "Etapa Speed",
-      location: "Kartódromo Internacional",
-      status: "Programado"
-    },
-    {
-      date: "28",
-      month: "JUN",
-      day: "Sábado",
-      championship: "Desafio das Estrelas", 
-      stage: "Etapa Elite",
-      location: "Autódromo de Interlagos",
-      status: "Programado"
-    }
-  ];
+  useEffect(() => {
+    const fetchHomeData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // 1. Buscar todos os campeonatos
+        const allChampionships = await championshipService.getAllChampionships();
+
+        // 2. Priorizar campeonatos com 'featured: true'
+        const featured = allChampionships.filter(c => (c as HomeChampionship).featured === 'true');
+        const notFeatured = allChampionships.filter(c => (c as HomeChampionship).featured !== 'true');
+        
+        // 3. Selecionar os 3 principais campeonatos
+        const topChampionships = [...featured, ...notFeatured].slice(0, 3);
+        setFeaturedChampionships(topChampionships as HomeChampionship[]);
+
+        // 4. Buscar eventos dos principais campeonatos
+        let allStages: (Stage & { championshipName: string })[] = [];
+        for (const champ of topChampionships) {
+          const activeSeasons = await championshipService.getActiveSeasonsForChampionship(champ.id);
+          if (activeSeasons.length > 0) {
+            const seasonId = activeSeasons[0].id; // Pegando a primeira temporada ativa
+            try {
+              const stages = await championshipService.getStagesForSeason(seasonId);
+              const stagesWithChampName = stages.map(stage => ({
+                ...stage,
+                championshipName: champ.name, 
+              }));
+              allStages = [...allStages, ...stagesWithChampName];
+            } catch (seasonError) {
+              console.error(`Failed to fetch stages for season ${seasonId}:`, seasonError);
+            }
+          }
+        }
+
+        // 5. Ordenar e pegar os próximos 3 eventos
+        const upcoming = allStages
+          .filter(stage => new Date(stage.date) >= new Date())
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+          .slice(0, 3)
+          .map(stage => championshipService.formatStageForUI(stage));
+
+        setUpcomingEvents(upcoming);
+
+      } catch (err) {
+        setError("Falha ao carregar dados da página inicial.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomeData();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -227,217 +238,226 @@ export function Home() {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Campeonato Principal - Card Grande */}
+          {loading && <p>Carregando...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+
+          {!loading && !error && featuredChampionships.length > 0 && (
+            <>
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Campeonato Principal - Card Grande */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="lg:col-span-2"
+                >
+                  <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+                    <div className="relative h-64 lg:h-80">
+                      <img
+                        src={featuredChampionships[0].championshipImage}
+                        alt={featuredChampionships[0].name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Crect width='600' height='300' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3E${featuredChampionships[0].name}%3C/text%3E%3C/svg%3E`;
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute top-4 right-4">
+                        <Badge variant={featuredChampionships[0].status === 'Inscrições Abertas' ? 'default' : 'secondary'}>
+                          {featuredChampionships[0].status}
+                        </Badge>
+                      </div>
+                      <div className="absolute bottom-6 left-6 right-6 text-white">
+                        <h3 className="text-2xl lg:text-3xl font-bold mb-2">
+                          {featuredChampionships[0].name}
+                        </h3>
+                        <p className="text-white/90 mb-4">
+                          {featuredChampionships[0].shortDescription}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {featuredChampionships[0].location}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Users className="h-4 w-4" />
+                            {featuredChampionships[0].pilots} pilotos
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <CardContent className="p-6 flex-grow flex flex-col">
+                      <div className="flex-grow" />
+                      <Button asChild className="w-full">
+                        <Link to={`/campeonato/${featuredChampionships[0].slug}`}>
+                          Ver Campeonato
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Campeonatos Secundários */}
+                <div className="space-y-6">
+                  {featuredChampionships.slice(1).map((championship, index) => (
+                    <motion.div
+                      key={championship.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.2 + (index * 0.1) }}
+                    >
+                      <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div className="relative h-32">
+                          <img
+                            src={championship.championshipImage}
+                            alt={championship.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect width='300' height='150' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='14' font-family='Arial'%3E${championship.name}%3C/text%3E%3C/svg%3E`;
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {championship.status}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <h4 className="font-bold mb-1">{championship.name}</h4>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {championship.shortDescription}
+                          </p>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                            <span className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              {championship.pilots}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {championship.location}
+                            </span>
+                          </div>
+                          <Button asChild size="sm" variant="outline" className="w-full">
+                            <Link to={`/campeonato/${championship.slug}`}>
+                              Ver Detalhes
+                            </Link>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Link para ver todos */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-center mt-12"
+              >
+                <Button asChild variant="outline" size="lg">
+                  <Link to="/campeonatos">
+                    Ver Todos os Campeonatos
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </motion.div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Seção de Próximos Eventos */}
+      {!loading && !error && upcomingEvents.length > 0 && (
+        <section className="py-20 bg-muted/30">
+          <div className="container">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="lg:col-span-2"
+              transition={{ duration: 0.6 }}
+              className="text-center mb-12"
             >
-              <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
-                <div className="relative h-64 lg:h-80">
-                  <img
-                    src={featuredChampionships[0].image}
-                    alt={featuredChampionships[0].name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Crect width='600' height='300' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3E" + featuredChampionships[0].name + "%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-primary text-white">
-                      {featuredChampionships[0].status}
-                    </Badge>
-                  </div>
-                  <div className="absolute bottom-6 left-6 right-6 text-white">
-                    <h3 className="text-2xl lg:text-3xl font-bold mb-2">
-                      {featuredChampionships[0].name}
-                    </h3>
-                    <p className="text-white/90 mb-4">
-                      {featuredChampionships[0].description}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {featuredChampionships[0].location}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {featuredChampionships[0].pilots} pilotos
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <Button asChild className="w-full">
-                    <Link to={`/campeonato/${featuredChampionships[0].slug}`}>
-                      Ver Campeonato
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                <Calendar className="h-8 w-8 text-primary" />
+                Próximos Eventos
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Não perca as próximas etapas dos campeonatos. Inscreva-se e participe!
+              </p>
             </motion.div>
 
-            {/* Campeonatos Secundários */}
-            <div className="space-y-6">
-              {featuredChampionships.slice(1).map((championship, index) => (
+            <div className="grid md:grid-cols-3 gap-6">
+              {upcomingEvents.map((event, index) => (
                 <motion.div
-                  key={championship.id}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 + (index * 0.1) }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <div className="relative h-32">
-                      <img
-                        src={championship.image}
-                        alt={championship.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect width='300' height='150' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='14' font-family='Arial'%3E" + championship.name + "%3C/text%3E%3C/svg%3E";
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <div className="absolute top-2 right-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {championship.status}
+                  <Card className="hover:shadow-lg transition-all duration-300">
+                    <CardContent className="p-6">
+                      {/* Data */}
+                      <div className="text-center mb-4">
+                        <div className="bg-primary/10 rounded-lg p-4 inline-block">
+                          <div className="text-3xl font-bold text-primary">{event.date}</div>
+                          <div className="text-sm text-muted-foreground uppercase font-medium">
+                            {event.month}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Informações */}
+                      <div className="space-y-3 text-center">
+                        <div>
+                          <div className="font-bold text-lg">{event.stage}</div>
+                        </div>
+                        
+                        <div className="space-y-1">
+                          <div className="font-medium text-primary">{event.championship}</div>
+                          <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {event.location}
+                          </div>
+                        </div>
+
+                        <Badge 
+                          className={`${
+                            event.status === "Inscrição Aberta" 
+                              ? "bg-primary text-white" 
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {event.status}
                         </Badge>
                       </div>
-                    </div>
-                    <CardContent className="p-4">
-                      <h4 className="font-bold mb-1">{championship.name}</h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {championship.description}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                        <span className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          {championship.pilots}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {championship.location.split(' ')[0]}
-                        </span>
+
+                      {/* Ação */}
+                      <div className="mt-4">
+                        <Button 
+                          size="sm" 
+                          className="w-full"
+                          variant={event.status === "Inscrição Aberta" ? "default" : "outline"}
+                          disabled={event.status !== "Inscrição Aberta"}
+                        >
+                          {event.status === "Inscrição Aberta" ? "Inscrever-se" : "Ver Detalhes"}
+                        </Button>
                       </div>
-                      <Button asChild size="sm" variant="outline" className="w-full">
-                        <Link to={`/campeonato/${championship.slug}`}>
-                          Ver Detalhes
-                        </Link>
-                      </Button>
                     </CardContent>
                   </Card>
                 </motion.div>
               ))}
             </div>
           </div>
-
-          {/* Link para ver todos */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-12"
-          >
-            <Button asChild variant="outline" size="lg">
-              <Link to="/campeonatos">
-                Ver Todos os Campeonatos
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Seção de Próximos Eventos */}
-      <section className="py-20 bg-muted/30">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              <Calendar className="h-8 w-8 text-primary" />
-              Próximos Eventos
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Não perca as próximas etapas dos campeonatos. Inscreva-se e participe!
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {upcomingEvents.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card className="hover:shadow-lg transition-all duration-300">
-                  <CardContent className="p-6">
-                    {/* Data */}
-                    <div className="text-center mb-4">
-                      <div className="bg-primary/10 rounded-lg p-4 inline-block">
-                        <div className="text-3xl font-bold text-primary">{event.date}</div>
-                        <div className="text-sm text-muted-foreground uppercase font-medium">
-                          {event.month}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Informações */}
-                    <div className="space-y-3 text-center">
-                      <div>
-                        <div className="font-bold text-lg">{event.stage}</div>
-                        <div className="text-sm text-muted-foreground">{event.day}</div>
-                      </div>
-                      
-                      <div className="space-y-1">
-                        <div className="font-medium text-primary">{event.championship}</div>
-                        <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {event.location}
-                        </div>
-                      </div>
-
-                      <Badge 
-                        className={`${
-                          event.status === "Inscrição Aberta" 
-                            ? "bg-primary text-white" 
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {event.status}
-                      </Badge>
-                    </div>
-
-                    {/* Ação */}
-                    <div className="mt-4">
-                      <Button 
-                        size="sm" 
-                        className="w-full"
-                        variant={event.status === "Inscrição Aberta" ? "default" : "outline"}
-                        disabled={event.status !== "Inscrição Aberta"}
-                      >
-                        {event.status === "Inscrição Aberta" ? "Inscrever-se" : "Ver Detalhes"}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Seção de Recursos/Benefícios */}
       <section className="py-20 bg-background">

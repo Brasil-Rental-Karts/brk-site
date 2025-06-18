@@ -38,7 +38,7 @@ function AppContent() {
         <Route path="/termos-de-uso" element={<MainLayout><Terms /></MainLayout>} />
         <Route path="/sobre-brk" element={<MainLayout><About /></MainLayout>} />
         <Route path="/campeonatos" element={<MainLayout><Championships /></MainLayout>} />
-        <Route path="/campeonato/:slug" element={<MainLayout><Championship /></MainLayout>} />
+        <Route path="/campeonato/:slug" element={<MainFullWidhtLayout><Championship /></MainFullWidhtLayout>} />
         <Route path="/pilotos/:pilotSlug" element={<MainLayout><Pilot /></MainLayout>} />
       </Routes>
     </AnimatePresence>

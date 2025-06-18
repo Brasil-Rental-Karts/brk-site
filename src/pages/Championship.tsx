@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "brk-design-system";
@@ -11,28 +11,11 @@ import { FotosTab } from "@/components/championship/tabs/FotosTab";
 import { useChampionships } from "@/hooks/useChampionships";
 import { 
   mapApiChampionshipToUI, 
-  findChampionshipBySlug, 
-  type ChampionshipUI 
+  findChampionshipBySlug
 } from "@/utils/championship.utils";
 import { championshipService } from "@/services/championship.service";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "brk-design-system";
-
-interface ChampionshipData {
-  id: string;
-  slug: string;
-  name: string;
-  shortDescription: string;
-  description: string;
-  location: string;
-  founded: string;
-  pilots: number;
-  seasons: number;
-  categories: number;
-  status: "active" | "upcoming" | "finished";
-  image: string;
-  avatar: string;
-}
 
 /**
  * Página individual de um campeonato específico
@@ -45,8 +28,6 @@ export const Championship = () => {
   // Buscar dados dos campeonatos da API
   const { 
     championships: apiChampionships, 
-    seasons,
-    stages,
     loading, 
     error, 
     refetch,
@@ -103,100 +84,6 @@ export const Championship = () => {
     return <Navigate to="/campeonatos" replace />;
   }
 
-  // Dados mockados dos campeonatos (mantendo a estrutura original para compatibilidade)
-  const championshipsData: ChampionshipData[] = [
-    {
-      id: "1",
-      slug: "escola-da-velocidade",
-      name: "Escola da Velocidade",
-      shortDescription: "Onde a paixão por kart ganha forma!",
-      description: "Onde a paixão por kart ganha forma!",
-      location: "Kartódromo Beto Carrero",
-      founded: "2021",
-      pilots: 100,
-      seasons: 6,
-      categories: 4,
-      status: "active",
-      image: "/escola-velocidade-hero.jpg",
-      avatar: "/escola-velocidade-avatar.jpg"
-    },
-    {
-      id: "2",
-      slug: "copa-sul-brasileira",
-      name: "Copa Sul Brasileira de Kart",
-      shortDescription: "O maior campeonato de kart da região Sul",
-      description: "O maior campeonato de kart da região Sul",
-      location: "Kartódromo Internacional",
-      founded: "2019",
-      pilots: 150,
-      seasons: 8,
-      categories: 6,
-      status: "active",
-      image: "/copa-sul-hero.jpg",
-      avatar: "/copa-sul-avatar.jpg"
-    },
-    {
-      id: "3",
-      slug: "desafio-das-estrelas",
-      name: "Desafio das Estrelas",
-      shortDescription: "Campeonato exclusivo para pilotos experientes",
-      description: "Campeonato exclusivo para pilotos experientes",
-      location: "Autódromo de Interlagos",
-      founded: "2020",
-      pilots: 80,
-      seasons: 5,
-      categories: 3,
-      status: "active",
-      image: "/desafio-estrelas-hero.jpg",
-      avatar: "/desafio-estrelas-avatar.jpg"
-    },
-    {
-      id: "4",
-      slug: "rookie-championship",
-      name: "Rookie Championship",
-      shortDescription: "Campeonato voltado para novos talentos",
-      description: "Campeonato voltado para novos talentos",
-      location: "Kartódromo Speed Park",
-      founded: "2022",
-      pilots: 60,
-      seasons: 3,
-      categories: 2,
-      status: "upcoming",
-      image: "/rookie-championship-hero.jpg",
-      avatar: "/rookie-championship-avatar.jpg"
-    },
-    {
-      id: "5",
-      slug: "masters-series",
-      name: "Masters Series",
-      shortDescription: "Série especial para pilotos veteranos",
-      description: "Série especial para pilotos veteranos",
-      location: "Kartódromo Granja Viana",
-      founded: "2018",
-      pilots: 45,
-      seasons: 7,
-      categories: 2,
-      status: "finished",
-      image: "/masters-series-hero.jpg",
-      avatar: "/masters-series-avatar.jpg"
-    },
-    {
-      id: "6",
-      slug: "junior-kart-league",
-      name: "Junior Kart League",
-      shortDescription: "Liga dedicada aos jovens talentos",
-      description: "Liga dedicada aos jovens talentos",
-      location: "Kartódromo Aldeia da Serra",
-      founded: "2023",
-      pilots: 75,
-      seasons: 2,
-      categories: 3,
-      status: "active",
-      image: "/junior-league-hero.jpg",
-      avatar: "/junior-league-avatar.jpg"
-    }
-  ];
-
   // Buscar temporadas e etapas do campeonato
   const championshipSeasons = getSeasonsForChampionship(currentChampionship.id);
   const championshipStages = getStagesForChampionship(currentChampionship.id);
@@ -243,24 +130,41 @@ export const Championship = () => {
 
       {/* Tabs - fullwidth */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-          <TabsList className="w-full justify-start rounded-none bg-dark-900 border-border h-12 px-6">
-            <TabsTrigger value="home" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
-              Home
-            </TabsTrigger>
-            <TabsTrigger value="calendario" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
-              Calendário
-            </TabsTrigger>
-            <TabsTrigger value="classificacao" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
-              Classificação
-            </TabsTrigger>
-            <TabsTrigger value="regulamento" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
-              Regulamento
-            </TabsTrigger>
-            <TabsTrigger value="fotos" className="text-white data-[state=active]:bg-primary data-[state=active]:text-white">
-              Fotos
-            </TabsTrigger>
-          </TabsList>
+        <div className="bg-dark-900 border-b border-white/10">
+          <div className="container mx-auto">
+            <TabsList className="bg-transparent border-0 h-auto p-0 space-x-0">
+              <TabsTrigger
+                value="home"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Home
+              </TabsTrigger>
+              <TabsTrigger
+                value="calendario"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Calendário
+              </TabsTrigger>
+              <TabsTrigger
+                value="classificacao"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Classificação
+              </TabsTrigger>
+              <TabsTrigger
+                value="regulamento"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Regulamento
+              </TabsTrigger>
+              <TabsTrigger
+                value="fotos"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Fotos
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
         {/* Conteúdo das tabs - sem espaçamento superior */}
@@ -269,19 +173,19 @@ export const Championship = () => {
             <HomeTab championship={championshipForComponents} />
           </TabsContent>
 
-          <TabsContent value="calendario" className="mt-0 px-6 py-8">
+          <TabsContent value="calendario" className="mt-0">
             <CalendarioTab championship={championshipForComponents} />
           </TabsContent>
 
-          <TabsContent value="classificacao" className="mt-0 px-6 py-8">
+          <TabsContent value="classificacao" className="mt-0">
             <ClassificacaoTab championship={championshipForComponents} />
           </TabsContent>
 
-          <TabsContent value="regulamento" className="mt-0 px-6 py-8">
+          <TabsContent value="regulamento" className="mt-0">
             <RegulamentoTab championship={championshipForComponents} />
           </TabsContent>
 
-          <TabsContent value="fotos" className="mt-0 px-6 py-8">
+          <TabsContent value="fotos" className="mt-0">
             <FotosTab championship={championshipForComponents} />
           </TabsContent>
         </div>

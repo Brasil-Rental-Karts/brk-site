@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 export function Privacy() {
   return (
     <div className="min-h-screen bg-background">

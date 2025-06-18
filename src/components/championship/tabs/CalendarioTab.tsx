@@ -78,7 +78,7 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
   }, [championship.availableSeasons]);
 
   // Filtrar eventos baseado na temporada selecionada
-  const filteredEvents = championship.events.filter(event => {
+  const filteredEvents = championship.events.filter(_event => {
     if (!championship.availableSeasons) return true;
     
     const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
@@ -90,7 +90,7 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="px-6 py-8 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

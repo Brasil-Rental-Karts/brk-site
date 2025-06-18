@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, PageHeader } from "brk-design-system";
 import { Badge } from "brk-design-system";
@@ -6,9 +6,6 @@ import { Button } from "brk-design-system";
 import { Link } from "react-router-dom";
 import {
   Trophy,
-  Users,
-  Calendar,
-  MapPin,
   Search,
   AlertCircle,
   Loader2,

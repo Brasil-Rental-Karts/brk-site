@@ -106,7 +106,7 @@ export const RegulamentoTab = ({ championship }: RegulamentoTabProps) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="px-6 py-8 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
