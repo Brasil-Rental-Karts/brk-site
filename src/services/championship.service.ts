@@ -2,6 +2,7 @@ const CACHE_API_URL = import.meta.env.VITE_CACHE_API_URL;
 
 export interface Championship {
   id: string;
+  slug?: string;
   name: string;
   championshipImage?: string;
   shortDescription: string;

@@ -47,7 +47,7 @@ export function mapApiChampionshipToUI(
   activeSeasonsCount: number = 0, 
   activeCategoriesCount: number = 0
 ): ChampionshipUI {
-  const slug = generateSlug(apiChampionship.name);
+  const slug = apiChampionship.slug || generateSlug(apiChampionship.name);
   
   return {
     id: apiChampionship.id,
