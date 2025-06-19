@@ -350,27 +350,28 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
           </h2>
 
         {/* Grid dos Patrocinadores */}
-        {championship.sponsors && Array.isArray(championship.sponsors) && championship.sponsors.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            {championship.sponsors.map((sponsor, index) => (
+        <div className="flex flex-wrap justify-center items-center gap-8">
+            {championship.sponsors && championship.sponsors.length > 0 ? (
+              championship.sponsors.map((sponsor, index) => (
               <motion.div
                 key={sponsor.id}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.8 + (index * 0.05) }}
+                className="w-[180px] h-60"
               >
                 {sponsor.website ? (
                   <a
                     href={sponsor.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block aspect-square bg-muted/30 rounded-lg p-4 flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer"
+                    className="block w-full h-full p-2 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer"
                     title={`Visitar site de ${sponsor.name}`}
                   >
                     <img
                       src={sponsor.logoImage}
                       alt={sponsor.name}
-                      className="max-w-full max-h-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+                      className="max-w-full max-h-full object-contain opacity-100 hover:opacity-70 transition-opacity"
                       onError={(e) => {
                         // Placeholder se imagem não carregar
                         (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='10' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
@@ -378,11 +379,11 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
                     />
                   </a>
                 ) : (
-                  <div className="aspect-square bg-muted/30 rounded-lg p-4 flex items-center justify-center hover:bg-muted/50 transition-colors">
+                  <div className="w-full h-full p-2 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors">
                     <img
                       src={sponsor.logoImage}
                       alt={sponsor.name}
-                      className="max-w-full max-h-full object-contain opacity-70"
+                      className="max-w-full max-h-full object-contain opacity-100 hover:opacity-70 transition-opacity"
                       onError={(e) => {
                         // Placeholder se imagem não carregar
                         (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='10' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
@@ -391,13 +392,13 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
                   </div>
                 )}
               </motion.div>
-            ))}
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Nenhum patrocinador cadastrado ainda.</p>
+            </div>
+          )}
           </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Nenhum patrocinador cadastrado ainda.</p>
-                    </div>
-        )}
         </motion.div>
       )}
     </div>
