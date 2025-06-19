@@ -291,6 +291,17 @@ export const Championships = () => {
               Tente ajustar os filtros ou termos de busca para encontrar
               campeonatos.
             </p>
+            <div className="my-8">
+            <p>Não encontrou seu campeonato?</p>
+            <Button
+              asChild
+              size="lg"
+              variant="default"
+              className="px-8 py-6 rounded-full transition-all duration-300"
+            >
+              <Link to="/">Entre em Contato</Link>
+            </Button>
+            </div>
           </motion.div>
         )}
       </div>
