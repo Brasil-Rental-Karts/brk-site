@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion"
-import { Trophy, Calendar, Users, MapPin, ArrowRight, Zap, Target } from "lucide-react"
-import { Link } from "react-router-dom"
-import { Button } from "brk-design-system"
-import { Card, CardContent } from "brk-design-system"
-import { Badge } from "brk-design-system"
-import { championshipService, Championship, Stage } from "@/services/championship.service";
+import { motion } from "framer-motion";
+import {
+  Trophy,
+  Calendar,
+  Users,
+  MapPin,
+  ArrowRight,
+  Zap,
+  Target,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "brk-design-system";
+import { Card, CardContent } from "brk-design-system";
+import { Badge } from "brk-design-system";
+import {
+  championshipService,
+  Championship,
+  Stage,
+} from "@/services/championship.service";
+import { Hero } from "@/components/Hero";
+import { RegisterCTA } from "@/components/RegisterCTA";
 
 interface HomeChampionship extends Championship {
   featured?: string;
@@ -24,7 +38,9 @@ interface UpcomingEventUI {
 }
 
 export function Home() {
-  const [featuredChampionships, setFeaturedChampionships] = useState<HomeChampionship[]>([]);
+  const [featuredChampionships, setFeaturedChampionships] = useState<
+    HomeChampionship[]
+  >([]);
   const [upcomingEvents, setUpcomingEvents] = useState<UpcomingEventUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,12 +52,17 @@ export function Home() {
         setError(null);
 
         // 1. Buscar todos os campeonatos
-        const allChampionships = await championshipService.getAllChampionships();
+        const allChampionships =
+          await championshipService.getAllChampionships();
 
         // 2. Priorizar campeonatos com 'featured: true'
-        const featured = allChampionships.filter(c => (c as HomeChampionship).featured === 'true');
-        const notFeatured = allChampionships.filter(c => (c as HomeChampionship).featured !== 'true');
-        
+        const featured = allChampionships.filter(
+          (c) => (c as HomeChampionship).featured === "true"
+        );
+        const notFeatured = allChampionships.filter(
+          (c) => (c as HomeChampionship).featured !== "true"
+        );
+
         // 3. Selecionar os 3 principais campeonatos
         const topChampionships = [...featured, ...notFeatured].slice(0, 3);
         setFeaturedChampionships(topChampionships as HomeChampionship[]);
@@ -49,31 +70,38 @@ export function Home() {
         // 4. Buscar eventos dos principais campeonatos
         let allStages: (Stage & { championshipName: string })[] = [];
         for (const champ of topChampionships) {
-          const activeSeasons = await championshipService.getActiveSeasonsForChampionship(champ.id);
+          const activeSeasons =
+            await championshipService.getActiveSeasonsForChampionship(champ.id);
           if (activeSeasons.length > 0) {
             const seasonId = activeSeasons[0].id; // Pegando a primeira temporada ativa
             try {
-              const stages = await championshipService.getStagesForSeason(seasonId);
-              const stagesWithChampName = stages.map(stage => ({
+              const stages = await championshipService.getStagesForSeason(
+                seasonId
+              );
+              const stagesWithChampName = stages.map((stage) => ({
                 ...stage,
-                championshipName: champ.name, 
+                championshipName: champ.name,
               }));
               allStages = [...allStages, ...stagesWithChampName];
             } catch (seasonError) {
-              console.error(`Failed to fetch stages for season ${seasonId}:`, seasonError);
+              console.error(
+                `Failed to fetch stages for season ${seasonId}:`,
+                seasonError
+              );
             }
           }
         }
 
         // 5. Ordenar e pegar os próximos 3 eventos
         const upcoming = allStages
-          .filter(stage => new Date(stage.date) >= new Date())
-          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+          .filter((stage) => new Date(stage.date) >= new Date())
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          )
           .slice(0, 3)
-          .map(stage => championshipService.formatStageForUI(stage));
+          .map((stage) => championshipService.formatStageForUI(stage));
 
         setUpcomingEvents(upcoming);
-
       } catch (err) {
         setError("Falha ao carregar dados da página inicial.");
         console.error(err);
@@ -88,138 +116,8 @@ export function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary via-primary-600 to-primary-700 text-white overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
+      <Hero />
 
-        <div className="relative container py-20 md:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Lado esquerdo - Conteúdo principal */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
-            >
-              <div className="space-y-4">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  <Badge className="bg-white/20 text-white border-white/30 mb-4">
-                    🏁 Plataforma Oficial de Campeonatos
-                  </Badge>
-                </motion.div>
-                
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="text-4xl md:text-6xl font-bold leading-tight"
-                >
-                  Brasil Rental
-                  <span className="block text-primary-200">Karts</span>
-                </motion.h1>
-                
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="text-xl md:text-2xl text-white/90 leading-relaxed"
-                >
-                  A plataforma que conecta pilotos, organiza campeonatos e 
-                  profissionaliza o kartismo brasileiro.
-                </motion.p>
-              </div>
-
-              {/* Estatísticas rápidas */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="grid grid-cols-3 gap-6"
-              >
-                <div className="text-center">
-                  <div className="text-3xl font-bold">6</div>
-                  <div className="text-sm text-white/70">Campeonatos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold">500+</div>
-                  <div className="text-sm text-white/70">Pilotos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold">25+</div>
-                  <div className="text-sm text-white/70">Etapas</div>
-                </div>
-              </motion.div>
-
-              {/* CTAs */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Button 
-                  size="lg" 
-                  className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
-                  asChild
-                >
-                  <Link to="/campeonatos">
-                    Ver Campeonatos
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  className="border-white/50 text-white bg-transparent hover:bg-white/10 hover:border-white/70 hover:text-white"
-                  asChild
-                >
-                  <Link to="/about">
-                    Saiba Mais
-                  </Link>
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            {/* Lado direito - Visual/Imagem */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative">
-                <div className="aspect-square bg-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
-                  <img 
-                    src="/hero-kart-image.jpg"
-                    alt="Kartismo Brasileiro"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3EBrasil Rental%3C/text%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3EKarts%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                </div>
-                
-                {/* Elementos flutuantes */}
-                <div className="absolute -top-4 -right-4 bg-white text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                  🏆 #1 Plataforma
-                </div>
-                <div className="absolute -bottom-4 -left-4 bg-primary-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-                  ⚡ Inscrições Abertas
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-      
       {/* Seção de Campeonatos em Destaque */}
       <section className="py-20 bg-background">
         <div className="container">
@@ -230,11 +128,12 @@ export function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-heading text-3xl md:text-3xl font-bold mb-4">
               Campeonatos em Destaque
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Descubra os principais campeonatos de kart do Brasil e encontre a competição perfeita para você
+              Descubra os principais campeonatos de kart do Brasil e encontre a
+              competição perfeita para você
             </p>
           </motion.div>
 
@@ -259,12 +158,21 @@ export function Home() {
                         alt={featuredChampionships[0].name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Crect width='600' height='300' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3E${featuredChampionships[0].name}%3C/text%3E%3C/svg%3E`;
+                          (
+                            e.target as HTMLImageElement
+                          ).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Crect width='600' height='300' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='Arial'%3E${featuredChampionships[0].name}%3C/text%3E%3C/svg%3E`;
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <div className="absolute top-4 right-4">
-                        <Badge variant={featuredChampionships[0].status === 'Inscrições Abertas' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            featuredChampionships[0].status ===
+                            "Inscrições Abertas"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {featuredChampionships[0].status}
                         </Badge>
                       </div>
@@ -290,7 +198,9 @@ export function Home() {
                     <CardContent className="p-6 flex-grow flex flex-col">
                       <div className="flex-grow" />
                       <Button asChild className="w-full">
-                        <Link to={`/campeonato/${featuredChampionships[0].slug}`}>
+                        <Link
+                          to={`/campeonato/${featuredChampionships[0].slug}`}
+                        >
                           Ver Campeonato
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
@@ -307,7 +217,7 @@ export function Home() {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.2 + (index * 0.1) }}
+                      transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
                     >
                       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
                         <div className="relative h-32">
@@ -316,7 +226,9 @@ export function Home() {
                             alt={championship.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect width='300' height='150' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='14' font-family='Arial'%3E${championship.name}%3C/text%3E%3C/svg%3E`;
+                              (
+                                e.target as HTMLImageElement
+                              ).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect width='300' height='150' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='14' font-family='Arial'%3E${championship.name}%3C/text%3E%3C/svg%3E`;
                             }}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -327,7 +239,9 @@ export function Home() {
                           </div>
                         </div>
                         <CardContent className="p-4">
-                          <h4 className="font-bold mb-1">{championship.name}</h4>
+                          <h4 className="font-bold mb-1">
+                            {championship.name}
+                          </h4>
                           <p className="text-sm text-muted-foreground mb-3">
                             {championship.shortDescription}
                           </p>
@@ -341,7 +255,12 @@ export function Home() {
                               {championship.location}
                             </span>
                           </div>
-                          <Button asChild size="sm" variant="outline" className="w-full">
+                          <Button
+                            asChild
+                            size="sm"
+                            variant="outline"
+                            className="w-full"
+                          >
                             <Link to={`/campeonato/${championship.slug}`}>
                               Ver Detalhes
                             </Link>
@@ -389,7 +308,8 @@ export function Home() {
                 Próximos Eventos
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Não perca as próximas etapas dos campeonatos. Inscreva-se e participe!
+                Não perca as próximas etapas dos campeonatos. Inscreva-se e
+                participe!
               </p>
             </motion.div>
 
@@ -407,7 +327,9 @@ export function Home() {
                       {/* Data */}
                       <div className="text-center mb-4">
                         <div className="bg-primary/10 rounded-lg p-4 inline-block">
-                          <div className="text-3xl font-bold text-primary">{event.date}</div>
+                          <div className="text-3xl font-bold text-primary">
+                            {event.date}
+                          </div>
                           <div className="text-sm text-muted-foreground uppercase font-medium">
                             {event.month}
                           </div>
@@ -419,19 +341,21 @@ export function Home() {
                         <div>
                           <div className="font-bold text-lg">{event.stage}</div>
                         </div>
-                        
+
                         <div className="space-y-1">
-                          <div className="font-medium text-primary">{event.championship}</div>
+                          <div className="font-medium text-primary">
+                            {event.championship}
+                          </div>
                           <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {event.location}
                           </div>
                         </div>
 
-                        <Badge 
+                        <Badge
                           className={`${
-                            event.status === "Inscrição Aberta" 
-                              ? "bg-primary text-white" 
+                            event.status === "Inscrição Aberta"
+                              ? "bg-primary text-white"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -441,13 +365,19 @@ export function Home() {
 
                       {/* Ação */}
                       <div className="mt-4">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="w-full"
-                          variant={event.status === "Inscrição Aberta" ? "default" : "outline"}
+                          variant={
+                            event.status === "Inscrição Aberta"
+                              ? "default"
+                              : "outline"
+                          }
                           disabled={event.status !== "Inscrição Aberta"}
                         >
-                          {event.status === "Inscrição Aberta" ? "Inscrever-se" : "Ver Detalhes"}
+                          {event.status === "Inscrição Aberta"
+                            ? "Inscrever-se"
+                            : "Ver Detalhes"}
                         </Button>
                       </div>
                     </CardContent>
@@ -469,7 +399,7 @@ export function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-heading text-3xl md:text-3xl font-bold mb-4">
               Por que escolher a BRK?
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -481,19 +411,22 @@ export function Home() {
             {[
               {
                 icon: Trophy,
-                title: "Campeonatos Profissionais",
-                description: "Organização e gestão profissional de campeonatos com sistema de pontuação unificado"
+                title: "Campeonatos Amadores",
+                description:
+                  "Organização profissional de campeonatos amadores com sistema de pontuação unificado",
               },
               {
                 icon: Zap,
-                title: "Inscrições Simplificadas", 
-                description: "Processo de inscrição rápido e seguro, com pagamento integrado e confirmação automática"
+                title: "Inscrições Simplificadas",
+                description:
+                  "Processo de inscrição rápido e seguro, com pagamento integrado e confirmação automática",
               },
               {
                 icon: Target,
                 title: "Rankings Atualizados",
-                description: "Acompanhe sua evolução com rankings em tempo real e estatísticas detalhadas"
-              }
+                description:
+                  "Acompanhe sua evolução com rankings em tempo real e estatísticas detalhadas",
+              },
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -504,7 +437,7 @@ export function Home() {
               >
                 <Card className="p-8 text-center hover:shadow-lg transition-all duration-300 h-full">
                   <feature.icon className="h-12 w-12 text-primary mx-auto mb-6" />
-                  <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+                  <h3 className="font-heading text-xl font-bold mb-4">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </Card>
               </motion.div>
@@ -513,47 +446,57 @@ export function Home() {
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="py-20 bg-primary text-white">
-        <div className="container text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Pronto para acelerar sua carreira no kart?
-            </h2>
-            <p className="text-xl text-white/90 mb-8">
-              Junte-se a centenas de pilotos que já fazem parte da maior plataforma de kartismo do Brasil
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
-                asChild
-              >
-                <Link to="/campeonatos">
-                  Explorar Campeonatos
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                className="border-white/50 text-white bg-transparent hover:bg-white/10 hover:border-white/70 hover:text-white"
-                asChild
-              >
-                <Link to="/about">
-                  Saiba Mais
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
+      {/* Depoimentos */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <h2 className="font-heading text-3xl text-center mb-12">
+            O Que Dizem os Pilotos
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="p-6">
+              <p className="text-lg mb-4">
+                "A plataforma revolucionou a forma como organizamos nossos
+                campeonatos. Tudo ficou mais profissional e organizado."
+              </p>
+              <div className="flex items-center gap-4">
+                <img
+                  src="/ronan-avatar.png"
+                  alt="Ronan Avatar"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">Ronan</p>
+                  <p className="text-sm text-muted-foreground">
+                    Organizador de Campeonato
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <p className="text-lg mb-4">
+                "Agora posso acompanhar minha evolução e comparar meu desempenho
+                com outros pilotos. Isso me motiva a melhorar cada vez mais."
+              </p>
+              <div className="flex items-center gap-4">
+                <img
+                  src="/eduardo-avatar.png"
+                  alt="Eduardo Avatar"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">Eduardo</p>
+                  <p className="text-sm text-muted-foreground">Piloto Amador</p>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </section>
+
+      {/* CTA Final */}
+      <RegisterCTA />
     </div>
-  )
-} 
+  );
+}

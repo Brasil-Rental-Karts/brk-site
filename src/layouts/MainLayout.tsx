@@ -20,7 +20,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Navbar />
 
       {/* Main content */}
-      <main className="container flex-1">{children}</main>
+      <main className="container flex-1 py-16">{children}</main>
       
       <Footer />
     </div>

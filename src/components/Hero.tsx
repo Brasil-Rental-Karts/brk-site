@@ -4,47 +4,47 @@ import { Link } from "react-router-dom"
 
 export function Hero() {
   return (
-    <section className="relative h-[600px] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-900 to-primary-500 opacity-90" />
-      <div className="relative container pt-32 text-center">
-        <motion.h1 
+    <section className="relative h-screen md:min-h-[600px] flex items-center justify-center bg-primary overflow-hidden">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-20 flex flex-col items-center text-center">
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl font-bold text-background mb-6"
+          className="font-heading text-3xl sm:text-4xl font-bold text-dark mb-6"
         >
-          Brasil Rental Karts
+          Encontre e participe dos melhores campeonatos de Rental Kart
         </motion.h1>
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-xl text-background/90 mb-8 max-w-2xl mx-auto"
+          className="text-base sm:text-xl text-dark mb-8 max-w-2xl mx-auto"
         >
-          Profissionalizando a gestão de campeonatos e pilotos de kart em todo o Brasil.
+          Acompanhe sua classificação, inscreva-se em corridas e viva a emoção da velocidade com a comunidade BRK.
         </motion.p>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
         >
-          <Button 
-            size="lg" 
-            className="rounded-full px-8 py-6 text-lg bg-background text-primary-500 hover:bg-background/90 transition-all duration-300 w-full sm:w-auto"
+          <Button
+            size="lg"
+            className="rounded-full px-8 py-6 text-lg font-semibold w-full sm:w-auto bg-dark hover:bg-dark/90 text-white dark:bg-background shadow-lg transition-all duration-300 border-none"
             asChild
           >
-            <Link to="/campeonato">
-              Ver Campeonato
+            <Link to="/campeonatos">
+              Explorar Campeonatos
             </Link>
           </Button>
-          <Button 
+          <Button
             size="lg"
-            className="rounded-full px-8 py-6 text-lg bg-transparent border-2 border-background text-background hover:bg-background hover:text-primary-500 transition-all duration-300 w-full sm:w-auto"
+            variant={"outline"}
+            className="rounded-full px-8 py-6 text-lg font-semibold w-full sm:w-auto bg-transparent border-dark text-dark hover:bg-white hover:text-[#ff6c00] transition-all duration-300"
             asChild
           >
-            <Link to="/about">
-              Saiba Mais
+            <Link to="/cadastro">
+              Criar Perfil de Piloto
             </Link>
           </Button>
         </motion.div>
