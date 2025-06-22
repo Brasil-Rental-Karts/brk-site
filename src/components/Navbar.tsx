@@ -16,10 +16,7 @@ import {
   SheetTrigger,
 } from "brk-design-system";
 import { ChevronDown, Menu } from "lucide-react";
-import { useState, useRef, useEffect, ChangeEvent } from "react";
-import { SearchInput } from "./ui/input";
-import { Card, CardContent } from "brk-design-system";
-import { getInitials } from "@/utils/pilot-utils";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "brk-design-system";
 import { fetchWithAuth } from "@/utils/fetchWithAuth";
 
@@ -31,83 +28,9 @@ export function Navbar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Estados para a pesquisa de pilotos
-  const [pilotSearchQuery, setPilotSearchQuery] = useState("");
-  const [pilotDropdownOpen, setPilotDropdownOpen] = useState(false);
-  const pilotSearchInputRef = useRef<HTMLInputElement>(null);
-  const [showPilotEmptyMessage, setShowPilotEmptyMessage] = useState(false);
-
   // Auth state for brk-site
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
-
-  const [pilots, setPilots] = useState<any[]>([]);
-  useEffect(() => {
-    const cacheApiUrl = import.meta.env.VITE_CACHE_API_URL;
-    if (!cacheApiUrl) {
-      console.warn("VITE_CACHE_API_URL not configured");
-      setPilots([]);
-      return;
-    }
-
-    fetch(`${cacheApiUrl}/cache/pilot`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then((data) => setPilots(data.data || []))
-      .catch((error) => {
-        console.error("Failed to fetch pilots:", error);
-        setPilots([]);
-      });
-  }, []);
-
-  const handlePilotSelect = (pilot: (typeof pilots)[0]) => {
-    setPilotDropdownOpen(false);
-    setIsOpen(false);
-    setPilotSearchQuery("");
-    navigate(`/pilotos/${pilot.slug}`);
-  };
-
-  // Handle pilot search input change
-  const handlePilotSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPilotSearchQuery(e.target.value);
-    // Reset empty message timer on each input change
-    setShowPilotEmptyMessage(false);
-    if (e.target.value.length >= 2 && filteredPilots.length === 0) {
-      // Show empty message after slight delay
-      setTimeout(() => setShowPilotEmptyMessage(true), 300);
-    }
-  };
-
-  // Clear pilot search input
-  const clearPilotSearch = () => {
-    setPilotSearchQuery("");
-    setShowPilotEmptyMessage(false);
-  };
-
-  // Filter pilots based on search query
-  const filteredPilots =
-    pilotSearchQuery.length >= 2
-      ? pilots
-          .filter(
-            (pilot) =>
-              pilot.name
-                .toLowerCase()
-                .includes(pilotSearchQuery.toLowerCase()) ||
-              (pilot.nickname &&
-                pilot.nickname
-                  .toLowerCase()
-                  .includes(pilotSearchQuery.toLowerCase())) ||
-              pilot.category
-                .toLowerCase()
-                .includes(pilotSearchQuery.toLowerCase()) ||
-              `#${pilot.number}`.includes(pilotSearchQuery.toLowerCase())
-          )
-          .slice(0, 5)
-      : [];
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -171,97 +94,6 @@ export function Navbar() {
             >
               Campeonatos
             </Link>
-
-            {/* Desktop pilots dropdown */}
-            <DropdownMenu
-              open={pilotDropdownOpen}
-              onOpenChange={setPilotDropdownOpen}
-            >
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="inline-flex h-9 w-max items-center justify-center rounded-2xl px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none text-navbar-foreground"
-                >
-                  <span className="flex items-center">
-                    Pilotos
-                    <ChevronDown
-                      className="h-4 w-4 ml-1 transition-transform duration-200"
-                      style={{
-                        transform: pilotDropdownOpen
-                          ? "rotate(-180deg)"
-                          : "rotate(0)",
-                      }}
-                    />
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end" className="w-[400px] p-4">
-                <div className="space-y-3">
-                  <div className="text-sm font-medium">Buscar pilotos</div>
-                  <SearchInput
-                    ref={pilotSearchInputRef}
-                    placeholder="Digite o nome, número ou categoria..."
-                    value={pilotSearchQuery}
-                    onChange={handlePilotSearchChange}
-                    clearable={!!pilotSearchQuery}
-                    onClear={clearPilotSearch}
-                    variant="muted"
-                    inputSize="default"
-                    className="rounded-lg transition-all focus-visible:ring-primary-500/20 focus-visible:border-primary-500/50"
-                  />
-                  {pilotSearchQuery && (
-                    <div className="text-xs text-muted-foreground">
-                      {filteredPilots.length}{" "}
-                      {filteredPilots.length === 1
-                        ? "piloto encontrado"
-                        : "pilotos encontrados"}
-                    </div>
-                  )}
-                </div>
-
-                <div className="max-h-[300px] overflow-y-auto mt-3">
-                  {pilotSearchQuery ? (
-                    filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                      <div className="py-6 text-center text-sm text-muted-foreground">
-                        Nenhum piloto encontrado
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {filteredPilots.map((pilot) => (
-                          <Card
-                            key={pilot.id}
-                            className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 border-muted/80"
-                            onClick={() => handlePilotSelect(pilot)}
-                          >
-                            <CardContent className="p-3 flex items-start space-x-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
-                                  {getInitials(pilot.name)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="font-medium text-sm">
-                                  {pilot.name}
-                                </div>
-                                <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                  <span className="mr-2">#{pilot.number}</span>
-                                  <span>{pilot.category}</span>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    <div className="py-6 text-center text-sm text-muted-foreground">
-                      Digite pelo menos 2 caracteres para buscar pilotos
-                    </div>
-                  )}
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </nav>
         </div>
 
@@ -401,73 +233,6 @@ export function Navbar() {
                   >
                     Campeonatos
                   </Link>
-
-                  {/* Mobile pilot search */}
-                  <div className="space-y-3 mt-4">
-                    <div className="text-sm font-medium px-2">
-                      Buscar pilotos
-                    </div>
-                    <SearchInput
-                      placeholder="Digite o nome, número ou categoria..."
-                      value={pilotSearchQuery}
-                      onChange={handlePilotSearchChange}
-                      clearable={!!pilotSearchQuery}
-                      onClear={clearPilotSearch}
-                      variant="muted"
-                      inputSize="default"
-                      className="rounded-lg"
-                    />
-
-                    {pilotSearchQuery && (
-                      <div className="text-xs text-muted-foreground px-2">
-                        {filteredPilots.length}{" "}
-                        {filteredPilots.length === 1
-                          ? "piloto encontrado"
-                          : "pilotos encontrados"}
-                      </div>
-                    )}
-
-                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                      {pilotSearchQuery ? (
-                        filteredPilots.length === 0 && showPilotEmptyMessage ? (
-                          <div className="py-4 text-center text-sm text-muted-foreground">
-                            Nenhum piloto encontrado
-                          </div>
-                        ) : (
-                          filteredPilots.map((pilot) => (
-                            <Card
-                              key={pilot.id}
-                              className="cursor-pointer hover:bg-muted/50 transition-colors duration-200"
-                              onClick={() => handlePilotSelect(pilot)}
-                            >
-                              <CardContent className="p-3 flex items-start space-x-3">
-                                <Avatar className="h-10 w-10">
-                                  <AvatarFallback className="bg-primary-500/10 text-primary-500 text-sm font-medium">
-                                    {getInitials(pilot.name)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
-                                  <div className="font-medium text-sm">
-                                    {pilot.name}
-                                  </div>
-                                  <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                                    <span className="mr-2">
-                                      #{pilot.number}
-                                    </span>
-                                    <span>{pilot.category}</span>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))
-                        )
-                      ) : (
-                        <div className="py-4 text-center text-sm text-muted-foreground">
-                          Digite pelo menos 2 caracteres para buscar pilotos
-                        </div>
-                      )}
-                    </div>
-                  </div>
 
                   {user && (
                     <>

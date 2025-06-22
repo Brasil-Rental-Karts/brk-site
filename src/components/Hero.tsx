@@ -43,9 +43,9 @@ export function Hero() {
             className="rounded-full px-8 py-6 text-lg font-semibold w-full sm:w-auto bg-transparent border-dark text-dark hover:bg-white hover:text-[#ff6c00] transition-all duration-300"
             asChild
           >
-            <Link to="/cadastro">
+            <a href={`${import.meta.env.VITE_APP_URL}/auth/register`}>
               Criar Perfil de Piloto
-            </Link>
+            </a>
           </Button>
         </motion.div>
       </div>

@@ -25,7 +25,7 @@ export function RegisterCTA() {
               className="rounded-full px-8 py-6 text-lg font-semibold w-full sm:w-auto bg-foreground hover:bg-foreground/90 text-white dark:bg-background shadow-lg transition-all duration-300 border-none"
               asChild
             >
-              <Link to="/campeonatos">Criar Perfil de Piloto</Link>
+              <a href={`${import.meta.env.VITE_APP_URL}/auth/register`}>Criar Perfil de Piloto</a>
             </Button>
           </div>
         </motion.div>

@@ -69,15 +69,25 @@ export function Home() {
 
         // 4. Buscar eventos dos principais campeonatos
         let allStages: (Stage & { championshipName: string })[] = [];
+        
         for (const champ of topChampionships) {
-          const activeSeasons =
-            await championshipService.getActiveSeasonsForChampionship(champ.id);
-          if (activeSeasons.length > 0) {
-            const seasonId = activeSeasons[0].id; // Pegando a primeira temporada ativa
+          // Buscar TODAS as temporadas do campeonato (não apenas as ativas)
+          const allSeasons = await championshipService.getAllSeasons();
+          const championshipSeasons = allSeasons.filter(season => season.championshipId === champ.id);
+          
+          if (championshipSeasons.length > 0) {
+            // Ordenar temporadas por data de início (mais recente primeiro)
+            const sortedSeasons = championshipSeasons.sort((a, b) => 
+              new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+            );
+            
+            const seasonId = sortedSeasons[0].id; // Pegando a temporada mais recente
+            
             try {
               const stages = await championshipService.getStagesForSeason(
                 seasonId
               );
+              
               const stagesWithChampName = stages.map((stage) => ({
                 ...stage,
                 championshipName: champ.name,
@@ -94,12 +104,22 @@ export function Home() {
 
         // 5. Ordenar e pegar os próximos 3 eventos
         const upcoming = allStages
-          .filter((stage) => new Date(stage.date) >= new Date())
+          .filter((stage) => {
+            const stageDate = new Date(stage.date);
+            const now = new Date();
+            return stageDate >= now;
+          })
           .sort(
             (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
           )
           .slice(0, 3)
-          .map((stage) => championshipService.formatStageForUI(stage));
+          .map((stage) => {
+            const formattedStage = championshipService.formatStageForUI(stage);
+            return {
+              ...formattedStage,
+              championship: stage.championshipName
+            };
+          });
 
         setUpcomingEvents(upcoming);
       } catch (err) {
