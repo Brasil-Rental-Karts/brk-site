@@ -16,7 +16,6 @@ import {
   mapApiChampionshipToUI,
   filterChampionshipsByStatus,
   searchChampionships,
-  calculateChampionshipStats,
   type ChampionshipUI,
 } from "@/utils/championship.utils";
 
@@ -34,24 +33,14 @@ export const Championships = () => {
     loading,
     error,
     refetch,
-    getActiveSeasonsCount,
-    getActiveCategoriesCount,
   } = useChampionships();
 
   // Converter dados da API para o formato do UI
   const championships = useMemo(() => {
     return apiChampionships.map((apiChampionship) => {
-      const activeSeasonsCount = getActiveSeasonsCount(apiChampionship.id);
-      const activeCategoriesCount = getActiveCategoriesCount(
-        apiChampionship.id
-      );
-      return mapApiChampionshipToUI(
-        apiChampionship,
-        activeSeasonsCount,
-        activeCategoriesCount
-      );
+      return mapApiChampionshipToUI(apiChampionship);
     });
-  }, [apiChampionships, getActiveSeasonsCount, getActiveCategoriesCount]);
+  }, [apiChampionships]);
 
   // Filtrar campeonatos baseado na busca e status
   const filteredChampionships = useMemo(() => {
@@ -59,12 +48,6 @@ export const Championships = () => {
     filtered = searchChampionships(filtered, searchQuery);
     return filtered;
   }, [championships, filterStatus, searchQuery]);
-
-  // Calcular estatísticas
-  const stats = useMemo(
-    () => calculateChampionshipStats(championships),
-    [championships]
-  );
 
   const getStatusBadge = (status: ChampionshipUI["status"]) => {
     switch (status) {
@@ -124,50 +107,6 @@ export const Championships = () => {
                 <option value="finished">Finalizados</option>
               </select>
             </div>
-          </div>
-
-          {/* Estatísticas */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {stats.total}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Total de Campeonatos
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {stats.active}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Campeonatos Ativos
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {stats.totalActiveSeasons}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Temporadas Ativas
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {stats.totalActiveCategories}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Categorias Ativas
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </motion.div>
@@ -234,33 +173,13 @@ export const Championships = () => {
 
                   <CardContent className="p-6">
                     {/* Nome e descrição */}
-                    <div className="mb-4">
+                    <div className="mb-6">
                       <h3 className="text-xl font-bold mb-2">
                         {championship.name}
                       </h3>
                       <p className="text-sm text-muted-foreground line-clamp-3">
                         {championship.shortDescription}
                       </p>
-                    </div>
-
-                    {/* Estatísticas */}
-                    <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-muted/30 rounded-lg">
-                      <div className="text-center">
-                        <div className="font-bold text-primary">
-                          {championship.activeSeasons || 0}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Temporadas Ativas
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="font-bold text-primary">
-                          {championship.activeCategories || 0}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Categorias Ativas
-                        </div>
-                      </div>
                     </div>
 
                     {/* Botão de ação */}

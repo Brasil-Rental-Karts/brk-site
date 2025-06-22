@@ -203,16 +203,6 @@ export function Home() {
                         <p className="text-white/90 mb-4">
                           {featuredChampionships[0].shortDescription}
                         </p>
-                        <div className="flex items-center gap-4 text-sm">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {featuredChampionships[0].location}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {featuredChampionships[0].pilots} pilotos
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <CardContent className="p-6 flex-grow flex flex-col">

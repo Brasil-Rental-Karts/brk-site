@@ -1,5 +1,4 @@
 import { Button } from "brk-design-system";
-import { Avatar, AvatarFallback } from "brk-design-system";
 import { UserPlus } from "lucide-react";
 
 interface Season {
@@ -23,6 +22,8 @@ interface ChampionshipHeaderProps {
     categories: string;
     kartodromo: string;
     longDescription: string;
+    image?: string;
+    avatar?: string;
     stats: Array<{ label: string; value: string }>;
   };
   seasonsWithOpenRegistration?: Season[];
@@ -56,11 +57,27 @@ export const ChampionshipHeader = ({
         <div className="hidden md:flex items-center justify-between">
           {/* Avatar e nome */}
           <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border-2 border-white/20">
-              <AvatarFallback className="text-sm font-bold text-black bg-white">
-                {getInitials(championship.name)}
-              </AvatarFallback>
-            </Avatar>
+            <div className="h-12 w-12 border-2 border-white/20 rounded-full overflow-hidden bg-white flex items-center justify-center">
+              {championship.image || championship.avatar ? (
+                <img 
+                  src={championship.image || championship.avatar} 
+                  alt={championship.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Se a imagem falhar, esconder e mostrar as iniciais
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const parent = (e.target as HTMLImageElement).parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span class="text-sm font-bold text-black">${getInitials(championship.name)}</span>`;
+                    }
+                  }}
+                />
+              ) : (
+                <span className="text-sm font-bold text-black">
+                  {getInitials(championship.name)}
+                </span>
+              )}
+            </div>
             
             <h1 className="text-2xl font-bold">
               {championship.name}
@@ -99,11 +116,27 @@ export const ChampionshipHeader = ({
         <div className="md:hidden space-y-4">
           {/* Linha 1: Avatar e nome */}
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border-2 border-white/20">
-              <AvatarFallback className="text-xs font-bold text-black bg-white">
-                {getInitials(championship.name)}
-              </AvatarFallback>
-            </Avatar>
+            <div className="h-10 w-10 border-2 border-white/20 rounded-full overflow-hidden bg-white flex items-center justify-center">
+              {championship.image || championship.avatar ? (
+                <img 
+                  src={championship.image || championship.avatar} 
+                  alt={championship.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Se a imagem falhar, esconder e mostrar as iniciais
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const parent = (e.target as HTMLImageElement).parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span class="text-xs font-bold text-black">${getInitials(championship.name)}</span>`;
+                    }
+                  }}
+                />
+              ) : (
+                <span className="text-xs font-bold text-black">
+                  {getInitials(championship.name)}
+                </span>
+              )}
+            </div>
             
             <h1 className="text-lg font-bold flex-1 min-w-0">
               <span className="truncate block">{championship.name}</span>
