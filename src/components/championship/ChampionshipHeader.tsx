@@ -1,5 +1,16 @@
 import { Button } from "brk-design-system";
 import { Avatar, AvatarFallback } from "brk-design-system";
+import { UserPlus } from "lucide-react";
+
+interface Season {
+  id: string;
+  name: string;
+  slug?: string;
+  startDate: string;
+  endDate: string;
+  championshipId: string;
+  registrationOpen?: boolean;
+}
 
 interface ChampionshipHeaderProps {
   championship: {
@@ -14,13 +25,19 @@ interface ChampionshipHeaderProps {
     longDescription: string;
     stats: Array<{ label: string; value: string }>;
   };
+  seasonsWithOpenRegistration?: Season[];
+  onRegisterClick?: (seasonSlug: string) => void;
 }
 
 /**
  * Header da página do campeonato
  * Subheader simples com avatar, nome e botão de ação
  */
-export const ChampionshipHeader = ({ championship }: ChampionshipHeaderProps) => {
+export const ChampionshipHeader = ({ 
+  championship, 
+  seasonsWithOpenRegistration = [], 
+  onRegisterClick 
+}: ChampionshipHeaderProps) => {
   // Gerar iniciais do nome do campeonato para o avatar
   const getInitials = (name: string) => {
     return name
@@ -52,13 +69,29 @@ export const ChampionshipHeader = ({ championship }: ChampionshipHeaderProps) =>
 
           {/* Ações */}
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent"
-            >
-              Fazer Inscrição
-            </Button>
+            {seasonsWithOpenRegistration.length > 0 ? (
+              seasonsWithOpenRegistration.map((season) => (
+                <Button
+                  key={season.id}
+                  variant="outline"
+                  size="sm"
+                  className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent"
+                  onClick={() => onRegisterClick?.(season.slug || season.id)}
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Inscrever-se em {season.name}
+                </Button>
+              ))
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-white/30 text-white/50 bg-transparent cursor-not-allowed"
+                disabled
+              >
+                Aguarde abertura das inscrições
+              </Button>
+            )}
           </div>
         </div>
 
@@ -78,14 +111,30 @@ export const ChampionshipHeader = ({ championship }: ChampionshipHeaderProps) =>
           </div>
 
           {/* Linha 2: Botão */}
-          <div className="flex items-center gap-2 w-full">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent text-xs"
-            >
-              Fazer Inscrição
-            </Button>
+          <div className="flex flex-col gap-2 w-full">
+            {seasonsWithOpenRegistration.length > 0 ? (
+              seasonsWithOpenRegistration.map((season) => (
+                <Button
+                  key={season.id}
+                  variant="outline"
+                  size="sm"
+                  className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent text-xs"
+                  onClick={() => onRegisterClick?.(season.slug || season.id)}
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Inscrever-se em {season.name}
+                </Button>
+              ))
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-white/30 text-white/50 bg-transparent text-xs cursor-not-allowed"
+                disabled
+              >
+                Aguarde abertura das inscrições
+              </Button>
+            )}
           </div>
         </div>
       </div>

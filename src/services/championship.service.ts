@@ -26,9 +26,11 @@ export interface ChampionshipWithSeasons extends Championship {
 export interface Season {
   id: string;
   name: string;
+  slug?: string;
   startDate: string;
   endDate: string;
   championshipId: string;
+  registrationOpen?: boolean;
 }
 
 export interface Category {

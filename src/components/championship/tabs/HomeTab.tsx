@@ -3,7 +3,17 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
-import { MapPin, Calendar, Clock, Video } from "lucide-react";
+import { MapPin, Calendar, Clock, Video, UserPlus } from "lucide-react";
+
+interface Season {
+  id: string;
+  name: string;
+  slug?: string;
+  startDate: string;
+  endDate: string;
+  championshipId: string;
+  registrationOpen?: boolean;
+}
 
 interface HomeTabProps {
   championship: {
@@ -44,9 +54,15 @@ interface HomeTabProps {
       website?: string;
     }>;
   };
+  seasonsWithOpenRegistration?: Season[];
+  onRegisterClick?: (seasonSlug: string) => void;
 }
 
-export const HomeTab = ({ championship }: HomeTabProps) => {
+export const HomeTab = ({ 
+  championship, 
+  seasonsWithOpenRegistration = [], 
+  onRegisterClick 
+}: HomeTabProps) => {
   // Determinar ano inicial baseado nas temporadas disponíveis
   const getInitialYear = () => {
     if (championship.availableSeasons && championship.availableSeasons.length > 0) {
@@ -90,17 +106,84 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
       )
     : [];
 
-  // Filtrar eventos baseado na temporada selecionada
-  const filteredEvents = championship.events.filter(_event => {
-    if (!championship.availableSeasons) return true;
+  // Função para converter mês em número
+  const getMonthNumber = (monthName: string): number => {
+    const months: { [key: string]: number } = {
+      'JAN': 0, 'FEV': 1, 'MAR': 2, 'ABR': 3, 'MAI': 4, 'JUN': 5,
+      'JUL': 6, 'AGO': 7, 'SET': 8, 'OUT': 9, 'NOV': 10, 'DEZ': 11,
+      'JANEIRO': 0, 'FEVEREIRO': 1, 'MARÇO': 2, 'ABRIL': 3, 'MAIO': 4, 'JUNHO': 5,
+      'JULHO': 6, 'AGOSTO': 7, 'SETEMBRO': 8, 'OUTUBRO': 9, 'NOVEMBRO': 10, 'DEZEMBRO': 11
+    };
+    return months[monthName.toUpperCase()] || 0;
+  };
+
+  // Função para formatar hora no formato HH:mm
+  const formatTime = (time: string): string => {
+    // Se estiver no formato HH:mm:ss, remove os segundos
+    if (/^\d{2}:\d{2}:\d{2}$/.test(time)) {
+      return time.slice(0, 5); // Pega apenas HH:mm
+    }
     
-    const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
-    if (!selectedSeasonData) return true;
+    // Se estiver no formato H:mm:ss, remove os segundos e adiciona zero à esquerda
+    if (/^\d{1}:\d{2}:\d{2}$/.test(time)) {
+      return `0${time.slice(0, 4)}`; // Pega H:mm e adiciona zero
+    }
     
-    // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
-    // Por enquanto, mostramos todos os eventos
-    return true;
-  });
+    // Se já estiver no formato HH:mm, retorna como está
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      return time;
+    }
+    
+    // Se estiver no formato H:mm, adiciona zero à esquerda
+    if (/^\d{1}:\d{2}$/.test(time)) {
+      return `0${time}`;
+    }
+    
+    // Se for apenas números (ex: 1400), converte para HH:mm
+    if (/^\d{3,4}$/.test(time)) {
+      const hours = time.length === 3 ? time.slice(0, 1) : time.slice(0, 2);
+      const minutes = time.length === 3 ? time.slice(1) : time.slice(2);
+      return `${hours.padStart(2, '0')}:${minutes}`;
+    }
+    
+    // Caso padrão, retorna como está
+    return time;
+  };
+
+  // Filtrar eventos baseado na temporada selecionada e mostrar apenas futuros/em andamento
+  const filteredEvents = championship.events
+    .filter(_event => {
+      if (!championship.availableSeasons) return true;
+      
+      const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
+      if (!selectedSeasonData) return true;
+      
+      // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
+      // Por enquanto, mostramos todos os eventos
+      return true;
+    })
+    .filter(event => {
+      // Filtrar apenas eventos em andamento ou futuros
+      const now = new Date();
+      const yearNum = parseInt(selectedYear);
+      const monthNum = getMonthNumber(event.month);
+      const dayNum = parseInt(event.date);
+      const eventDate = new Date(yearNum, monthNum, dayNum);
+      return eventDate >= now;
+    })
+    .sort((a, b) => {
+      // Ordenar por data crescente
+      const yearNum = parseInt(selectedYear);
+      const monthA = getMonthNumber(a.month);
+      const monthB = getMonthNumber(b.month);
+      const dayA = parseInt(a.date);
+      const dayB = parseInt(b.date);
+      
+      const dateA = new Date(yearNum, monthA, dayA);
+      const dateB = new Date(yearNum, monthB, dayB);
+      
+      return dateA.getTime() - dateB.getTime();
+    });
 
   return (
     <div className="space-y-8">
@@ -177,25 +260,7 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
                 {championship.longDescription}
               </p>
 
-              {/* Estatísticas */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4">
-                {championship.stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.4 + (index * 0.1) }}
-                    className="text-center"
-                  >
-                    <div className="text-2xl md:text-3xl font-bold text-primary mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs md:text-sm text-white/70 font-medium tracking-wider">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+
 
               {/* Botão CTA */}
               <motion.div
@@ -204,12 +269,29 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
                 transition={{ duration: 0.5, delay: 0.8 }}
                 className="pt-4"
               >
-                <Button 
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full"
-                >
-                  Fazer Inscrição
-                </Button>
+                {seasonsWithOpenRegistration.length > 0 ? (
+                  <div className="flex flex-wrap gap-3">
+                    {seasonsWithOpenRegistration.map((season) => (
+                      <Button
+                        key={season.id}
+                        size="lg"
+                        className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full"
+                        onClick={() => onRegisterClick?.(season.slug || season.id)}
+                      >
+                        <UserPlus className="h-5 w-5 mr-2" />
+                        Inscrever-se em {season.name}
+                      </Button>
+                    ))}
+                  </div>
+                ) : (
+                  <Button
+                    size="lg"
+                    className="bg-muted hover:bg-muted text-muted-foreground font-semibold px-8 py-3 rounded-full cursor-not-allowed"
+                    disabled
+                  >
+                    Aguarde abertura das inscrições
+                  </Button>
+                )}
               </motion.div>
             </motion.div>
           </div>
@@ -295,7 +377,7 @@ export const HomeTab = ({ championship }: HomeTabProps) => {
                       </div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {event.time}
+                        {formatTime(event.time)}
                       </div>
                       {event.streamLink && (
                         <div className="text-sm text-primary flex items-center gap-1">

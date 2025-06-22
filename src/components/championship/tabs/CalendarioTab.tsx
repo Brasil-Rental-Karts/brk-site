@@ -77,17 +77,82 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
     }
   }, [championship.availableSeasons]);
 
-  // Filtrar eventos baseado na temporada selecionada
-  const filteredEvents = championship.events.filter(_event => {
-    if (!championship.availableSeasons) return true;
+  // Função para converter mês em número
+  const getMonthNumber = (monthName: string): number => {
+    const months: { [key: string]: number } = {
+      'JAN': 0, 'FEV': 1, 'MAR': 2, 'ABR': 3, 'MAI': 4, 'JUN': 5,
+      'JUL': 6, 'AGO': 7, 'SET': 8, 'OUT': 9, 'NOV': 10, 'DEZ': 11,
+      'JANEIRO': 0, 'FEVEREIRO': 1, 'MARÇO': 2, 'ABRIL': 3, 'MAIO': 4, 'JUNHO': 5,
+      'JULHO': 6, 'AGOSTO': 7, 'SETEMBRO': 8, 'OUTUBRO': 9, 'NOVEMBRO': 10, 'DEZEMBRO': 11
+    };
+    return months[monthName.toUpperCase()] || 0;
+  };
+
+  // Função para formatar hora no formato HH:mm
+  const formatTime = (time: string): string => {
+    // Se estiver no formato HH:mm:ss, remove os segundos
+    if (/^\d{2}:\d{2}:\d{2}$/.test(time)) {
+      return time.slice(0, 5); // Pega apenas HH:mm
+    }
     
-    const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
-    if (!selectedSeasonData) return true;
+    // Se estiver no formato H:mm:ss, remove os segundos e adiciona zero à esquerda
+    if (/^\d{1}:\d{2}:\d{2}$/.test(time)) {
+      return `0${time.slice(0, 4)}`; // Pega H:mm e adiciona zero
+    }
     
-    // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
-    // Por enquanto, mostramos todos os eventos
-    return true;
-  });
+    // Se já estiver no formato HH:mm, retorna como está
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      return time;
+    }
+    
+    // Se estiver no formato H:mm, adiciona zero à esquerda
+    if (/^\d{1}:\d{2}$/.test(time)) {
+      return `0${time}`;
+    }
+    
+    // Se for apenas números (ex: 1400), converte para HH:mm
+    if (/^\d{3,4}$/.test(time)) {
+      const hours = time.length === 3 ? time.slice(0, 1) : time.slice(0, 2);
+      const minutes = time.length === 3 ? time.slice(1) : time.slice(2);
+      return `${hours.padStart(2, '0')}:${minutes}`;
+    }
+    
+    // Caso padrão, retorna como está
+    return time;
+  };
+
+  // Filtrar e ordenar todos os eventos por data crescente
+  const filteredEvents = championship.events
+    .filter(_event => {
+      if (!championship.availableSeasons) return true;
+      
+      const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
+      if (!selectedSeasonData) return true;
+      
+      // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
+      // Por enquanto, mostramos todos os eventos
+      return true;
+    })
+    .sort((a, b) => {
+      // Criar datas mais precisas para ordenação
+      const yearNum = parseInt(selectedYear);
+      const monthA = getMonthNumber(a.month);
+      const monthB = getMonthNumber(b.month);
+      const dayA = parseInt(a.date);
+      const dayB = parseInt(b.date);
+      
+      const dateA = new Date(yearNum, monthA, dayA);
+      const dateB = new Date(yearNum, monthB, dayB);
+      
+      // Debug: vamos ver as datas para entender o problema
+      console.log('Ordenação:', {
+        eventA: { date: a.date, month: a.month, stage: a.stage, fullDate: dateA.toLocaleDateString() },
+        eventB: { date: b.date, month: b.month, stage: b.stage, fullDate: dateB.toLocaleDateString() },
+        comparison: dateA.getTime() - dateB.getTime()
+      });
+      
+      return dateA.getTime() - dateB.getTime();
+    });
 
   return (
     <div className="px-6 py-8 space-y-6">
@@ -191,7 +256,7 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>{event.time}</span>
+                        <span>{formatTime(event.time)}</span>
                       </div>
                       {event.streamLink && (
                         <div className="flex items-center gap-2">

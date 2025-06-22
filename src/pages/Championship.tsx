@@ -14,7 +14,7 @@ import {
   findChampionshipBySlug
 } from "@/utils/championship.utils";
 import { championshipService } from "@/services/championship.service";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, UserPlus } from "lucide-react";
 import { Button } from "brk-design-system";
 
 /**
@@ -52,6 +52,31 @@ export const Championship = () => {
     return findChampionshipBySlug(championships, slug);
   }, [championships, slug]);
 
+  // Buscar temporadas e etapas do campeonato
+  const championshipSeasons = currentChampionship ? getSeasonsForChampionship(currentChampionship.id) : [];
+  const championshipStages = currentChampionship ? getStagesForChampionship(currentChampionship.id) : [];
+
+    // Filtrar temporadas com inscrições abertas que estão em andamento ou agendadas
+  const seasonsWithOpenRegistration = useMemo(() => {
+    const now = new Date();
+    return championshipSeasons.filter(season => {
+      // Verificar se registrationOpen é true
+      const isRegistrationOpen = season.registrationOpen === true;
+      if (!isRegistrationOpen) return false;
+      
+      const endDate = new Date(season.endDate);
+      // Temporada não pode estar finalizada
+      return endDate >= now;
+    });
+  }, [championshipSeasons]);
+
+  // Função para redirecionar para página de inscrição
+  const handleRegisterClick = (seasonSlug: string) => {
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const registerUrl = `${baseUrl}/championship/${slug}/season/${seasonSlug}/register`;
+    window.location.href = registerUrl;
+  };
+
   // Estados de loading e erro
   if (loading) {
     return (
@@ -84,9 +109,7 @@ export const Championship = () => {
     return <Navigate to="/campeonatos" replace />;
   }
 
-  // Buscar temporadas e etapas do campeonato
-  const championshipSeasons = getSeasonsForChampionship(currentChampionship.id);
-  const championshipStages = getStagesForChampionship(currentChampionship.id);
+
 
   // Criar objeto no formato esperado pelos componentes
   const championshipForComponents = {
@@ -126,7 +149,11 @@ export const Championship = () => {
       className="min-h-screen bg-background"
     >
       {/* Header do campeonato - fullwidth */}
-      <ChampionshipHeader championship={championshipForComponents} />
+      <ChampionshipHeader 
+        championship={championshipForComponents} 
+        seasonsWithOpenRegistration={seasonsWithOpenRegistration}
+        onRegisterClick={handleRegisterClick}
+      />
 
       {/* Tabs - fullwidth */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -170,7 +197,11 @@ export const Championship = () => {
         {/* Conteúdo das tabs - sem espaçamento superior */}
         <div>
           <TabsContent value="home" className="mt-0">
-            <HomeTab championship={championshipForComponents} />
+            <HomeTab 
+              championship={championshipForComponents} 
+              seasonsWithOpenRegistration={seasonsWithOpenRegistration}
+              onRegisterClick={handleRegisterClick}
+            />
           </TabsContent>
 
           <TabsContent value="calendario" className="mt-0">
