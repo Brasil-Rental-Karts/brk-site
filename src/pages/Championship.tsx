@@ -6,7 +6,7 @@ import { ChampionshipHeader } from "@/components/championship/ChampionshipHeader
 import { HomeTab } from "@/components/championship/tabs/HomeTab";
 import { CalendarioTab } from "@/components/championship/tabs/CalendarioTab";
 // import { ClassificacaoTab } from "@/components/championship/tabs/ClassificacaoTab";
-import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
+// import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
 // import { FotosTab } from "@/components/championship/tabs/FotosTab";
 import { useChampionships } from "@/hooks/useChampionships";
 import { 
@@ -179,12 +179,13 @@ export const Championship = () => {
               >
                 Classificação
               </TabsTrigger> */}
-              <TabsTrigger
+              {/* Aba Regulamento temporariamente escondida */}
+              {/* <TabsTrigger
                 value="regulamento"
                 className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
               >
                 Regulamento
-              </TabsTrigger>
+              </TabsTrigger> */}
               {/* Aba Fotos temporariamente escondida */}
               {/* <TabsTrigger
                 value="fotos"
@@ -215,9 +216,10 @@ export const Championship = () => {
             <ClassificacaoTab championship={championshipForComponents} />
           </TabsContent> */}
 
-          <TabsContent value="regulamento" className="mt-0">
+          {/* Conteúdo da aba Regulamento temporariamente escondido */}
+          {/* <TabsContent value="regulamento" className="mt-0">
             <RegulamentoTab championship={championshipForComponents} />
-          </TabsContent>
+          </TabsContent> */}
 
           {/* Conteúdo da aba Fotos temporariamente escondido */}
           {/* <TabsContent value="fotos" className="mt-0">

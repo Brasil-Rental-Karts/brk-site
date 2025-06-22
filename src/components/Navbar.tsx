@@ -179,8 +179,10 @@ export function Navbar() {
             </Button>
           )}
 
-          {/* Theme Toggle */}
-          <ModeToggle />
+          {/* Theme Toggle - Temporariamente escondido */}
+          <div className="hidden">
+            <ModeToggle />
+          </div>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
