@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
-import { MapPin, Clock, Calendar, ChevronRight, Video } from "lucide-react";
+import { MapPin, Clock, Calendar, ChevronRight, Video, X } from "lucide-react";
 
 interface CalendarioTabProps {
   championship: {
@@ -19,21 +19,26 @@ interface CalendarioTabProps {
       endDate: string;
       championshipId: string;
     }>;
-    events: Array<{
-      id: number;
-      date: string;
-      month: string;
-      day: string;
-      stage: string;
-      location: string;
-      time: string;
-      status: string;
-      streamLink?: string;
-    }>;
+          events: Array<{
+        id: number;
+        date: string;
+        month: string;
+        day: string;
+        stage: string;
+        location: string;
+        time: string;
+        status: string;
+        streamLink?: string;
+        briefing?: string;
+      }>;
   };
 }
 
 export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
+  // Estado para controlar o modal de detalhes
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Determinar ano inicial baseado nas temporadas disponíveis
   const getInitialYear = () => {
     if (championship.availableSeasons && championship.availableSeasons.length > 0) {
@@ -52,6 +57,18 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
 
   const [selectedYear, setSelectedYear] = useState<string>(getInitialYear());
   const [selectedSeason, setSelectedSeason] = useState<string>(getInitialSeason());
+
+  // Função para abrir detalhes da etapa
+  const handleOpenEventDetails = (event: any) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
+
+  // Função para fechar o modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   // Obter anos únicos das temporadas disponíveis
   const availableYears = championship.availableSeasons 
@@ -276,15 +293,26 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
 
                   {/* Ação */}
                   <div className="flex-shrink-0">
-                    <Button 
-                      variant={event.status === "Inscrição Aberta" ? "default" : "outline"}
-                      size="sm"
-                      className="w-full md:w-auto"
-                      disabled={event.status !== "Inscrição Aberta"}
-                    >
-                      {event.status === "Inscrição Aberta" ? "Inscrever-se" : "Ver Detalhes"}
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
+                    {event.status === "Inscrição Aberta" ? (
+                      <Button 
+                        variant="default"
+                        size="sm"
+                        className="w-full md:w-auto"
+                      >
+                        Inscrever-se
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        className="w-full md:w-auto"
+                        onClick={() => handleOpenEventDetails(event)}
+                      >
+                        Ver Detalhes
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -312,6 +340,167 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
           <li>• Em caso de chuva, consulte as redes sociais para atualizações</li>
         </ul>
       </motion.div>
+
+      {/* Modal de Detalhes da Etapa */}
+      <AnimatePresence>
+        {isModalOpen && selectedEvent && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+              onClick={handleCloseModal}
+            >
+              {/* Modal Content */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    Detalhes da Etapa
+                  </h2>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleCloseModal}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                  {/* Cabeçalho da etapa */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-primary/5 rounded-lg">
+                    <div className="bg-primary/10 rounded-lg p-4 text-center min-w-20">
+                      <div className="text-2xl font-bold text-primary">{selectedEvent.date}</div>
+                      <div className="text-sm text-muted-foreground uppercase font-medium">
+                        {selectedEvent.month}
+                      </div>
+                    </div>
+                    
+                    <div className="flex-grow">
+                      <h3 className="text-2xl font-bold mb-2">{selectedEvent.stage}</h3>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Badge 
+                          variant={selectedEvent.status === "Inscrição Aberta" ? "default" : "secondary"}
+                          className={
+                            selectedEvent.status === "Inscrição Aberta" 
+                              ? "bg-primary text-white" 
+                              : "bg-muted text-muted-foreground"
+                          }
+                        >
+                          {selectedEvent.status}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">{selectedEvent.day}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Informações detalhadas */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold">Local</h4>
+                          <p className="text-muted-foreground">{selectedEvent.location}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <Clock className="h-5 w-5 text-primary mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold">Horário</h4>
+                          <p className="text-muted-foreground">{formatTime(selectedEvent.time)}</p>
+                        </div>
+                      </div>
+
+                      {selectedEvent.streamLink && (
+                        <div className="flex items-start gap-3">
+                          <Video className="h-5 w-5 text-primary mt-0.5" />
+                          <div>
+                            <h4 className="font-semibold">Transmissão</h4>
+                            <a 
+                              href={selectedEvent.streamLink} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Assistir ao vivo
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Briefing da Etapa - Mobile/Desktop */}
+                      {selectedEvent.briefing && (
+                        <div className="lg:hidden">
+                          <div className="p-4 bg-muted/30 rounded-lg">
+                            <h4 className="font-semibold mb-3 flex items-start gap-2">
+                              <Calendar className="h-5 w-5 text-primary mt-0.5" />
+                              Briefing da Etapa
+                            </h4>
+                            <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                              {selectedEvent.briefing}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Briefing da Etapa - Desktop lateral */}
+                      {selectedEvent.briefing && (
+                        <div className="hidden lg:block">
+                          <div className="p-4 bg-muted/30 rounded-lg h-fit">
+                            <h4 className="font-semibold mb-3 flex items-start gap-2">
+                              <Calendar className="h-5 w-5 text-primary mt-0.5" />
+                              Briefing da Etapa
+                            </h4>
+                            <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                              {selectedEvent.briefing}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedEvent.status === "Inscrição Aberta" && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">Inscrições Abertas!</h4>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Garante já sua vaga nesta etapa emocionante.
+                          </p>
+                          <Button className="w-full">
+                            Inscrever-se Agora
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Rodapé com ações */}
+                  <div className="flex justify-end gap-3 pt-4 border-t">
+                    <Button variant="outline" onClick={handleCloseModal}>
+                      Fechar
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }; 

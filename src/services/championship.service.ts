@@ -49,6 +49,7 @@ export interface Stage {
   time: string;
   kartodrome: string;
   streamLink?: string;
+  briefing?: string;
   seasonId: string;
 }
 
@@ -281,7 +282,8 @@ class ChampionshipService {
       location: stage.kartodrome,
       time: stage.time || 'A partir das 14h',
       status: stageDate > new Date() ? 'Programado' : 'Finalizado',
-      streamLink: stage.streamLink
+      streamLink: stage.streamLink,
+      briefing: stage.briefing
     };
   }
 }

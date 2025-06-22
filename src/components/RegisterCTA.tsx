@@ -1,7 +1,5 @@
 import { Button } from "brk-design-system";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 
 export function RegisterCTA() {
   return (

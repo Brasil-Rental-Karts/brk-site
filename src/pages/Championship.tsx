@@ -14,7 +14,7 @@ import {
   findChampionshipBySlug
 } from "@/utils/championship.utils";
 import { championshipService } from "@/services/championship.service";
-import { Loader2, AlertCircle, UserPlus } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "brk-design-system";
 
 /**

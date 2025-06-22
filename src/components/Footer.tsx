@@ -34,7 +34,7 @@ export function Footer({ className, ...props }: FooterProps) {
               Todos os direitos reservados.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-12 sm:gap-12 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-12 md:grid-cols-3">
             <div>
               <h2 className="text-sm font-semibold uppercase mb-2">A BRK</h2>
               <ul className="text-muted-foreground space-y-2">
@@ -70,7 +70,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 <li>
                   <a
                     href="mailto:falecom@brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all text-xs sm:text-sm"
                   >
                     falecom@brasilrentalkarts.com.br
                   </a>
@@ -78,7 +78,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 <li>
                   <a
                     href="https://www.brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all text-xs sm:text-sm"
                   >
                     www.brasilrentalkarts.com.br
                   </a>
