@@ -66,7 +66,10 @@ export function Terms() {
             poderá haver cobrança de taxas de serviço sobre transações
             realizadas por meio da plataforma, processadas via parceiro
             financeiro ASAAS GESTÃO FINANCEIRA INSTITUIÇÃO DE PAGAMENTO S/A
-            inscrita no CNPJ sob o número 19.540.550/0001-21.
+            inscrita no CNPJ sob o número 19.540.550/0001-21. A taxa de serviço
+            da BRK cobre os custos de pagamento (cartão, boleto e Pix) e ajuda a
+            manter nossa plataforma no ar. É também uma forma de apoiar o
+            crescimento do kartismo rental no Brasil.
           </p>
         </section>
 
