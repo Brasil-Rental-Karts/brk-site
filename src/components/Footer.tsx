@@ -70,7 +70,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 <li>
                   <a
                     href="mailto:falecom@brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all text-xs sm:text-sm"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all"
                   >
                     falecom@brasilrentalkarts.com.br
                   </a>
@@ -78,7 +78,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 <li>
                   <a
                     href="https://www.brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all text-xs sm:text-sm"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all"
                   >
                     www.brasilrentalkarts.com.br
                   </a>
