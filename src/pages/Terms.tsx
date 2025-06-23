@@ -15,7 +15,7 @@ export function Terms() {
 
       <div className="mt-8 space-y-8">
         <section>
-          <h2 className="font-heading text-2xl mt-8">1. IDENTIFICAÇÃO</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">1. IDENTIFICAÇÃO</h2>
           <p>
             A plataforma BRK é mantida por BRK SOLUÇÕES EM TECNOLOGIA LTDA,
             inscrita no CNPJ sob nº 61.324.049/0001-94, localizada em
@@ -26,7 +26,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">2. OBJETO</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">2. OBJETO</h2>
           <p>
             Os presentes Termos de Uso regulam o uso da plataforma BRK, que
             oferece funcionalidades para pilotos e organizadores de kart, como
@@ -36,7 +36,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             3. ACEITAÇÃO DOS TERMOS
           </h2>
           <p>
@@ -47,7 +47,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             4. CADASTRO E CONTA DO USUÁRIO
           </h2>
           <p>
@@ -60,7 +60,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">5. SERVIÇOS E TAXAS</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">5. SERVIÇOS E TAXAS</h2>
           <p>
             A plataforma é gratuita para cadastro e uso básico. No entanto,
             poderá haver cobrança de taxas de serviço sobre transações
@@ -74,7 +74,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">6. USO DA PLATAFORMA</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">6. USO DA PLATAFORMA</h2>
           <p>
             O usuário se compromete a utilizar a plataforma de forma ética, não
             publicando informações falsas ou ofensivas. Condutas que violem a
@@ -84,7 +84,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             7. TRATAMENTO DE DADOS PESSOAIS
           </h2>
           <p>
@@ -96,7 +96,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             8. COOKIES E FERRAMENTAS DE TERCEIROS
           </h2>
           <p>
@@ -108,7 +108,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             9. COMPARTILHAMENTO COM PARCEIROS
           </h2>
           <p>
@@ -119,7 +119,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             10. PROPRIEDADE INTELECTUAL
           </h2>
           <p>
@@ -130,7 +130,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             11. CONTEÚDO DE USUÁRIOS
           </h2>
           <p>
@@ -142,7 +142,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             12. RESPONSABILIDADE SOBRE EVENTOS
           </h2>
           <p>
@@ -155,7 +155,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             13. LIMITAÇÃO DE RESPONSABILIDADE
           </h2>
           <p>
@@ -167,7 +167,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">14. EXCLUSÃO DE CONTA</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">14. EXCLUSÃO DE CONTA</h2>
           <p>
             O usuário pode solicitar a exclusão da conta diretamente na área de
             perfil. Os dados serão armazenados enquanto a conta estiver ativa e
@@ -176,7 +176,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             15. ALTERAÇÕES DOS TERMOS
           </h2>
           <p>
@@ -187,7 +187,7 @@ export function Terms() {
         </section>
 
         <section>
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             16. LEI APLICÁVEL E FORO
           </h2>
           <p>

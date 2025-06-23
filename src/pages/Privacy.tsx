@@ -18,7 +18,7 @@ export function Privacy() {
             Dados Pessoais (Lei nº 13.709/2018 – LGPD).
           </p>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             1. Controlador dos Dados
           </h2>
           <ul>
@@ -31,7 +31,7 @@ export function Privacy() {
             </li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             2. Quais dados coletamos
           </h2>
           <p>
@@ -63,7 +63,7 @@ export function Privacy() {
             </li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             3. Como coletamos os dados
           </h2>
           <p>Os dados podem ser coletados das seguintes formas:</p>
@@ -80,7 +80,7 @@ export function Privacy() {
             </li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             4. Para que usamos seus dados
           </h2>
           <p>Utilizamos seus dados para as seguintes finalidades:</p>
@@ -96,7 +96,7 @@ export function Privacy() {
             </li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             5. Compartilhamento com terceiros
           </h2>
           <p>Seus dados podem ser compartilhados com:</p>
@@ -116,7 +116,7 @@ export function Privacy() {
           </ul>
           <p>Não vendemos ou alugamos suas informações para terceiros.</p>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             6. Armazenamento e tempo de retenção
           </h2>
           <p>Mantemos seus dados:</p>
@@ -131,7 +131,7 @@ export function Privacy() {
             </li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             7. Direitos dos titulares
           </h2>
           <p>
@@ -150,7 +150,7 @@ export function Privacy() {
             falecom@brasilrentalkarts.com.br
           </p>
 
-          <h2 className="font-heading text-2xl mt-8">8. Uso de cookies</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">8. Uso de cookies</h2>
           <p>Utilizamos cookies para:</p>
           <ul>
             <li>
@@ -170,7 +170,7 @@ export function Privacy() {
             impactadas.
           </p>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             9. Segurança da informação
           </h2>
           <p>
@@ -184,7 +184,7 @@ export function Privacy() {
             <li>Backup regular de dados.</li>
           </ul>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             10. Transferência internacional de dados
           </h2>
           <p>
@@ -193,7 +193,7 @@ export function Privacy() {
             cumprimento de medidas adequadas de segurança e conformidade legal.
           </p>
 
-          <h2 className="font-heading text-2xl mt-8">
+          <h2 className="font-heading text-xl md:text-2xl mt-8">
             11. Alterações nesta Política
           </h2>
           <p>
@@ -202,7 +202,7 @@ export function Privacy() {
             cadastrado.
           </p>
 
-          <h2 className="font-heading text-2xl mt-8">12. Contato</h2>
+          <h2 className="font-heading text-xl md:text-2xl mt-8">12. Contato</h2>
           <p>
             Em caso de dúvidas, solicitações ou reclamações, fale com nosso
             Encarregado de Proteção de Dados (DPO):
