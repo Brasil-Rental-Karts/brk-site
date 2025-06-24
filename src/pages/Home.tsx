@@ -224,20 +224,6 @@ export function Home() {
                           </div>
                         )}
                         
-                        {/* Badge de status */}
-                        <div className="absolute top-4 right-4">
-                          <Badge
-                            variant={
-                              featuredChampionships[0].status ===
-                              "Inscrições Abertas"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {featuredChampionships[0].status}
-                          </Badge>
-                        </div>
-                        
                         {/* Informações do campeonato sobre a imagem */}
                         <div className="absolute bottom-6 left-6 right-6 text-white">
                           <h3 className="text-2xl lg:text-3xl font-bold mb-2">
@@ -320,13 +306,6 @@ export function Home() {
                                 <Trophy className="h-8 w-8 text-primary/50" />
                               </div>
                             )}
-                            
-                            {/* Badge de status */}
-                            <div className="absolute top-2 right-2">
-                              <Badge variant="secondary" className="text-xs">
-                                {championship.status}
-                              </Badge>
-                            </div>
                           </div>
 
                           <CardContent className="p-4 bg-white">
