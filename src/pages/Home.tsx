@@ -415,11 +415,11 @@ export function Home() {
                         </div>
 
                         <Badge
-                          className={`${
+                          variant={
                             event.status === "Inscrição Aberta"
-                              ? "bg-primary text-white"
-                              : "bg-muted text-muted-foreground"
-                          }`}
+                              ? "default"
+                              : "secondary"
+                          }
                         >
                           {event.status}
                         </Badge>
