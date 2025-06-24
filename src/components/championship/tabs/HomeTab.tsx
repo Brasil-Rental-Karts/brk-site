@@ -316,7 +316,7 @@ export const HomeTab = ({
         </div>
 
         {/* Filtros do Calendário */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Ano</label>
             <select 
