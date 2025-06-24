@@ -184,7 +184,7 @@ export const Championships = () => {
 
                   <CardContent className="p-6">
                     {/* Nome e descrição */}
-                    <div className="mb-6">
+                    <div className="mb-6 h-full">
                       <h3 className="text-xl font-bold mb-2">
                         {championship.name}
                       </h3>
