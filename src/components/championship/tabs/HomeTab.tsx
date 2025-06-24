@@ -306,7 +306,7 @@ export const HomeTab = ({
         className="container px-6 py-8"
       >
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+          <h2 className="font-heading text-2xl font-bold mb-2 flex items-center gap-2">
             <Calendar className="h-6 w-6 text-primary" />
             CALENDÁRIO
           </h2>
@@ -435,7 +435,7 @@ export const HomeTab = ({
           transition={{ duration: 0.5, delay: 0.6 }}
           className="container px-6 py-8"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center">
+          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
             Patrocinadores
           </h2>
 
@@ -455,7 +455,7 @@ export const HomeTab = ({
                     href={sponsor.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full h-full p-2 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer"
+                    className="block w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer"
                     title={`Visitar site de ${sponsor.name}`}
                   >
                     <img
@@ -469,7 +469,7 @@ export const HomeTab = ({
                     />
                   </a>
                 ) : (
-                  <div className="w-full h-full p-2 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors">
+                  <div className="w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors">
                     <img
                       src={sponsor.logoImage}
                       alt={sponsor.name}
