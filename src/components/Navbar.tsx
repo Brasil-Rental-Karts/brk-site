@@ -170,9 +170,9 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <Button
-              size="sm"
+              size="default"
               variant="ghost"
-              className="hidden md:flex text-navbar-foreground hover:bg-primary-foreground/10"
+              className="hidden md:flex text-navbar-foreground hover:bg-accent/30"
               asChild
             >
               <a href={`${APP_URL}/login`}>Entrar</a>
