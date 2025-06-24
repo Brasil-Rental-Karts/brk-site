@@ -162,9 +162,9 @@ export const Championships = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   {/* Imagem do campeonato */}
-                  <div className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10">
+                  <div className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10 flex-shrink-0">
                     <img
                       src={championship.image}
                       alt={championship.name}
@@ -182,10 +182,10 @@ export const Championships = () => {
                     </div>
                   </div>
 
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 flex flex-col flex-1">
                     {/* Nome e descrição */}
-                    <div className="mb-6 h-full">
-                      <h3 className="text-xl font-bold mb-2">
+                    <div className="flex-1 mb-6">
+                      <h3 className="text-xl font-bold mb-2 line-clamp-2">
                         {championship.name}
                       </h3>
                       <p className="text-sm text-muted-foreground line-clamp-2">
@@ -193,12 +193,14 @@ export const Championships = () => {
                       </p>
                     </div>
 
-                    {/* Botão de ação */}
-                    <Button asChild className="w-full">
-                      <Link to={`/campeonato/${championship.slug}`}>
-                        Ver Campeonato
-                      </Link>
-                    </Button>
+                    {/* Botão de ação - sempre no rodapé */}
+                    <div className="mt-auto">
+                      <Button asChild className="w-full">
+                        <Link to={`/campeonato/${championship.slug}`}>
+                          Ver Campeonato
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
