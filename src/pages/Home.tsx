@@ -215,8 +215,9 @@ export function Home() {
                       </div>
                     </div>
                     <CardContent className="p-6 flex-grow flex flex-col">
-                      <div className="flex-grow" />
-                      <p>{featuredChampionships[0].fullDescription}</p>
+                      <div className="h-full">
+                        <p>{featuredChampionships[0].fullDescription}</p>
+                      </div>
                       <Button asChild className="w-full">
                         <Link
                           to={`/campeonato/${featuredChampionships[0].slug}`}
