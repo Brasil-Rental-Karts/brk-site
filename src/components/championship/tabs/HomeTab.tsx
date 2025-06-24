@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "brk-design-system";
+import { Card, CardContent, Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
 import { MapPin, Calendar, Clock, Video, UserPlus } from "lucide-react";
@@ -319,31 +319,39 @@ export const HomeTab = ({
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Ano</label>
-            <select 
+            <Select
               value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-background min-w-32"
+              onValueChange={setSelectedYear}
             >
-              {availableYears.map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
+              <SelectTrigger className="px-4 py-2 rounded-lg border border-border bg-background min-w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {availableYears.map(year => (
+                  <SelectItem key={year} value={year}>{year}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Temporada</label>
-            <select 
+            <Select
               value={selectedSeason}
-              onChange={(e) => setSelectedSeason(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-background min-w-40"
+              onValueChange={setSelectedSeason}
             >
-              {seasonsForYear.length > 0 ? (
-                seasonsForYear.map(season => (
-                  <option key={season.id} value={season.name}>{season.name}</option>
-                ))
-              ) : (
-                <option value={championship.currentSeason.season}>{championship.currentSeason.season}</option>
-              )}
-            </select>
+              <SelectTrigger className="px-4 py-2 rounded-lg border border-border bg-background min-w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {seasonsForYear.length > 0 ? (
+                  seasonsForYear.map(season => (
+                    <SelectItem key={season.id} value={season.name}>{season.name}</SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value={championship.currentSeason.season}>{championship.currentSeason.season}</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
