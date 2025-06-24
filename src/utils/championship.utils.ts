@@ -141,4 +141,22 @@ export function getChampionshipInitials(name: string): string {
     .join('')
     .toUpperCase()
     .slice(0, 2);
+}
+
+/**
+ * Parse date string to local Date object, avoiding timezone issues
+ * Esta função garante que datas como "2025-07-13T00:00:00" sejam interpretadas
+ * como 13 de julho no timezone local, não como UTC que seria convertido para local
+ */
+export function parseLocalDate(dateStr: string): Date {
+  if (dateStr.includes('T')) {
+    // Se já tem horário, extrair apenas a parte da data
+    const dateOnly = dateStr.split('T')[0];
+    const [year, month, day] = dateOnly.split('-').map(Number);
+    return new Date(year, month - 1, day); // month é 0-indexed
+  } else {
+    // Se é apenas data (YYYY-MM-DD), interpretar como local
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day); // month é 0-indexed
+  }
 } 

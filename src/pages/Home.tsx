@@ -18,6 +18,7 @@ import {
   Championship,
   Stage,
 } from "@/services/championship.service";
+import { parseLocalDate } from "@/utils/championship.utils";
 import { Hero } from "@/components/Hero";
 import { RegisterCTA } from "@/components/RegisterCTA";
 
@@ -78,7 +79,7 @@ export function Home() {
           if (championshipSeasons.length > 0) {
             // Ordenar temporadas por data de início (mais recente primeiro)
             const sortedSeasons = championshipSeasons.sort((a, b) => 
-              new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+              parseLocalDate(b.startDate).getTime() - parseLocalDate(a.startDate).getTime()
             );
             
             const seasonId = sortedSeasons[0].id; // Pegando a temporada mais recente
@@ -105,12 +106,12 @@ export function Home() {
         // 5. Ordenar e pegar os próximos 3 eventos
         const upcoming = allStages
           .filter((stage) => {
-            const stageDate = new Date(stage.date);
+            const stageDate = parseLocalDate(stage.date);
             const now = new Date();
             return stageDate >= now;
           })
           .sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            (a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime()
           )
           .slice(0, 3)
           .map((stage) => {
