@@ -216,6 +216,7 @@ export function Home() {
                     </div>
                     <CardContent className="p-6 flex-grow flex flex-col">
                       <div className="flex-grow" />
+                      <p>{featuredChampionships[0].fullDescription}</p>
                       <Button asChild className="w-full">
                         <Link
                           to={`/campeonato/${featuredChampionships[0].slug}`}
@@ -264,16 +265,6 @@ export function Home() {
                           <p className="text-sm text-muted-foreground mb-3">
                             {championship.shortDescription}
                           </p>
-                          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                            <span className="flex items-center gap-1">
-                              <Users className="h-3 w-3" />
-                              {championship.pilots}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {championship.location}
-                            </span>
-                          </div>
                           <Button
                             asChild
                             size="sm"
