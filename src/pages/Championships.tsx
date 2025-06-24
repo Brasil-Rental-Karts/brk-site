@@ -18,6 +18,13 @@ import {
   searchChampionships,
   type ChampionshipUI,
 } from "@/utils/championship.utils";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "brk-design-system";
 
 /**
  * Página de listagem de todos os campeonatos
@@ -96,16 +103,20 @@ export const Championships = () => {
 
             {/* Filtro por status */}
             <div className="md:w-48">
-              <select
+              <Select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background"
+                onValueChange={setFilterStatus}
               >
-                <option value="all">Todos os Status</option>
-                <option value="active">Ativos</option>
-                <option value="upcoming">Em Breve</option>
-                <option value="finished">Finalizados</option>
-              </select>
+                <SelectTrigger className="w-full px-4 py-2 rounded-lg border border-border bg-background">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Status</SelectItem>
+                  <SelectItem value="active">Ativos</SelectItem>
+                  <SelectItem value="upcoming">Em Breve</SelectItem>
+                  <SelectItem value="finished">Finalizados</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
