@@ -202,7 +202,7 @@ export const HomeTab = ({
               <img 
                 src={championship.image} 
                 alt={championship.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover blur-md scale-125"
                 onError={(e) => {
                   // Fallback para cor sólida se a imagem não carregar
                   (e.target as HTMLImageElement).style.display = 'none';

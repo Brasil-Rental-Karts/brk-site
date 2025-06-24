@@ -278,7 +278,7 @@ export function Home() {
                                 }}
                               />
                               {/* Overlay escuro para legibilidade */}
-                              <div className="absolute inset-0 bg-black/60"></div>
+                              <div className="absolute inset-0 bg-black/80"></div>
                             </div>
                           )}
                           {/* Fallback de background quando não há imagem */}
