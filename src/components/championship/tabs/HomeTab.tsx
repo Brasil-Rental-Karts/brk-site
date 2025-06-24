@@ -303,7 +303,7 @@ export const HomeTab = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="px-6 py-8"
+        className="container px-6 py-8"
       >
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -425,7 +425,7 @@ export const HomeTab = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="px-6 py-8"
+          className="container px-6 py-8"
         >
           <h2 className="text-2xl font-bold mb-6 text-center">
             Patrocinadores

@@ -52,7 +52,7 @@ export const ChampionshipHeader = ({
 
   return (
     <div className="bg-dark-900 text-white w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-      <div className="w-full px-6 py-4">
+      <div className="container px-6 py-4">
         {/* Layout Desktop */}
         <div className="hidden md:flex items-center justify-between">
           {/* Avatar e nome */}
