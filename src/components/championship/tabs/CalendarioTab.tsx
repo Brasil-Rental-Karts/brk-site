@@ -3,6 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "brk-design-system";
 import { MapPin, Clock, Calendar, ChevronRight, Video, X } from "lucide-react";
 
 interface CalendarioTabProps {
@@ -197,31 +204,39 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
       >
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Ano</label>
-          <select 
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-border bg-background min-w-32"
-          >
-            {availableYears.map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+          <Select value={selectedYear} onValueChange={(value) => setSelectedYear(value)}>
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Ano" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableYears.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Temporada</label>
-          <select 
-            value={selectedSeason}
-            onChange={(e) => setSelectedSeason(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-border bg-background min-w-40"
-          >
-            {seasonsForYear.length > 0 ? (
-              seasonsForYear.map(season => (
-                <option key={season.id} value={season.name}>{season.name}</option>
-              ))
-            ) : (
-              <option value={championship.currentSeason.season}>{championship.currentSeason.season}</option>
-            )}
-          </select>
+          <Select value={selectedSeason} onValueChange={(value) => setSelectedSeason(value)}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Temporada" />
+            </SelectTrigger>
+            <SelectContent>
+              {seasonsForYear.length > 0 ? (
+                seasonsForYear.map((season) => (
+                  <SelectItem key={season.id} value={season.name}>
+                    {season.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value={championship.currentSeason.season}>
+                  {championship.currentSeason.season}
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
         </div>
       </motion.div>
 
