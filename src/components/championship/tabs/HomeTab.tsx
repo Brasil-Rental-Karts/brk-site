@@ -195,7 +195,7 @@ export const HomeTab = ({
         className="relative bg-dark-900 text-white w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden"
       >
         {/* Hero Section com imagem e informações */}
-        <div className="relative h-[600px] flex items-center">
+        <div className="relative min-h-[600px] flex items-center">
           {/* Imagem de fundo */}
           <div className="absolute inset-0">
             {championship.image && (
