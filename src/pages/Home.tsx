@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Zap,
   Target,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "brk-design-system";
@@ -158,7 +159,14 @@ export function Home() {
             </p>
           </motion.div>
 
-          {loading && <p>Carregando...</p>}
+          {loading && (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-muted-foreground">Carregando campeonatos...</p>
+              </div>
+            </div>
+          )}
           {error && <p className="text-red-500">{error}</p>}
 
           {!loading && !error && featuredChampionships.length > 0 && (
@@ -273,7 +281,8 @@ export function Home() {
                             className="w-full"
                           >
                             <Link to={`/campeonato/${championship.slug}`}>
-                              Ver Detalhes
+                              Ver Campeonato
+                              <ArrowRight className="ml-2 h-4 w-4" />
                             </Link>
                           </Button>
                         </CardContent>
@@ -372,24 +381,6 @@ export function Home() {
                         >
                           {event.status}
                         </Badge>
-                      </div>
-
-                      {/* Ação */}
-                      <div className="mt-4">
-                        <Button
-                          size="sm"
-                          className="w-full"
-                          variant={
-                            event.status === "Inscrição Aberta"
-                              ? "default"
-                              : "outline"
-                          }
-                          disabled={event.status !== "Inscrição Aberta"}
-                        >
-                          {event.status === "Inscrição Aberta"
-                            ? "Inscrever-se"
-                            : "Ver Detalhes"}
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
