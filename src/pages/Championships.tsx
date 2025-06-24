@@ -141,59 +141,77 @@ export const Championships = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  {/* Imagem de fundo */}
-                  <div className="absolute inset-0">
+                <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative">
+                  {/* Camada de background com imagem borrada e overlay */}
+                  <div className="absolute inset-0 z-0">
                     {championship.image && (
-                      <img
-                        src={championship.image}
-                        alt={championship.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback para cor sólida se a imagem não carregar
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
+                      <div className="relative w-full h-full">
+                        {/* Imagem de fundo com blur */}
+                        <img
+                          src={championship.image}
+                          alt=""
+                          className="w-full h-full object-cover blur-sm scale-110"
+                          onError={(e) => {
+                            // Fallback para cor sólida se a imagem não carregar
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                        {/* Overlay escuro para legibilidade */}
+                        <div className="absolute inset-0 bg-black/60"></div>
+                      </div>
                     )}
-                    {/* Overlay escuro para legibilidade */}
-                    <div className="absolute inset-0 bg-cover bg-center blur-md scale-110 z-0 bg-black/80"></div>
-                  </div>
-                  {/* Imagem do campeonato */}
-                  <div className="relative z-10 h-48 bg-gradient-to-r from-primary/20 to-primary/10 flex-shrink-0">
-                    <img
-                      src={championship.image}
-                      alt={championship.name}
-                      className="w-full h-full object-scale-down"
-                      onError={(e) => {
-                        // Placeholder se imagem não carregar
-                        (e.target as HTMLImageElement).src =
-                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3E" +
-                          championship.name +
-                          "%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
+                    {/* Fallback de background quando não há imagem */}
+                    {!championship.image && (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10"></div>
+                    )}
                   </div>
 
-                  <CardContent className="p-6 flex flex-col flex-1">
-                    {/* Nome e descrição */}
-                    <div className="flex-1 mb-6">
-                      <h3 className="text-xl font-bold mb-2 line-clamp-2">
-                        {championship.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {championship.shortDescription}
-                      </p>
+                  {/* Conteúdo do card - posicionado acima do background */}
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Imagem do campeonato */}
+                    <div className="h-48 bg-transparent flex-shrink-0 flex items-center justify-center p-4">
+                      {championship.image ? (
+                        <img
+                          src={championship.image}
+                          alt={championship.name}
+                          className="max-w-full max-h-full object-contain"
+                          onError={(e) => {
+                            // Placeholder se imagem não carregar
+                            (e.target as HTMLImageElement).src =
+                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23FF6B35'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3E" +
+                              championship.name +
+                              "%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      ) : (
+                        // Placeholder quando não há imagem
+                        <div className="w-full h-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
+                          <Trophy className="h-16 w-16 text-primary/50" />
+                        </div>
+                      )}
                     </div>
 
-                    {/* Botão de ação - sempre no rodapé */}
-                    <div className="mt-auto">
-                      <Button asChild className="w-full">
-                        <Link to={`/campeonato/${championship.slug}`}>
-                          Ver Campeonato
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
+                    <CardContent className="p-6 flex flex-col flex-1 bg-background/95 backdrop-blur-sm">
+                      {/* Nome e descrição */}
+                      <div className="flex-1 mb-6">
+                        <h3 className="text-xl font-bold mb-2 line-clamp-2">
+                          {championship.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {championship.shortDescription}
+                        </p>
+                      </div>
+
+                      {/* Botão de ação - sempre no rodapé */}
+                      <div className="mt-auto">
+                        <Button asChild className="w-full">
+                          <Link to={`/campeonato/${championship.slug}`}>
+                            Ver Campeonato
+                          </Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </div>
                 </Card>
               </motion.div>
             ))}
