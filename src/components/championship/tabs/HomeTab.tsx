@@ -214,7 +214,7 @@ export const HomeTab = ({
           </div>
 
           {/* Conteúdo principal */}
-          <div className="relative z-10 container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center h-full">
+          <div className="relative z-10 container mx-auto py-8 px-4 grid md:grid-cols-2 gap-8 items-center h-full">
             {/* Lado esquerdo - Imagem do evento */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
