@@ -226,7 +226,7 @@ export const HomeTab = ({
                 <img 
                   src={championship.image || championship.avatar || "/championship-placeholder.jpg"}
                   alt={`Imagem do ${championship.name}`}
-                  className="w-full h-auto rounded-lg shadow-2xl"
+                  className="w-full h-auto rounded-lg"
                   onError={(e) => {
                     // Placeholder se imagem não carregar
                     const encodedName = encodeURIComponent(championship.name);
