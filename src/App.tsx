@@ -1,24 +1,19 @@
-import { PreLaunch } from "@/pages/PreLaunch"
+import { Home } from "@/pages/Home"
 import { About } from "@/pages/About"
-import { Club } from "@/pages/Club"
-import { Pilot } from "@/pages/Pilot"
-import { Clubs } from "@/pages/Clubs"
-import { MainLayout } from "@/components/MainLayout"
+import { Championship } from "@/pages/Championship"
+import { Championships } from "@/pages/Championships"
+import { MainFullWidhtLayout } from "@/layouts/MainFullWidhtLayout"
+import { MainLayout } from "@/layouts/MainLayout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
-import { ClubProvider } from "@/contexts/ClubContext"
 import { useEffect } from "react"
 import { Privacy } from "./pages/Privacy"
-
-// Create specific route components
-const ClubCalendario = () => <Club section="calendario" />
-const ClubClassificacao = () => <Club section="classificacao" />
-const ClubRegulamento = () => <Club section="regulamento" />
+import { Terms } from "./pages/Terms"
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Router>
         <AppContent />
       </Router>
@@ -37,15 +32,12 @@ function AppContent() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        <Route path="/" element={<PreLaunch />} />
-        <Route path="/privacidade" element={<Privacy />} />
-        <Route path="/about" element={<ClubProvider><MainLayout><About /></MainLayout></ClubProvider>} />
-        <Route path="/clubes" element={<ClubProvider><MainLayout><Clubs /></MainLayout></ClubProvider>} />
-        <Route path="/clube/:alias" element={<ClubProvider><MainLayout><Club /></MainLayout></ClubProvider>} />
-        <Route path="/clube/:alias/calendario" element={<ClubProvider><MainLayout><ClubCalendario /></MainLayout></ClubProvider>} />
-        <Route path="/clube/:alias/classificacao" element={<ClubProvider><MainLayout><ClubClassificacao /></MainLayout></ClubProvider>} />
-        <Route path="/clube/:alias/regulamento" element={<ClubProvider><MainLayout><ClubRegulamento /></MainLayout></ClubProvider>} />
-        <Route path="/pilotos/:pilotSlug" element={<ClubProvider><MainLayout><Pilot /></MainLayout></ClubProvider>} />
+        <Route path="/" element={<MainFullWidhtLayout><Home /></MainFullWidhtLayout>} />
+        <Route path="/privacidade" element={<MainLayout><Privacy /></MainLayout>} />
+        <Route path="/termos-de-uso" element={<MainLayout><Terms /></MainLayout>} />
+        <Route path="/sobre-brk" element={<MainLayout><About /></MainLayout>} />
+        <Route path="/campeonatos" element={<MainLayout><Championships /></MainLayout>} />
+        <Route path="/campeonato/:slug" element={<MainFullWidhtLayout><Championship /></MainFullWidhtLayout>} />
       </Routes>
     </AnimatePresence>
   );
