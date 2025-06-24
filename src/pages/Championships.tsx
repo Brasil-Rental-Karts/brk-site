@@ -150,7 +150,7 @@ export const Championships = () => {
                         <img
                           src={championship.image}
                           alt=""
-                          className="w-full h-full object-cover blur-sm scale-110"
+                          className="w-full h-full object-cover blur-md scale-125"
                           onError={(e) => {
                             // Fallback para cor sólida se a imagem não carregar
                             (e.target as HTMLImageElement).style.display = "none";
@@ -191,7 +191,7 @@ export const Championships = () => {
                       )}
                     </div>
 
-                    <CardContent className="p-6 flex flex-col flex-1 bg-background/95 backdrop-blur-sm">
+                    <CardContent className="p-6 flex flex-col flex-1 bg-white">
                       {/* Nome e descrição */}
                       <div className="flex-1 mb-6">
                         <h3 className="text-xl font-bold mb-2 line-clamp-2">
