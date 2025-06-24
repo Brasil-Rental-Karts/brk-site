@@ -226,7 +226,7 @@ export const HomeTab = ({
                 <img 
                   src={championship.image || championship.avatar || "/championship-placeholder.jpg"}
                   alt={`Imagem do ${championship.name}`}
-                  className="w-full h-auto rounded-lg shadow-2xl"
+                  className="w-full h-auto rounded-lg"
                   onError={(e) => {
                     // Placeholder se imagem não carregar
                     const encodedName = encodeURIComponent(championship.name);
@@ -241,7 +241,7 @@ export const HomeTab = ({
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="space-y-6"
+              className="space-y-6 flex flex-col justify-center h-full"
             >
               {/* Badge dinâmico com nome do campeonato */}
               <div className="inline-block">
@@ -251,16 +251,18 @@ export const HomeTab = ({
               </div>
 
               {/* Título */}
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                {championship.description}
-              </h1>
+              <div className="max-h-32 overflow-hidden">
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight line-clamp-3">
+                  {championship.description}
+                </h1>
+              </div>
 
               {/* Descrição */}
-              <p className="text-lg text-white/80 leading-relaxed">
-                {championship.longDescription}
-              </p>
-
-
+              <div className="flex-1 max-h-48 overflow-hidden">
+                <p className={`text-lg text-white/80 leading-relaxed`}>
+                  {championship.longDescription}
+                </p>
+              </div>
 
               {/* Botão CTA */}
               <motion.div
