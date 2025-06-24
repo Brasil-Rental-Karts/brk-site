@@ -162,7 +162,7 @@ export const Championships = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   {/* Imagem do campeonato */}
                   <div className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10">
                     <img
@@ -188,7 +188,7 @@ export const Championships = () => {
                       <h3 className="text-xl font-bold mb-2">
                         {championship.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-3">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {championship.shortDescription}
                       </p>
                     </div>
