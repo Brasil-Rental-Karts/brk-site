@@ -64,6 +64,24 @@ export interface ApiResponse<T> {
 }
 
 class ChampionshipService {
+  /**
+   * Parse date string to local Date object, avoiding timezone issues
+   * Esta função garante que datas como "2025-07-13T00:00:00" sejam interpretadas
+   * como 13 de julho no timezone local, não como UTC que seria convertido para local
+   */
+  private parseLocalDate(dateStr: string): Date {
+    if (dateStr.includes('T')) {
+      // Se já tem horário, extrair apenas a parte da data
+      const dateOnly = dateStr.split('T')[0];
+      const [year, month, day] = dateOnly.split('-').map(Number);
+      return new Date(year, month - 1, day); // month é 0-indexed
+    } else {
+      // Se é apenas data (YYYY-MM-DD), interpretar como local
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day); // month é 0-indexed
+    }
+  }
+
   private async request<T>(endpoint: string): Promise<T> {
     if (!CACHE_API_URL) {
       throw new Error('VITE_CACHE_API_URL is not configured');
@@ -184,8 +202,10 @@ class ChampionshipService {
    */
   isSeasonActive(season: Season): boolean {
     const now = new Date();
-    const startDate = new Date(season.startDate);
-    const endDate = new Date(season.endDate);
+    
+    // Usar método interno para parsing de data
+    const startDate = this.parseLocalDate(season.startDate);
+    const endDate = this.parseLocalDate(season.endDate);
     return now >= startDate && now <= endDate;
   }
 
@@ -269,7 +289,9 @@ class ChampionshipService {
    * Formata uma etapa para o formato esperado pelo UI
    */
   formatStageForUI(stage: Stage): any {
-    const stageDate = new Date(stage.date);
+    // Usar função utilitária para parsing de data
+    const stageDate = this.parseLocalDate(stage.date);
+    
     const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
     const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     
