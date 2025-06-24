@@ -172,14 +172,14 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
     });
 
   return (
-    <div className="px-6 py-8 space-y-6">
+    <div className="container px-6 py-8 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+        <h1 className="font-heading text-3xl font-bold mb-2 flex items-center gap-2">
           <Calendar className="h-8 w-8 text-primary" />
           Calendário do Campeonato
         </h1>
