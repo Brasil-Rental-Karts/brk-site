@@ -4,12 +4,7 @@ import { Card, CardContent, PageHeader } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
 import { Link } from "react-router-dom";
-import {
-  Trophy,
-  Search,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
+import { Trophy, Search, AlertCircle, Loader2 } from "lucide-react";
 import { SearchInput } from "@/components/ui/input";
 import { useChampionships } from "@/hooks/useChampionships";
 import {
@@ -56,19 +51,6 @@ export const Championships = () => {
     return filtered;
   }, [championships, filterStatus, searchQuery]);
 
-  const getStatusBadge = (status: ChampionshipUI["status"]) => {
-    switch (status) {
-      case "active":
-        return <Badge className="bg-green-500 text-white">Ativo</Badge>;
-      case "upcoming":
-        return <Badge className="bg-blue-500 text-white">Em Breve</Badge>;
-      case "finished":
-        return <Badge className="bg-gray-500 text-white">Finalizado</Badge>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header da página - fullwidth sem margens */}
@@ -103,10 +85,7 @@ export const Championships = () => {
 
             {/* Filtro por status */}
             <div className="md:w-48">
-              <Select
-                value={filterStatus}
-                onValueChange={setFilterStatus}
-              >
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-full px-4 py-2 rounded-lg border border-border bg-background">
                   <SelectValue />
                 </SelectTrigger>
@@ -163,12 +142,28 @@ export const Championships = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                  {/* Imagem de fundo */}
+                  <div className="absolute inset-0">
+                    {championship.image && (
+                      <img
+                        src={championship.image}
+                        alt={championship.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback para cor sólida se a imagem não carregar
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    )}
+                    {/* Overlay escuro para legibilidade */}
+                    <div className="absolute inset-0 bg-cover bg-center blur-md scale-110 z-0 bg-black/80"></div>
+                  </div>
                   {/* Imagem do campeonato */}
-                  <div className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10 flex-shrink-0">
+                  <div className="relative z-10 h-48 bg-gradient-to-r from-primary/20 to-primary/10 flex-shrink-0">
                     <img
                       src={championship.image}
                       alt={championship.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-scale-down"
                       onError={(e) => {
                         // Placeholder se imagem não carregar
                         (e.target as HTMLImageElement).src =
@@ -177,9 +172,6 @@ export const Championships = () => {
                           "%3C/text%3E%3C/svg%3E";
                       }}
                     />
-                    <div className="absolute top-4 right-4">
-                      {getStatusBadge(championship.status)}
-                    </div>
                   </div>
 
                   <CardContent className="p-6 flex flex-col flex-1">
@@ -224,15 +216,15 @@ export const Championships = () => {
               campeonatos.
             </p>
             <div className="my-8">
-            <p>Não encontrou seu campeonato?</p>
-            <Button
-              asChild
-              size="lg"
-              variant="default"
-              className="px-8 py-6 rounded-full transition-all duration-300"
-            >
-              <Link to="/">Entre em Contato</Link>
-            </Button>
+              <p>Não encontrou seu campeonato?</p>
+              <Button
+                asChild
+                size="lg"
+                variant="default"
+                className="px-8 py-6 rounded-full transition-all duration-300"
+              >
+                <Link to="/">Entre em Contato</Link>
+              </Button>
             </div>
           </motion.div>
         )}
