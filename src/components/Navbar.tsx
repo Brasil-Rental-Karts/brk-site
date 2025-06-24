@@ -249,31 +249,22 @@ export function Navbar() {
                         Dashboard
                       </a>
                       <a
-                        href={`${APP_URL}/perfil`}
+                        href={`${APP_URL}/financial`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Financeiro
+                      </a>
+                      <a
+                        href={`${APP_URL}/profile/edit`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
                         Perfil
-                      </a>
-                      <a
-                        href={`${APP_URL}/plano`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Plano
-                      </a>
-                      <a
-                        href={`${APP_URL}/ajuda`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Ajuda
                       </a>
                       <div className="h-px bg-border my-2" />
                       <button
