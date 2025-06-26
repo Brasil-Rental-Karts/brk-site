@@ -92,21 +92,21 @@ export const ChampionshipHeader = ({
                   key={season.id}
                   variant="outline"
                   size="sm"
-                  className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent"
+                  className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent whitespace-normal text-center min-h-[40px]"
                   onClick={() => onRegisterClick?.(season.slug || season.id)}
                 >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Inscrever-se em {season.name}
+                  <UserPlus className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="leading-tight">Inscrever-se em {season.name}</span>
                 </Button>
               ))
             ) : (
               <Button
                 variant="outline"
                 size="sm"
-                className="border-white/30 text-white/50 bg-transparent cursor-not-allowed"
+                className="border-white/30 text-white/50 bg-transparent cursor-not-allowed whitespace-normal text-center min-h-[40px]"
                 disabled
               >
-                Aguarde abertura das inscrições
+                <span className="leading-tight">Aguarde abertura das inscrições</span>
               </Button>
             )}
           </div>
@@ -151,21 +151,21 @@ export const ChampionshipHeader = ({
                   key={season.id}
                   variant="outline"
                   size="sm"
-                  className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent text-xs"
+                  className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50 bg-transparent whitespace-normal text-center min-h-[40px] py-2"
                   onClick={() => onRegisterClick?.(season.slug || season.id)}
                 >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Inscrever-se em {season.name}
+                  <UserPlus className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="leading-tight">Inscrever-se em {season.name}</span>
                 </Button>
               ))
             ) : (
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full border-white/30 text-white/50 bg-transparent text-xs cursor-not-allowed"
+                className="w-full border-white/30 text-white/50 bg-transparent whitespace-normal text-center min-h-[40px] py-2 cursor-not-allowed"
                 disabled
               >
-                Aguarde abertura das inscrições
+                <span className="leading-tight">Aguarde abertura das inscrições</span>
               </Button>
             )}
           </div>

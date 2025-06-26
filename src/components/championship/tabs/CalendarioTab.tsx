@@ -202,10 +202,10 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex flex-col sm:flex-row gap-4 mb-8"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full sm:w-auto">
           <label className="text-sm font-medium">Ano</label>
           <Select value={selectedYear} onValueChange={(value) => setSelectedYear(value)}>
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger className="w-full sm:w-[120px]">
               <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>
@@ -217,10 +217,10 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full sm:w-auto">
           <label className="text-sm font-medium">Temporada</label>
           <Select value={selectedSeason} onValueChange={(value) => setSelectedSeason(value)}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue placeholder="Temporada" />
             </SelectTrigger>
             <SelectContent>
@@ -312,20 +312,20 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                       <Button 
                         variant="default"
                         size="sm"
-                        className="w-full md:w-auto"
+                        className="w-full md:w-auto whitespace-normal text-center min-h-[36px]"
                       >
-                        Inscrever-se
-                        <ChevronRight className="ml-2 h-4 w-4" />
+                        <span className="leading-tight">Inscrever-se</span>
+                        <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0" />
                       </Button>
                     ) : (
                       <Button 
                         variant="outline"
                         size="sm"
-                        className="w-full md:w-auto"
+                        className="w-full md:w-auto whitespace-normal text-center min-h-[36px]"
                         onClick={() => handleOpenEventDetails(event)}
                       >
-                        Ver Detalhes
-                        <ChevronRight className="ml-2 h-4 w-4" />
+                        <span className="leading-tight">Ver Detalhes</span>
+                        <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0" />
                       </Button>
                     )}
                   </div>
@@ -496,8 +496,8 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                           <p className="text-sm text-muted-foreground mb-3">
                             Garante já sua vaga nesta etapa emocionante.
                           </p>
-                          <Button className="w-full">
-                            Inscrever-se Agora
+                          <Button className="w-full whitespace-normal text-center min-h-[40px]">
+                            <span className="leading-tight">Inscrever-se Agora</span>
                           </Button>
                         </div>
                       )}

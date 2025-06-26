@@ -260,8 +260,6 @@ export const HomeTab = ({
                 {championship.longDescription}
               </p>
 
-
-
               {/* Botão CTA */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -275,21 +273,21 @@ export const HomeTab = ({
                       <Button
                         key={season.id}
                         size="lg"
-                        className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full"
+                        className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full whitespace-normal text-center min-h-[48px] w-full sm:w-auto"
                         onClick={() => onRegisterClick?.(season.slug || season.id)}
                       >
-                        <UserPlus className="h-5 w-5 mr-2" />
-                        Inscrever-se em {season.name}
+                        <UserPlus className="h-5 w-5 mr-2 flex-shrink-0" />
+                        <span className="leading-tight">Inscrever-se em {season.name}</span>
                       </Button>
                     ))}
                   </div>
                 ) : (
                   <Button
                     size="lg"
-                    className="bg-muted hover:bg-muted text-muted-foreground font-semibold px-8 py-3 rounded-full cursor-not-allowed"
+                    className="bg-muted hover:bg-muted text-muted-foreground font-semibold px-8 py-3 rounded-full cursor-not-allowed whitespace-normal text-center min-h-[48px] w-full sm:w-auto"
                     disabled
                   >
-                    Aguarde abertura das inscrições
+                    <span className="leading-tight">Aguarde abertura das inscrições</span>
                   </Button>
                 )}
               </motion.div>
@@ -317,13 +315,13 @@ export const HomeTab = ({
 
         {/* Filtros do Calendário */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-full sm:w-auto">
             <label className="text-sm font-medium">Ano</label>
             <Select
               value={selectedYear}
               onValueChange={setSelectedYear}
             >
-              <SelectTrigger className="px-4 py-2 rounded-lg border border-border bg-background min-w-32">
+              <SelectTrigger className="w-full sm:min-w-32 px-4 py-2 rounded-lg border border-border bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -333,13 +331,13 @@ export const HomeTab = ({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-full sm:w-auto">
             <label className="text-sm font-medium">Temporada</label>
             <Select
               value={selectedSeason}
               onValueChange={setSelectedSeason}
             >
-              <SelectTrigger className="px-4 py-2 rounded-lg border border-border bg-background min-w-40">
+              <SelectTrigger className="w-full sm:min-w-40 px-4 py-2 rounded-lg border border-border bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

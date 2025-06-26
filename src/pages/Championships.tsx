@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, PageHeader } from "brk-design-system";
-import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
 import { Link } from "react-router-dom";
 import { Trophy, Search, AlertCircle, Loader2 } from "lucide-react";
@@ -11,7 +10,6 @@ import {
   mapApiChampionshipToUI,
   filterChampionshipsByStatus,
   searchChampionships,
-  type ChampionshipUI,
 } from "@/utils/championship.utils";
 import {
   Select,
@@ -68,9 +66,9 @@ export const Championships = () => {
           />
 
           {/* Filtros e busca */}
-          <div className="flex flex-col md:flex-row gap-4 my-8 ">
+          <div className="flex flex-col md:flex-row gap-4 my-8">
             {/* Busca */}
-            <div className="flex-1">
+            <div className="w-full md:flex-1">
               <SearchInput
                 placeholder="Buscar campeonatos por nome, descrição ou local..."
                 value={searchQuery}
@@ -84,7 +82,7 @@ export const Championships = () => {
             </div>
 
             {/* Filtro por status */}
-            <div className="md:w-48">
+            <div className="w-full md:w-48">
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-full px-4 py-2 rounded-lg border border-border bg-background">
                   <SelectValue />
