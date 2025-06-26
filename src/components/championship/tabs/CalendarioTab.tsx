@@ -39,9 +39,10 @@ interface CalendarioTabProps {
         briefing?: string;
       }>;
   };
+  onRegisterClick?: (seasonSlug: string) => void;
 }
 
-export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
+export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabProps) => {
   // Estado para controlar o modal de detalhes
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -313,6 +314,7 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                         variant="default"
                         size="sm"
                         className="w-full md:w-auto whitespace-normal text-center min-h-[36px]"
+                        onClick={() => onRegisterClick?.(selectedSeason)}
                       >
                         <span className="leading-tight">Inscrever-se</span>
                         <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0" />
@@ -496,7 +498,10 @@ export const CalendarioTab = ({ championship }: CalendarioTabProps) => {
                           <p className="text-sm text-muted-foreground mb-3">
                             Garante já sua vaga nesta etapa emocionante.
                           </p>
-                          <Button className="w-full whitespace-normal text-center min-h-[40px]">
+                          <Button 
+                            className="w-full whitespace-normal text-center min-h-[40px]"
+                            onClick={() => onRegisterClick?.(selectedSeason)}
+                          >
                             <span className="leading-tight">Inscrever-se Agora</span>
                           </Button>
                         </div>

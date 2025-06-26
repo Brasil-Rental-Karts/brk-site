@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Trophy,
-  Calendar,
   MapPin,
   ArrowRight,
   Zap,

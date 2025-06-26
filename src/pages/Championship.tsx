@@ -73,7 +73,7 @@ export const Championship = () => {
   // Função para redirecionar para página de inscrição
   const handleRegisterClick = (seasonSlug: string) => {
     const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-    const registerUrl = `${baseUrl}/championship/${slug}/season/${seasonSlug}/register`;
+    const registerUrl = `${baseUrl}/registration/${seasonSlug}`;
     window.location.href = registerUrl;
   };
 
@@ -208,7 +208,10 @@ export const Championship = () => {
           </TabsContent>
 
           <TabsContent value="calendario" className="mt-0">
-            <CalendarioTab championship={championshipForComponents} />
+            <CalendarioTab 
+              championship={championshipForComponents} 
+              onRegisterClick={handleRegisterClick}
+            />
           </TabsContent>
 
           {/* Conteúdo da aba Classificação temporariamente escondido */}
