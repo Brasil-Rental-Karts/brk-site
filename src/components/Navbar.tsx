@@ -137,23 +137,16 @@ export function Navbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <a
-                    href={`${APP_URL}/perfil`}
+                    href={`${APP_URL}/financial`}
+                  >
+                    Financeiro
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a
+                    href={`${APP_URL}/profile/edit`}
                   >
                     Perfil
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={`${APP_URL}/plano`}
-                  >
-                    Plano
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={`${APP_URL}/ajuda`}
-                  >
-                    Ajuda
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
