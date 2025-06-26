@@ -131,8 +131,6 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <a
                     href={`${APP_URL}/dashboard`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Dashboard
                   </a>
@@ -140,8 +138,6 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <a
                     href={`${APP_URL}/perfil`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Perfil
                   </a>
@@ -149,8 +145,6 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <a
                     href={`${APP_URL}/plano`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Plano
                   </a>
@@ -158,8 +152,6 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <a
                     href={`${APP_URL}/ajuda`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Ajuda
                   </a>
@@ -241,8 +233,6 @@ export function Navbar() {
                       <div className="h-px bg-border my-2" />
                       <a
                         href={`${APP_URL}/dashboard`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
@@ -250,8 +240,6 @@ export function Navbar() {
                       </a>
                       <a
                         href={`${APP_URL}/financial`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
@@ -259,8 +247,6 @@ export function Navbar() {
                       </a>
                       <a
                         href={`${APP_URL}/profile/edit`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
