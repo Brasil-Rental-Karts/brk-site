@@ -374,9 +374,10 @@ export function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="h-full"
                 >
-                  <Card className="hover:shadow-lg transition-all duration-300">
-                    <CardContent className="p-6">
+                  <Card className="hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                    <CardContent className="p-6 flex flex-col flex-grow">
                       {/* Data */}
                       <div className="text-center mb-4">
                         <div className="bg-primary/10 rounded-lg p-4 inline-block">
@@ -390,7 +391,7 @@ export function Home() {
                       </div>
 
                       {/* Informações */}
-                      <div className="space-y-3 text-center">
+                      <div className="space-y-3 text-center flex-grow flex flex-col justify-center">
                         <div>
                           <div className="font-bold text-lg">{event.stage}</div>
                         </div>
@@ -404,13 +405,17 @@ export function Home() {
                             {event.location}
                           </div>
                         </div>
+                      </div>
 
+                      {/* Badge na parte inferior */}
+                      <div className="text-center mt-4">
                         <Badge
                           variant={
                             event.status === "Inscrição Aberta"
                               ? "default"
                               : "secondary"
                           }
+                          className="text-center"
                         >
                           {event.status}
                         </Badge>
@@ -469,11 +474,12 @@ export function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="h-full"
               >
-                <Card className="p-8 text-center hover:shadow-lg transition-all duration-300 h-full">
-                  <feature.icon className="h-12 w-12 text-primary mx-auto mb-6" />
-                  <h3 className="font-heading text-xl font-bold mb-4">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                <Card className="p-8 text-center hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                  <feature.icon className="h-12 w-12 text-primary mx-auto mb-6 flex-shrink-0" />
+                  <h3 className="font-heading text-lg font-bold mb-4 break-words">{feature.title}</h3>
+                  <p className="text-muted-foreground flex-grow">{feature.description}</p>
                 </Card>
               </motion.div>
             ))}
