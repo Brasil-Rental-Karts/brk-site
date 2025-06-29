@@ -63,6 +63,17 @@ export interface ApiResponse<T> {
   };
 }
 
+export interface Regulation {
+  id: string;
+  title: string;
+  content: string;
+  order: number;
+  isActive: boolean;
+  seasonId: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 class ChampionshipService {
   /**
    * Parse date string to local Date object, avoiding timezone issues
@@ -307,6 +318,87 @@ class ChampionshipService {
       streamLink: stage.streamLink,
       briefing: stage.briefing
     };
+  }
+
+  /**
+   * Busca todas as regulamentações do cache
+   */
+  async getAllRegulations(): Promise<Regulation[]> {
+    try {
+      const response = await this.request<ApiResponse<Regulation[]>>('/cache/regulations');
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch regulations:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca regulamentações de uma temporada específica
+   */
+  async getRegulationsForSeason(seasonId: string): Promise<Regulation[]> {
+    try {
+      const response = await this.request<ApiResponse<Regulation[]>>(`/cache/seasons/${seasonId}/regulations`);
+      return response.data || [];
+    } catch (error) {
+      console.error(`Failed to fetch regulations for season ${seasonId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca regulamentações ativas para temporadas ativas de um campeonato
+   */
+  async getActiveRegulationsForChampionship(championshipId: string): Promise<Regulation[]> {
+    try {
+      const activeSeasons = await this.getActiveSeasonsForChampionship(championshipId);
+      const allRegulations: Regulation[] = [];
+      
+      // Buscar regulamentações de todas as temporadas ativas
+      for (const season of activeSeasons) {
+        const seasonRegulations = await this.getRegulationsForSeason(season.id);
+        // Filtrar apenas regulamentações ativas
+        const activeRegulations = seasonRegulations.filter(regulation => regulation.isActive);
+        allRegulations.push(...activeRegulations);
+      }
+      
+      // Ordenar por ordem
+      return allRegulations.sort((a, b) => a.order - b.order);
+    } catch (error) {
+      console.error(`Failed to fetch active regulations for championship ${championshipId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca regulamentações agrupadas por temporada para um campeonato
+   */
+  async getRegulationsBySeasonForChampionship(championshipId: string): Promise<{ season: Season; regulations: Regulation[] }[]> {
+    try {
+      const seasons = await this.getAllSeasons();
+      const championshipSeasons = seasons.filter(season => season.championshipId === championshipId);
+      const regulationsBySeason: { season: Season; regulations: Regulation[] }[] = [];
+      
+      for (const season of championshipSeasons) {
+        const regulations = await this.getRegulationsForSeason(season.id);
+        // Filtrar apenas regulamentações ativas
+        const activeRegulations = regulations.filter(regulation => regulation.isActive);
+        if (activeRegulations.length > 0) {
+          regulationsBySeason.push({
+            season,
+            regulations: activeRegulations.sort((a, b) => a.order - b.order)
+          });
+        }
+      }
+      
+      // Ordenar por data de início da temporada (mais recente primeiro)
+      return regulationsBySeason.sort((a, b) => 
+        new Date(b.season.startDate).getTime() - new Date(a.season.startDate).getTime()
+      );
+    } catch (error) {
+      console.error(`Failed to fetch regulations by season for championship ${championshipId}:`, error);
+      return [];
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { championshipService, type Championship, type ChampionshipWithSeasons, type Season, type Category, type Stage } from '@/services/championship.service';
 
 export interface UseChampionshipsReturn {
@@ -15,6 +15,9 @@ export interface UseChampionshipsReturn {
   getSeasonsForChampionship: (championshipId: string) => Season[];
   getStagesForSeason: (seasonId: string) => Stage[];
   getStagesForChampionship: (championshipId: string) => Stage[];
+  getRegulationsForSeason: (seasonId: string) => Promise<any[]>;
+  getActiveRegulationsForChampionship: (championshipId: string) => Promise<any[]>;
+  getRegulationsBySeasonForChampionship: (championshipId: string) => Promise<any[]>;
 }
 
 export interface UseChampionshipReturn {
@@ -105,6 +108,36 @@ export function useChampionships(): UseChampionshipsReturn {
     return stages.filter(stage => seasonIds.includes(stage.seasonId));
   };
 
+  // Buscar regulamentações por temporada
+  const getRegulationsForSeason = useCallback(async (seasonId: string) => {
+    try {
+      return await championshipService.getRegulationsForSeason(seasonId);
+    } catch (error) {
+      console.error('Error fetching regulations for season:', error);
+      return [];
+    }
+  }, []);
+
+  // Buscar regulamentações ativas para um campeonato
+  const getActiveRegulationsForChampionship = useCallback(async (championshipId: string) => {
+    try {
+      return await championshipService.getActiveRegulationsForChampionship(championshipId);
+    } catch (error) {
+      console.error('Error fetching active regulations for championship:', error);
+      return [];
+    }
+  }, []);
+
+  // Buscar regulamentações agrupadas por temporada para um campeonato
+  const getRegulationsBySeasonForChampionship = useCallback(async (championshipId: string) => {
+    try {
+      return await championshipService.getRegulationsBySeasonForChampionship(championshipId);
+    } catch (error) {
+      console.error('Error fetching regulations by season for championship:', error);
+      return [];
+    }
+  }, []);
+
   useEffect(() => {
     fetchAllData();
   }, []);
@@ -122,7 +155,10 @@ export function useChampionships(): UseChampionshipsReturn {
     getActiveCategoriesCount,
     getSeasonsForChampionship,
     getStagesForSeason,
-    getStagesForChampionship
+    getStagesForChampionship,
+    getRegulationsForSeason,
+    getActiveRegulationsForChampionship,
+    getRegulationsBySeasonForChampionship
   };
 }
 
