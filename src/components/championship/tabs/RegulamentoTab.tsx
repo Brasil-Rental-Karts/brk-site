@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "brk-design-system";
-import { Badge } from "brk-design-system";
-import { BookOpen, Calendar, ChevronDown, ChevronUp, Loader2, ChevronLeft, ChevronRight, List, Search, Menu, X } from "lucide-react";
+import { BookOpen, Loader2, ChevronLeft, ChevronRight, Search, Menu} from "lucide-react";
 import { Regulation, Season } from "@/services/championship.service";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -22,9 +20,6 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
   const [regulationsBySeason, setRegulationsBySeason] = useState<{ season: Season; regulations: Regulation[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedSeasons, setExpandedSeasons] = useState<Set<string>>(new Set());
-  const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
-  const [selectedRegulationIndex, setSelectedRegulationIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? false : true));
   const [selected, setSelected] = useState<{ seasonId: string; regulationIndex: number } | null>(null);
   const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
@@ -83,11 +78,6 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
       const data = await getRegulationsBySeasonForChampionship(championship.id);
       setRegulationsBySeason(data);
       
-      // Expandir automaticamente a primeira temporada se houver apenas uma
-      if (data.length === 1) {
-        setExpandedSeasons(new Set([data[0].season.id]));
-        setSelectedSeason(data[0].season.id);
-      }
     } catch (err) {
       setError('Erro ao carregar regulamentos');
       console.error('Error loading regulations:', err);
@@ -96,109 +86,9 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
     }
   };
 
-  const toggleSeason = (seasonId: string) => {
-    const newExpanded = new Set(expandedSeasons);
-    if (newExpanded.has(seasonId)) {
-      newExpanded.delete(seasonId);
-      if (selectedSeason === seasonId) {
-        setSelectedSeason(null);
-        setSelectedRegulationIndex(0);
-      }
-    } else {
-      newExpanded.add(seasonId);
-      setSelectedSeason(seasonId);
-      setSelectedRegulationIndex(0);
-    }
-    setExpandedSeasons(newExpanded);
-  };
-
-  const selectRegulation = (seasonId: string, regulationIndex: number) => {
-    setSelectedSeason(seasonId);
-    setSelectedRegulationIndex(regulationIndex);
-  };
-
-  const navigateToNext = () => {
-    if (!selectedSeason) return;
-    
-    const currentSeason = regulationsBySeason.find(s => s.season.id === selectedSeason);
-    if (!currentSeason) return;
-
-    if (selectedRegulationIndex < currentSeason.regulations.length - 1) {
-      setSelectedRegulationIndex(selectedRegulationIndex + 1);
-    } else {
-      // Ir para a próxima temporada
-      const currentSeasonIndex = regulationsBySeason.findIndex(s => s.season.id === selectedSeason);
-      if (currentSeasonIndex < regulationsBySeason.length - 1) {
-        const nextSeason = regulationsBySeason[currentSeasonIndex + 1];
-        setSelectedSeason(nextSeason.season.id);
-        setSelectedRegulationIndex(0);
-        setExpandedSeasons(prev => new Set([...prev, nextSeason.season.id]));
-      }
-    }
-  };
-
-  const navigateToPrevious = () => {
-    if (!selectedSeason) return;
-    
-    if (selectedRegulationIndex > 0) {
-      setSelectedRegulationIndex(selectedRegulationIndex - 1);
-    } else {
-      // Ir para a temporada anterior
-      const currentSeasonIndex = regulationsBySeason.findIndex(s => s.season.id === selectedSeason);
-      if (currentSeasonIndex > 0) {
-        const prevSeason = regulationsBySeason[currentSeasonIndex - 1];
-        setSelectedSeason(prevSeason.season.id);
-        setSelectedRegulationIndex(prevSeason.regulations.length - 1);
-        setExpandedSeasons(prev => new Set([...prev, prevSeason.season.id]));
-      }
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const getCurrentRegulation = () => {
-    if (!selectedSeason) return null;
-    const currentSeason = regulationsBySeason.find(s => s.season.id === selectedSeason);
-    return currentSeason?.regulations[selectedRegulationIndex] || null;
-  };
-
-  const getCurrentSeason = () => {
-    return regulationsBySeason.find(s => s.season.id === selectedSeason);
-  };
-
-  const canNavigateNext = () => {
-    if (!selectedSeason) return false;
-    const currentSeason = getCurrentSeason();
-    if (!currentSeason) return false;
-    
-    if (selectedRegulationIndex < currentSeason.regulations.length - 1) return true;
-    
-    const currentSeasonIndex = regulationsBySeason.findIndex(s => s.season.id === selectedSeason);
-    return currentSeasonIndex < regulationsBySeason.length - 1;
-  };
-
-  const canNavigatePrevious = () => {
-    if (!selectedSeason) return false;
-    
-    if (selectedRegulationIndex > 0) return true;
-    
-    const currentSeasonIndex = regulationsBySeason.findIndex(s => s.season.id === selectedSeason);
-    return currentSeasonIndex > 0;
-  };
-
   // Seleção atual
   const current = selected
     ? regulationsBySeason.find(s => s.season.id === selected.seasonId)?.regulations[selected.regulationIndex] || null
-    : null;
-  const currentSeason = selected
-    ? regulationsBySeason.find(s => s.season.id === selected.seasonId)?.season
     : null;
 
   // Navegação
@@ -233,8 +123,6 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
     if (el) el.scrollIntoView({ block: "nearest" });
   }, [selected, sidebarOpen]);
 
-  // Responsividade: sidebar overlay em mobile
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   if (loading) {
     return (
@@ -352,7 +240,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
           {currentSeasonData && filteredRegulations[0] && (
             <div key={currentSeasonData.season.id} className="mb-4">
               <ul className="space-y-2 md:space-y-1">
-                {filteredRegulations[0].regulations.map((reg, idx) => {
+                {filteredRegulations[0].regulations.map((reg) => {
                   const realIndex = currentSeasonData.regulations.findIndex(r => r.id === reg.id);
                   const isActive = selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex;
                   return (
