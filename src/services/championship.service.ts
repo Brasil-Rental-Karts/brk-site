@@ -17,6 +17,7 @@ export interface Sponsor {
   name: string;
   logoImage: string;
   website?: string;
+  type?: 'sponsor' | 'supporter';
 }
 
 export interface ChampionshipWithSeasons extends Championship {

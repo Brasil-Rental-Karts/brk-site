@@ -52,6 +52,7 @@ interface HomeTabProps {
       name: string;
       logoImage: string;
       website?: string;
+      type?: 'sponsor' | 'supporter';
     }>;
   };
   seasonsWithOpenRegistration?: Season[];
@@ -184,6 +185,10 @@ export const HomeTab = ({
       
       return dateA.getTime() - dateB.getTime();
     });
+
+  // Separar patrocinadores e apoiadores
+  const sponsors = championship.sponsors?.filter(s => s.type === 'sponsor' || !s.type) || [];
+  const supporters = championship.sponsors?.filter(s => s.type === 'supporter') || [];
 
   return (
     <div className="space-y-8">
@@ -425,7 +430,7 @@ export const HomeTab = ({
         </div>
       </motion.div>
 
-      {/* Seção dos Patrocinadores - só exibe se houver patrocinadores */}
+      {/* Seção dos Patrocinadores e Apoiadores - só exibe se houver patrocinadores */}
       {championship.sponsors && Array.isArray(championship.sponsors) && championship.sponsors.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -433,60 +438,120 @@ export const HomeTab = ({
           transition={{ duration: 0.5, delay: 0.6 }}
           className="container px-6 py-8"
         >
-          <h2 className="font-heading text-2xl font-bold mb-6 text-center">
-            Patrocinadores
-          </h2>
-
-        {/* Grid dos Patrocinadores */}
-        <div className="flex flex-wrap justify-center items-center gap-8">
-            {championship.sponsors && championship.sponsors.length > 0 ? (
-              championship.sponsors.map((sponsor, index) => (
-              <motion.div
-                key={sponsor.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.8 + (index * 0.05) }}
-                className="w-[180px] h-60"
-              >
-                {sponsor.website ? (
-                  <a
-                    href={sponsor.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer"
-                    title={`Visitar site de ${sponsor.name}`}
+          {/* Seção dos Patrocinadores */}
+          {sponsors.length > 0 && (
+            <div className="mb-12">
+              <h2 className="font-heading text-3xl font-bold mb-8 text-center">
+                Patrocinadores
+              </h2>
+              
+              {/* Grid dos Patrocinadores - Tamanho maior para mais relevância */}
+              <div className="flex flex-wrap justify-center items-center gap-8">
+                {sponsors.map((sponsor, index) => (
+                  <motion.div
+                    key={sponsor.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.8 + (index * 0.05) }}
+                    className="w-[220px] h-80" // Tamanho maior para patrocinadores
                   >
-                    <img
-                      src={sponsor.logoImage}
-                      alt={sponsor.name}
-                      className="max-w-full max-h-full object-contain opacity-100 hover:opacity-70 transition-opacity"
-                      onError={(e) => {
-                        // Placeholder se imagem não carregar
-                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='10' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
-                  </a>
-                ) : (
-                  <div className="w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors">
-                    <img
-                      src={sponsor.logoImage}
-                      alt={sponsor.name}
-                      className="max-w-full max-h-full object-contain opacity-100 hover:opacity-70 transition-opacity"
-                      onError={(e) => {
-                        // Placeholder se imagem não carregar
-                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='10' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
-                  </div>
-                )}
-              </motion.div>
-            ))
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">Nenhum patrocinador cadastrado ainda.</p>
+                    {sponsor.website ? (
+                      <a
+                        href={sponsor.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full p-4 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors cursor-pointer border-2 border-primary/20 hover:border-primary/40"
+                        title={`Visitar site de ${sponsor.name}`}
+                      >
+                        <img
+                          src={sponsor.logoImage}
+                          alt={sponsor.name}
+                          className="max-w-full max-h-full object-contain opacity-100 hover:opacity-80 transition-opacity"
+                          onError={(e) => {
+                            // Placeholder se imagem não carregar
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='12' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </a>
+                    ) : (
+                      <div className="w-full h-full p-4 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors border-2 border-primary/20 hover:border-primary/40">
+                        <img
+                          src={sponsor.logoImage}
+                          alt={sponsor.name}
+                          className="max-w-full max-h-full object-contain opacity-100 hover:opacity-80 transition-opacity"
+                          onError={(e) => {
+                            // Placeholder se imagem não carregar
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='12' font-family='Arial'%3E${encodeURIComponent(sponsor.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           )}
-          </div>
+
+          {/* Seção dos Apoiadores */}
+          {supporters.length > 0 && (
+            <div>
+              <h3 className="font-heading text-xl font-semibold mb-6 text-center text-muted-foreground">
+                Apoiadores
+              </h3>
+              
+              {/* Grid dos Apoiadores - Tamanho menor */}
+              <div className="flex flex-wrap justify-center items-center gap-6">
+                {supporters.map((supporter, index) => (
+                  <motion.div
+                    key={supporter.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: 1.0 + (index * 0.03) }}
+                    className="w-[140px] h-48" // Tamanho menor para apoiadores
+                  >
+                    {supporter.website ? (
+                      <a
+                        href={supporter.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/30 transition-colors cursor-pointer border border-muted/30 hover:border-muted/50"
+                        title={`Visitar site de ${supporter.name}`}
+                      >
+                        <img
+                          src={supporter.logoImage}
+                          alt={supporter.name}
+                          className="max-w-full max-h-full object-contain opacity-80 hover:opacity-100 transition-opacity"
+                          onError={(e) => {
+                            // Placeholder se imagem não carregar
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='8' font-family='Arial'%3E${encodeURIComponent(supporter.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </a>
+                    ) : (
+                      <div className="w-full h-full p-2 rounded-lg flex items-center justify-center hover:bg-muted/30 transition-colors border border-muted/30 hover:border-muted/50">
+                        <img
+                          src={supporter.logoImage}
+                          alt={supporter.name}
+                          className="max-w-full max-h-full object-contain opacity-80 hover:opacity-100 transition-opacity"
+                          onError={(e) => {
+                            // Placeholder se imagem não carregar
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='8' font-family='Arial'%3E${encodeURIComponent(supporter.name.slice(0, 2).toUpperCase())}%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Mensagem caso não haja nenhum patrocinador ou apoiador */}
+          {sponsors.length === 0 && supporters.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Nenhum patrocinador ou apoiador cadastrado ainda.</p>
+            </div>
+          )}
         </motion.div>
       )}
     </div>

@@ -22,6 +22,7 @@ export interface ChampionshipUI {
     name: string;
     logoImage: string;
     website?: string;
+    type?: 'sponsor' | 'supporter';
   }>;
 }
 
