@@ -69,7 +69,6 @@ export interface Regulation {
   title: string;
   content: string;
   order: number;
-  isActive: boolean;
   seasonId: string;
   createdAt?: string;
   updatedAt?: string;
@@ -358,9 +357,7 @@ class ChampionshipService {
       // Buscar regulamentações de todas as temporadas ativas
       for (const season of activeSeasons) {
         const seasonRegulations = await this.getRegulationsForSeason(season.id);
-        // Filtrar apenas regulamentações ativas
-        const activeRegulations = seasonRegulations.filter(regulation => regulation.isActive);
-        allRegulations.push(...activeRegulations);
+        allRegulations.push(...seasonRegulations);
       }
       
       // Ordenar por ordem
@@ -382,14 +379,10 @@ class ChampionshipService {
       
       for (const season of championshipSeasons) {
         const regulations = await this.getRegulationsForSeason(season.id);
-        // Filtrar apenas regulamentações ativas
-        const activeRegulations = regulations.filter(regulation => regulation.isActive);
-        if (activeRegulations.length > 0) {
-          regulationsBySeason.push({
-            season,
-            regulations: activeRegulations.sort((a, b) => a.order - b.order)
-          });
-        }
+        regulationsBySeason.push({
+          season,
+          regulations: regulations.sort((a, b) => a.order - b.order)
+        });
       }
       
       // Ordenar por data de início da temporada (mais recente primeiro)
