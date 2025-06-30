@@ -39,6 +39,9 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
     [regulationsBySeason, selectedSeasonId]
   );
 
+  // Verifica se a temporada selecionada tem regulamento habilitado
+  const regulationsEnabled = currentSeasonData?.season?.regulationsEnabled !== false;
+
   // Busca e filtro (apenas para a temporada selecionada)
   const filteredRegulations = useMemo(() => {
     if (!currentSeasonData) return [];
@@ -200,6 +203,33 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
           <h3 className="text-lg font-semibold mb-2">Nenhum regulamento encontrado</h3>
           <p className="text-muted-foreground">
             Este campeonato ainda não possui regulamentos publicados.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!regulationsEnabled) {
+    return (
+      <div className="px-6 py-8 space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+            <BookOpen className="h-8 w-8 text-primary" />
+            Regulamento
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            Regulamento oficial do {championship.currentSeason.name}
+          </p>
+        </motion.div>
+        <div className="text-center py-12">
+          <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Nenhum regulamento cadastrado</h3>
+          <p className="text-muted-foreground">
+            Esta temporada não possui regulamento cadastrado.
           </p>
         </div>
       </div>

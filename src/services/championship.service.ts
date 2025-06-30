@@ -31,6 +31,7 @@ export interface Season {
   endDate: string;
   championshipId: string;
   registrationOpen?: boolean;
+  regulationsEnabled?: boolean;
 }
 
 export interface Category {
