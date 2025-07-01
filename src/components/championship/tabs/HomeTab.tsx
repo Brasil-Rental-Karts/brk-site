@@ -4,6 +4,7 @@ import { Card, CardContent, Select, SelectItem, SelectContent, SelectTrigger, Se
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
 import { MapPin, Calendar, Clock, Video, UserPlus } from "lucide-react";
+import { CountdownTimer } from "../CountdownTimer";
 
 interface Season {
   id: string;
@@ -225,7 +226,7 @@ export const HomeTab = ({
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="hidden md:flex justify-center"
+              className="hidden md:flex flex-col justify-center items-center"
             >
               <div className="w-full max-w-md">
                 <img 
@@ -238,6 +239,15 @@ export const HomeTab = ({
                     (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3E${encodedName}%3C/text%3E%3C/svg%3E`;
                   }}
                 />
+                {/* Contador regressivo para próxima etapa */}
+                {championship.events && championship.events.length > 0 && (
+                  <div className="mt-4 w-full">
+                    <CountdownTimer 
+                      events={championship.events} 
+                      selectedYear={selectedYear}
+                    />
+                  </div>
+                )}
               </div>
             </motion.div>
 

@@ -24,6 +24,7 @@ export const Championship = () => {
   const { slug } = useParams<{ slug: string }>();
   const [activeTab, setActiveTab] = useState("home");
 
+
   // Buscar dados dos campeonatos da API
   const { 
     championships: apiChampionships, 
