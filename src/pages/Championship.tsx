@@ -26,8 +26,9 @@ export const Championship = () => {
 
 
   // Buscar dados dos campeonatos da API
-  const { 
+    const {
     championships: apiChampionships, 
+    raceTracks,
     loading, 
     error, 
     refetch,
@@ -57,7 +58,25 @@ export const Championship = () => {
   const championshipSeasons = currentChampionship ? getSeasonsForChampionship(currentChampionship.id) : [];
   const championshipStages = currentChampionship ? getStagesForChampionship(currentChampionship.id) : [];
 
-    // Filtrar temporadas com inscrições abertas que estão em andamento ou agendadas
+  // Debug: Log dos dados carregados
+  console.log('Debug RaceTrack:', {
+    raceTracksCount: raceTracks.length,
+    raceTracks: raceTracks,
+    stagesCount: championshipStages.length,
+    stages: championshipStages.map(stage => ({
+      id: stage.id,
+      name: stage.name,
+      raceTrackId: stage.raceTrackId
+    }))
+  });
+
+  // Função para obter dados do kartódromo pelo ID
+  const getRaceTrackById = (id: string) => {
+    const found = raceTracks.find(raceTrack => raceTrack.id === id);
+    return found || null;
+  };
+
+  // Filtrar temporadas com inscrições abertas que estão em andamento ou agendadas
   const seasonsWithOpenRegistration = useMemo(() => {
     const now = new Date();
     return championshipSeasons.filter(season => {
@@ -137,7 +156,10 @@ export const Championship = () => {
       season: championshipSeasons.length > 0 ? championshipSeasons[0].name : "Temporada 1"
     },
     availableSeasons: championshipSeasons,
-    events: championshipStages.map(stage => championshipService.formatStageForUI(stage)),
+    events: championshipStages.map(stage => {
+      const raceTrack = getRaceTrackById(stage.raceTrackId);
+      return championshipService.formatStageForUI(stage, raceTrack || undefined);
+    }),
     sponsors: Array.isArray(currentChampionship.sponsors) ? currentChampionship.sponsors : []
   };
 

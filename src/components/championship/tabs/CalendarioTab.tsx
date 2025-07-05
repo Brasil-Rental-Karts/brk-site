@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "brk-design-system";
 import { MapPin, Clock, Calendar, ChevronRight, Video, X } from "lucide-react";
+import { RaceTrack } from "@/services/championship.service";
+import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 
 interface CalendarioTabProps {
   championship: {
@@ -26,18 +28,20 @@ interface CalendarioTabProps {
       endDate: string;
       championshipId: string;
     }>;
-          events: Array<{
-        id: number;
-        date: string;
-        month: string;
-        day: string;
-        stage: string;
-        location: string;
-        time: string;
-        status: string;
-        streamLink?: string;
-        briefing?: string;
-      }>;
+    events: Array<{
+      id: number;
+      date: string;
+      month: string;
+      day: string;
+      stage: string;
+      location: string; // Agora é raceTrackId
+      time: string;
+      status: string;
+      streamLink?: string;
+      briefing?: string;
+      raceTrackData?: RaceTrack; // Dados do kartódromo já incluídos
+      trackLayout?: any; // Dados do traçado se disponível
+    }>;
   };
   onRegisterClick?: (seasonSlug: string) => void;
 }
@@ -46,6 +50,8 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
   // Estado para controlar o modal de detalhes
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 
   // Determinar ano inicial baseado nas temporadas disponíveis
   const getInitialYear = () => {
@@ -283,14 +289,20 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                     <div className="text-sm text-muted-foreground">{event.day}</div>
                     
                     <div className="flex flex-col sm:flex-row gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span>{event.location}</span>
-                      </div>
+                      <RaceTrackInfo 
+                        raceTrack={event.raceTrackData}
+                        className="flex items-center gap-2"
+                      />
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-muted-foreground" />
                         <span>{formatTime(event.time)}</span>
                       </div>
+                      {event.trackLayout && (
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Traçado: {event.trackLayout.name}</span>
+                        </div>
+                      )}
                       {event.streamLink && (
                         <div className="flex items-center gap-2">
                           <Video className="h-4 w-4 text-muted-foreground" />
@@ -431,7 +443,11 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                         <MapPin className="h-5 w-5 text-primary mt-0.5" />
                         <div>
                           <h4 className="font-semibold">Local</h4>
-                          <p className="text-muted-foreground">{selectedEvent.location}</p>
+                          <RaceTrackInfo 
+                            raceTrack={selectedEvent.raceTrackData}
+                            showAddress={true}
+                            className="p-0"
+                          />
                         </div>
                       </div>
 
@@ -442,6 +458,19 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                           <p className="text-muted-foreground">{formatTime(selectedEvent.time)}</p>
                         </div>
                       </div>
+
+                      {selectedEvent.trackLayout && (
+                        <div className="flex items-start gap-3">
+                          <MapPin className="h-5 w-5 text-primary mt-0.5" />
+                          <div>
+                            <h4 className="font-semibold">Traçado</h4>
+                            <p className="text-muted-foreground">{selectedEvent.trackLayout.name}</p>
+                            {selectedEvent.trackLayout.description && (
+                              <p className="text-sm text-muted-foreground mt-1">{selectedEvent.trackLayout.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       {selectedEvent.streamLink && (
                         <div className="flex items-start gap-3">

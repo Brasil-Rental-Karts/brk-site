@@ -44,12 +44,27 @@ export interface Category {
   seasonId: string;
 }
 
+export interface RaceTrack {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  address: string;
+  trackLayouts?: any[];
+  defaultFleets?: any[];
+  generalInfo?: any;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Stage {
   id: string;
   name: string;
   date: string;
   time: string;
-  kartodrome: string;
+  raceTrackId: string;
+  trackLayoutId?: string;
   streamLink?: string;
   briefing?: string;
   seasonId: string;
@@ -298,14 +313,80 @@ class ChampionshipService {
   }
 
   /**
+   * Busca todos os kartódromos do cache
+   */
+  async getAllRaceTracks(): Promise<RaceTrack[]> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack[]>>('/cache/raceTracks');
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch race tracks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca kartódromos ativos do cache
+   */
+  async getActiveRaceTracks(): Promise<RaceTrack[]> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack[]>>('/cache/raceTracks/active');
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch active race tracks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca um kartódromo específico pelo ID
+   */
+  async getRaceTrackById(id: string): Promise<RaceTrack | null> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack>>(`/cache/raceTracks/${id}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch race track ${id}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca dados do kartódromo para uma etapa
+   */
+  async getRaceTrackDataForStage(raceTrackId: string): Promise<RaceTrack | null> {
+    try {
+      // Tentar buscar do cache primeiro
+      const raceTrack = await this.getRaceTrackById(raceTrackId);
+      if (raceTrack) {
+        return raceTrack;
+      }
+      
+      // Se não estiver em cache, buscar da API (fallback)
+      // Aqui você pode implementar a chamada para a API principal se necessário
+      console.warn(`Race track ${raceTrackId} not found in cache`);
+      return null;
+    } catch (error) {
+      console.error(`Failed to fetch race track data for stage ${raceTrackId}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Formata uma etapa para o formato esperado pelo UI
    */
-  formatStageForUI(stage: Stage): any {
+  formatStageForUI(stage: Stage, raceTrack?: RaceTrack): any {
     // Usar função utilitária para parsing de data
     const stageDate = this.parseLocalDate(stage.date);
     
     const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
     const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    
+    // Buscar informações do traçado se disponível
+    let trackLayout = null;
+    if (stage.trackLayoutId && raceTrack?.trackLayouts) {
+      trackLayout = raceTrack.trackLayouts.find(layout => layout.name === stage.trackLayoutId);
+    }
     
     return {
       id: parseInt(stage.id.slice(-4), 16), // Gera um ID numérico baseado no UUID
@@ -313,11 +394,13 @@ class ChampionshipService {
       month: months[stageDate.getMonth()],
       day: days[stageDate.getDay()],
       stage: stage.name,
-      location: stage.kartodrome,
+      location: raceTrack?.name || stage.raceTrackId, // Usar nome do kartódromo se disponível, senão o ID
       time: stage.time || 'A partir das 14h',
       status: stageDate > new Date() ? 'Programado' : 'Finalizado',
       streamLink: stage.streamLink,
-      briefing: stage.briefing
+      briefing: stage.briefing,
+      raceTrackData: raceTrack, // Incluir dados do kartódromo se disponível
+      trackLayout: trackLayout // Incluir dados do traçado se disponível
     };
   }
 

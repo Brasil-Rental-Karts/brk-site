@@ -35,6 +35,7 @@ interface UpcomingEventUI {
   championship: string;
   location: string;
   status: string;
+  trackLayout?: any; // Dados do traçado se disponível
 }
 
 export function Home() {
@@ -67,7 +68,10 @@ export function Home() {
         const topChampionships = [...featured, ...notFeatured].slice(0, 3);
         setFeaturedChampionships(topChampionships as HomeChampionship[]);
 
-        // 4. Buscar eventos dos principais campeonatos
+        // 4. Buscar dados dos kartódromos
+        const allRaceTracks = await championshipService.getAllRaceTracks();
+        
+        // 5. Buscar eventos dos principais campeonatos
         let allStages: (Stage & { championshipName: string })[] = [];
         
         for (const champ of topChampionships) {
@@ -102,7 +106,7 @@ export function Home() {
           }
         }
 
-        // 5. Ordenar e pegar os próximos 3 eventos
+        // 6. Ordenar e pegar os próximos 3 eventos
         const upcoming = allStages
           .filter((stage) => {
             const stageDate = parseLocalDate(stage.date);
@@ -114,7 +118,9 @@ export function Home() {
           )
           .slice(0, 3)
           .map((stage) => {
-            const formattedStage = championshipService.formatStageForUI(stage);
+            // Buscar dados do kartódromo para este stage
+            const raceTrack = allRaceTracks.find(rt => rt.id === stage.raceTrackId);
+            const formattedStage = championshipService.formatStageForUI(stage, raceTrack || undefined);
             return {
               ...formattedStage,
               championship: stage.championshipName
@@ -404,6 +410,12 @@ export function Home() {
                             <MapPin className="h-3 w-3" />
                             {event.location}
                           </div>
+                          {event.trackLayout && (
+                            <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>Traçado: {event.trackLayout.name}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 

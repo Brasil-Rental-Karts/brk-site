@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "brk-design-system";
+import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
-import { MapPin, Calendar, Clock, Video, UserPlus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "brk-design-system";
+import { Clock, Calendar, Video, UserPlus, MapPin } from "lucide-react";
+import { RaceTrack } from "@/services/championship.service";
+import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 import { CountdownTimer } from "../CountdownTimer";
 
 interface Season {
@@ -47,6 +56,8 @@ interface HomeTabProps {
       time: string;
       status: string;
       streamLink?: string;
+      raceTrackData?: RaceTrack;
+      trackLayout?: any; // Dados do traçado se disponível
     }>;
     sponsors: Array<{
       id: string;
@@ -393,9 +404,17 @@ export const HomeTab = ({
                       <div className="font-medium text-sm">{event.day}</div>
                       <div className="font-bold">{event.stage}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {event.location}
+                        <RaceTrackInfo 
+                          raceTrack={event.raceTrackData}
+                          className="text-sm text-muted-foreground flex items-center gap-1"
+                        />
                       </div>
+                      {event.trackLayout && (
+                        <div className="text-sm text-muted-foreground flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span>Traçado: {event.trackLayout.name}</span>
+                        </div>
+                      )}
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {formatTime(event.time)}
