@@ -120,10 +120,15 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
   // Scroll para item selecionado
   useEffect(() => {
     if (!sidebarRef.current || !selected) return;
-    const el = sidebarRef.current.querySelector(
+    const navElement = sidebarRef.current.querySelector('nav') as HTMLElement | null;
+    if (!navElement) return;
+    
+    const el = navElement.querySelector(
       `[data-sid='${selected.seasonId}'][data-idx='${selected.regulationIndex}']`
     ) as HTMLElement | null;
-    if (el) el.scrollIntoView({ block: "nearest" });
+    if (el) {
+      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
   }, [selected, sidebarOpen]);
 
 
@@ -213,81 +218,89 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
         description="Consulte o regulamento oficial do campeonato e das temporadas."
       />
       <div className="container px-6">
-        <div className="flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border">
+        <div className="flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border overflow-hidden">
           {/* Sidebar */}
           <div
             className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-full md:h-auto transition-all duration-300
               ${sidebarOpen ? 'translate-x-0 w-11/12 max-w-xs' : '-translate-x-full w-0'}
               md:translate-x-0 md:w-72
-              bg-background border-r border-border overflow-hidden
+              bg-background border-r border-border
               max-h-screen md:max-h-[calc(100vh-200px)]
+              flex flex-col
             `}
             aria-label="Índice do regulamento"
             ref={sidebarRef}
             style={{ minWidth: sidebarOpen ? (window.innerWidth < 768 ? '90vw' : 288) : 0 }}
           >
-        <div className="px-4 py-3 border-b border-border">
-          <div className="relative">
-            <input
-              type="text"
-              className="w-full rounded-md border border-border py-2 pl-10 pr-3 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-              placeholder="Buscar no regulamento..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              aria-label="Buscar no regulamento"
-            />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-        <nav className="flex-1 overflow-y-auto px-3 py-3" role="navigation">
-          {filteredRegulations.length === 0 && (
-            <div className="text-muted-foreground text-sm px-2 py-4">Nenhuma seção encontrada.</div>
-          )}
-          {currentSeasonData && filteredRegulations[0] && (
-            <div key={currentSeasonData.season.id} className="mb-4">
-              <ul className="space-y-1">
-                {filteredRegulations[0].regulations.map((reg) => {
-                  const realIndex = currentSeasonData.regulations.findIndex(r => r.id === reg.id);
-                  const isActive = selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex;
-                  return (
-                    <li key={reg.id}>
-                      <button
-                        data-sid={currentSeasonData.season.id}
-                        data-idx={realIndex}
-                        onClick={() => {
-                          goTo(currentSeasonData.season.id, realIndex);
-                          if (window.innerWidth < 768) setSidebarOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary border border-transparent text-sm
-                          ${isActive
-                            ? "bg-primary text-primary-foreground font-medium border-primary shadow-sm"
-                            : "hover:bg-muted text-foreground"
-                        }`}
-                        aria-current={isActive ? "true" : undefined}
-                      >
-                        <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-medium ${isActive ? "bg-primary-foreground text-primary" : "bg-primary text-primary-foreground"}`}>{reg.order}</span>
-                        <span className="truncate">
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              p: ({ children }) => <>{children}</>,
-                              strong: ({ children }) => <strong className="font-medium">{children}</strong>,
-                              em: ({ children }) => <em className="italic">{children}</em>,
-                              code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
-                            }}
-                          >
-                            {reg.title}
-                          </ReactMarkdown>
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+            {/* Header com busca */}
+            <div className="flex-shrink-0 px-4 py-3 border-b border-border">
+              <div className="relative">
+                <input
+                  type="text"
+                  className="w-full rounded-md border border-border py-2 pl-10 pr-3 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                  placeholder="Buscar no regulamento..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Buscar no regulamento"
+                />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
-          )}
-        </nav>
-      </div>
+            
+            {/* Navegação com scroll */}
+            <nav className="flex-1 overflow-y-auto min-h-0" role="navigation">
+              <div className="px-3 py-3">
+                {filteredRegulations.length === 0 && (
+                  <div className="text-muted-foreground text-sm px-2 py-4">Nenhuma seção encontrada.</div>
+                )}
+                {currentSeasonData && filteredRegulations[0] && (
+                  <div key={currentSeasonData.season.id} className="mb-4">
+                    <ul className="space-y-1">
+                      {filteredRegulations[0].regulations.map((reg) => {
+                        const realIndex = currentSeasonData.regulations.findIndex(r => r.id === reg.id);
+                        const isActive = selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex;
+                        return (
+                          <li key={reg.id}>
+                            <button
+                              data-sid={currentSeasonData.season.id}
+                              data-idx={realIndex}
+                              onClick={() => {
+                                goTo(currentSeasonData.season.id, realIndex);
+                                if (window.innerWidth < 768) setSidebarOpen(false);
+                              }}
+                              className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary border border-transparent text-sm
+                                ${isActive
+                                  ? "bg-primary text-primary-foreground font-medium border-primary shadow-sm"
+                                  : "hover:bg-muted text-foreground"
+                              }`}
+                              aria-current={isActive ? "true" : undefined}
+                            >
+                              <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-medium ${isActive ? "bg-primary-foreground text-primary" : "bg-primary text-primary-foreground"}`}>
+                                {reg.order}
+                              </span>
+                              <span className="flex-1 min-w-0 break-words">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  components={{
+                                    p: ({ children }) => <span className="block leading-relaxed break-words">{children}</span>,
+                                    strong: ({ children }) => <strong className="font-medium">{children}</strong>,
+                                    em: ({ children }) => <em className="italic">{children}</em>,
+                                    code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono break-all">{children}</code>,
+                                  }}
+                                >
+                                  {reg.title}
+                                </ReactMarkdown>
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
       {/* Overlay para mobile */}
       {sidebarOpen && window.innerWidth < 768 && (
         <div className="fixed inset-0 z-30 bg-black/60" onClick={() => setSidebarOpen(false)} aria-label="Fechar índice" />
@@ -342,7 +355,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6 bg-background" style={{maxHeight: 'calc(100vh - 200px)'}}>
+        <main className="flex-1 overflow-y-auto min-h-0 px-4 py-4 md:px-6 md:py-6 bg-background">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <span className="text-muted-foreground text-lg">Carregando regulamento...</span>
