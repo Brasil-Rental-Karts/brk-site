@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "brk-design-system";
@@ -7,6 +7,7 @@ import { HomeTab } from "@/components/championship/tabs/HomeTab";
 import { CalendarioTab } from "@/components/championship/tabs/CalendarioTab";
 import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
 // import { FotosTab } from "@/components/championship/tabs/FotosTab";
+import { PilotsTab } from "@/components/championship/tabs/PilotsTab";
 import { useChampionships } from "@/hooks/useChampionships";
 import { 
   mapApiChampionshipToUI, 
@@ -23,7 +24,8 @@ import { Button } from "brk-design-system";
 export const Championship = () => {
   const { slug } = useParams<{ slug: string }>();
   const [activeTab, setActiveTab] = useState("home");
-
+  const [categoriesForChampionship, setCategoriesForChampionship] = useState<any[]>([]);
+  const [loadingPilots, setLoadingPilots] = useState(false);
 
   // Buscar dados dos campeonatos da API
     const {
@@ -96,6 +98,28 @@ export const Championship = () => {
     const registerUrl = `${baseUrl}/registration/${seasonSlug}`;
     window.location.href = registerUrl;
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (!currentChampionship) return;
+      setLoadingPilots(true);
+      try {
+        // Buscar todas as categorias relacionadas às temporadas do campeonato
+        const allCategories = await championshipService.getAllCategories();
+        // Pega os IDs das temporadas deste campeonato
+        const seasonIds = championshipSeasons.map(season => season.id);
+        // Filtra as categorias dessas temporadas
+        const filtered = allCategories.filter(cat => seasonIds.includes(cat.seasonId));
+        setCategoriesForChampionship(filtered);
+      } catch (e) {
+        setCategoriesForChampionship([]);
+      } finally {
+        setLoadingPilots(false);
+      }
+    };
+    fetchCategories();
+    // Dependências estáveis: id do campeonato e string dos ids das temporadas
+  }, [currentChampionship?.id, championshipSeasons.map(s => s.id).join(",")]);
 
   // Estados de loading e erro
   if (loading) {
@@ -201,6 +225,12 @@ export const Championship = () => {
               >
                 Regulamento
               </TabsTrigger>
+              <TabsTrigger
+                value="pilotos"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
+              >
+                Pilotos
+              </TabsTrigger>
               {/* Aba Classificação temporariamente escondida */}
               {/* <TabsTrigger
                 value="classificacao"
@@ -241,6 +271,13 @@ export const Championship = () => {
               championship={championshipForComponents}
               getRegulationsBySeasonForChampionship={getRegulationsBySeasonForChampionship}
             />
+          </TabsContent>
+          <TabsContent value="pilotos" className="mt-0">
+            {loadingPilots ? (
+              <div className="p-8 text-center text-muted-foreground">Carregando pilotos...</div>
+            ) : (
+              <PilotsTab categories={categoriesForChampionship} />
+            )}
           </TabsContent>
 
           {/* Conteúdo da aba Classificação temporariamente escondido */}

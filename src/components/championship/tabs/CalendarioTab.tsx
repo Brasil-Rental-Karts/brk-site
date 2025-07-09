@@ -13,6 +13,7 @@ import {
 import { MapPin, Clock, Calendar, ChevronRight, Video, X } from "lucide-react";
 import { RaceTrack } from "@/services/championship.service";
 import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
+import { ChampionshipTabHeader } from "@/components/championship/ChampionshipTabHeader";
 
 interface CalendarioTabProps {
   championship: {
@@ -186,21 +187,15 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
     });
 
   return (
-    <div className="container px-6 py-8 space-y-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="font-heading text-3xl font-bold mb-2 flex items-center gap-2">
-          <Calendar className="h-8 w-8 text-primary" />
-          Calendário do Campeonato
-        </h1>
-        <p className="text-muted-foreground mb-6">
-          Acompanhe todas as etapas e datas importantes do {championship.currentSeason.name}
-        </p>
-      </motion.div>
+    <div className="space-y-6">
+      {/* Hero Header */}
+      <ChampionshipTabHeader
+        icon={Calendar}
+        title="Calendário do Campeonato"
+        description={`Acompanhe todas as etapas e datas importantes do ${championship.currentSeason.name}`}
+      />
+
+      <div className="container px-6 space-y-6">
 
       {/* Filtros */}
       <motion.div
@@ -550,6 +545,7 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
           </>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }; 

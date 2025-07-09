@@ -4,6 +4,7 @@ import { BookOpen, Loader2, ChevronLeft, ChevronRight, Search, Menu} from "lucid
 import { Regulation, Season } from "@/services/championship.service";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ChampionshipTabHeader } from "@/components/championship/ChampionshipTabHeader";
 
 interface RegulamentoTabProps {
   championship: {
@@ -129,21 +130,12 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
 
   if (loading) {
     return (
-      <div className="px-6 py-8 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            Regulamento
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Carregando regulamentos...
-          </p>
-        </motion.div>
-        
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={BookOpen}
+          title="Regulamento"
+          description="Consulte o regulamento oficial do campeonato e das temporadas."
+        />
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -153,21 +145,12 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
 
   if (error) {
     return (
-      <div className="px-6 py-8 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            Regulamento
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Regulamento oficial do {championship.currentSeason.name}
-          </p>
-        </motion.div>
-        
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={BookOpen}
+          title="Regulamento"
+          description="Consulte o regulamento oficial do campeonato e das temporadas."
+        />
         <div className="text-center py-12">
           <p className="text-destructive mb-4">{error}</p>
           <button 
@@ -183,27 +166,20 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
 
   if (regulationsBySeason.length === 0) {
     return (
-      <div className="px-6 py-8 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            Regulamento
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Regulamento oficial do {championship.currentSeason.name}
-          </p>
-        </motion.div>
-        
-        <div className="text-center py-12">
-          <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Nenhum regulamento encontrado</h3>
-          <p className="text-muted-foreground">
-            Este campeonato ainda não possui regulamentos publicados.
-          </p>
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={BookOpen}
+          title="Regulamento"
+          description="Consulte o regulamento oficial do campeonato e das temporadas."
+        />
+        <div className="container px-6">
+          <div className="text-center py-12">
+            <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Nenhum regulamento encontrado</h3>
+            <p className="text-muted-foreground">
+              Este campeonato ainda não possui regulamentos publicados.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -211,65 +187,66 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
 
   if (!regulationsEnabled) {
     return (
-      <div className="px-6 py-8 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            Regulamento
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Regulamento oficial do {championship.currentSeason.name}
-          </p>
-        </motion.div>
-        <div className="text-center py-12">
-          <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Nenhum regulamento cadastrado</h3>
-          <p className="text-muted-foreground">
-            Esta temporada não possui regulamento cadastrado.
-          </p>
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={BookOpen}
+          title="Regulamento"
+          description="Consulte o regulamento oficial do campeonato e das temporadas."
+        />
+        <div className="container px-6">
+          <div className="text-center py-12">
+            <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Nenhum regulamento cadastrado</h3>
+            <p className="text-muted-foreground">
+              Esta temporada não possui regulamento cadastrado.
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-[calc(100vh-120px)] min-h-[500px] bg-background">
-      {/* Sidebar */}
-      <div
-        className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-full md:h-auto transition-all duration-300
-          ${sidebarOpen ? 'translate-x-0 w-11/12 max-w-xs' : '-translate-x-full w-0'}
-          md:translate-x-0 md:w-72
-          bg-white border-r border-border shadow-lg overflow-hidden
-          max-h-screen md:max-h-[calc(100vh-120px)]
-        `}
-        aria-label="Índice do regulamento"
-        ref={sidebarRef}
-        style={{ minWidth: sidebarOpen ? (window.innerWidth < 768 ? '90vw' : 288) : 0 }}
-      >
-        <div className="px-4 py-2">
+    <div className="space-y-8">
+      <ChampionshipTabHeader
+        icon={BookOpen}
+        title="Regulamento"
+        description="Consulte o regulamento oficial do campeonato e das temporadas."
+      />
+      <div className="container px-6">
+        <div className="flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border">
+          {/* Sidebar */}
+          <div
+            className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-full md:h-auto transition-all duration-300
+              ${sidebarOpen ? 'translate-x-0 w-11/12 max-w-xs' : '-translate-x-full w-0'}
+              md:translate-x-0 md:w-72
+              bg-background border-r border-border overflow-hidden
+              max-h-screen md:max-h-[calc(100vh-200px)]
+            `}
+            aria-label="Índice do regulamento"
+            ref={sidebarRef}
+            style={{ minWidth: sidebarOpen ? (window.innerWidth < 768 ? '90vw' : 288) : 0 }}
+          >
+        <div className="px-4 py-3 border-b border-border">
           <div className="relative">
             <input
               type="text"
-              className="w-full rounded border border-border py-3 pl-12 pr-3 bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-md border border-border py-2 pl-10 pr-3 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               placeholder="Buscar no regulamento..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               aria-label="Buscar no regulamento"
             />
-            <Search className="absolute left-3 top-3 h-6 w-6 text-muted-foreground" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           </div>
         </div>
-        <nav className="flex-1 overflow-y-auto px-2 py-2" role="navigation">
+        <nav className="flex-1 overflow-y-auto px-3 py-3" role="navigation">
           {filteredRegulations.length === 0 && (
-            <div className="text-muted-foreground text-base px-2 py-4">Nenhuma seção encontrada.</div>
+            <div className="text-muted-foreground text-sm px-2 py-4">Nenhuma seção encontrada.</div>
           )}
           {currentSeasonData && filteredRegulations[0] && (
             <div key={currentSeasonData.season.id} className="mb-4">
-              <ul className="space-y-2 md:space-y-1">
+              <ul className="space-y-1">
                 {filteredRegulations[0].regulations.map((reg) => {
                   const realIndex = currentSeasonData.regulations.findIndex(r => r.id === reg.id);
                   const isActive = selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex;
@@ -282,20 +259,20 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
                           goTo(currentSeasonData.season.id, realIndex);
                           if (window.innerWidth < 768) setSidebarOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 md:px-2 md:py-2 md:gap-2 rounded-lg transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary border border-transparent text-base md:text-sm
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary border border-transparent text-sm
                           ${isActive
-                            ? "bg-primary text-primary-foreground font-bold border-primary shadow"
-                            : "hover:bg-accent text-foreground"
+                            ? "bg-primary text-primary-foreground font-medium border-primary shadow-sm"
+                            : "hover:bg-muted text-foreground"
                         }`}
                         aria-current={isActive ? "true" : undefined}
                       >
-                        <span className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center rounded-full text-base md:text-xs font-bold ${isActive ? "bg-primary-foreground text-primary" : "bg-primary text-primary-foreground"}`}>{reg.order}</span>
+                        <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-medium ${isActive ? "bg-primary-foreground text-primary" : "bg-primary text-primary-foreground"}`}>{reg.order}</span>
                         <span className="truncate">
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
                               p: ({ children }) => <>{children}</>,
-                              strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                              strong: ({ children }) => <strong className="font-medium">{children}</strong>,
                               em: ({ children }) => <em className="italic">{children}</em>,
                               code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
                             }}
@@ -318,30 +295,30 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
       )}
       {/* Conteúdo principal */}
       <div className="flex-1 flex flex-col min-h-0">
-        <header className="px-4 py-3 border-b bg-background sticky top-0 z-10 md:px-6 md:py-4">
+        <header className="px-4 py-3 border-b border-border bg-background sticky top-0 z-10 md:px-6 md:py-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
               <button
-                className="md:hidden p-3 rounded-full hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary"
+                className="md:hidden p-2 rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
                 onClick={() => setSidebarOpen(true)}
                 aria-label="Abrir índice"
               >
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5" />
               </button>
               <button
                 onClick={goPrev}
                 disabled={!selected || (selected && selected.regulationIndex === 0)}
-                className="mr-2 flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mr-2 flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Anterior"
               >
-                <ChevronLeft className="h-7 w-7" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
             </div>
             <div className="flex flex-col items-center flex-1 w-full px-2 md:px-0">
               {/* Dropdown de seleção de temporada */}
               {availableSeasons.length > 0 && (
                 <select
-                  className="w-full md:w-auto text-primary font-semibold text-base md:text-lg border border-border rounded px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full md:w-auto text-primary font-medium text-sm md:text-base border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   value={selectedSeasonId || ''}
                   onChange={e => {
                     setSelectedSeasonId(e.target.value);
@@ -358,15 +335,15 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
               <button
                 onClick={goNext}
                 disabled={!selected || (selected && currentSeasonData && selected.regulationIndex === currentSeasonData.regulations.length - 1)}
-                className="ml-2 flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-2 flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Próximo"
               >
-                <ChevronRight className="h-7 w-7" />
+                <ChevronRight className="h-5 w-5" />
               </button>
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto px-3 py-4 md:px-6 md:py-6 bg-background" style={{maxHeight: 'calc(100vh - 120px)'}}>
+        <main className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6 bg-background" style={{maxHeight: 'calc(100vh - 200px)'}}>
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <span className="text-muted-foreground text-lg">Carregando regulamento...</span>
@@ -382,8 +359,8 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             </div>
           ) : (
             <article className="prose prose-sm max-w-3xl mx-auto">
-              <h2 className="text-primary font-bold text-xl mb-2 flex items-center gap-2">
-                <span className="inline-flex w-8 h-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg">{current.order}</span>
+              <h2 className="text-primary font-semibold text-lg mb-3 flex items-center gap-3">
+                <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-primary/10 text-primary font-medium text-sm">{current.order}</span>
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -421,6 +398,8 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             </article>
           )}
         </main>
+      </div>
+        </div>
       </div>
     </div>
   );

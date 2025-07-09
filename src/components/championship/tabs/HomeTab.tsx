@@ -470,7 +470,7 @@ export const HomeTab = ({
           {/* Seção dos Patrocinadores */}
           {sponsors.length > 0 && (
             <div className="mb-12">
-              <h2 className="font-heading text-3xl font-bold mb-8 text-center">
+              <h2 className="font-heading text-2xl md:text-3xl font-bold mb-8 text-center">
                 Patrocinadores
               </h2>
               

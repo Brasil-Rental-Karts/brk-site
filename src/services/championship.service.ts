@@ -42,6 +42,15 @@ export interface Category {
   maxPilots: number;
   minimumAge: number;
   seasonId: string;
+  pilots?: string[]; // Added for pilots
+}
+
+export interface User {
+  id: string;
+  name: string;
+  nickname?: string;
+  active: boolean;
+  profilePicture?: string;
 }
 
 export interface RaceTrack {
@@ -109,12 +118,13 @@ class ChampionshipService {
     }
   }
 
-  private async request<T>(endpoint: string): Promise<T> {
+  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     if (!CACHE_API_URL) {
       throw new Error('VITE_CACHE_API_URL is not configured');
     }
 
-    const response = await fetch(`${CACHE_API_URL}${endpoint}`);
+    const url = `${CACHE_API_URL}${endpoint}`;
+    const response = await fetch(url, options);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -475,6 +485,56 @@ class ChampionshipService {
       );
     } catch (error) {
       console.error(`Failed to fetch regulations by season for championship ${championshipId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca os pilotos de uma categoria específica
+   */
+  async getPilotsForCategory(categoryId: string): Promise<string[]> {
+    try {
+      const response = await this.request<ApiResponse<Category[]>>('/cache/categories');
+      const categories = response.data || [];
+      const category = categories.find(cat => cat.id === categoryId);
+      if (category && Array.isArray(category.pilots)) {
+        return category.pilots;
+      }
+      return [];
+    } catch (error) {
+      console.error(`Failed to fetch pilots for category ${categoryId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca um usuário específico por ID
+   */
+  async getUserById(userId: string): Promise<User | null> {
+    try {
+      const response = await this.request<ApiResponse<User>>(`/cache/users/${userId}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch user ${userId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca múltiplos usuários por IDs
+   */
+  async getUsersByIds(userIds: string[]): Promise<User[]> {
+    try {
+      const response = await this.request<ApiResponse<User[]>>('/cache/users/batch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userIds }),
+      });
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
       return [];
     }
   }
