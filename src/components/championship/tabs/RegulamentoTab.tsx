@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { motion } from "framer-motion";
 import { BookOpen, Loader2, ChevronLeft, ChevronRight, Search, Menu} from "lucide-react";
 import { Regulation, Season } from "@/services/championship.service";
 import ReactMarkdown from "react-markdown";

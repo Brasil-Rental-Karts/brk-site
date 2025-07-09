@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "brk-design-system";
-import { Users, User, Trophy, Calendar, Target, Weight, Filter } from "lucide-react";
+import { Users, User, Trophy, Calendar, Target, Weight } from "lucide-react";
 import { championshipService, User as UserType } from "@/services/championship.service";
 import { ChampionshipTabHeader } from "@/components/championship/ChampionshipTabHeader";
 
