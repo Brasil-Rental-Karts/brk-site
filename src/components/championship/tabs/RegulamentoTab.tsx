@@ -127,9 +127,14 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
       `[data-sid='${selected.seasonId}'][data-idx='${selected.regulationIndex}']`
     ) as HTMLElement | null;
     if (el) {
-      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      // Para o último item, usar "end" para garantir que seja visível
+      const isLastItem = selected.regulationIndex === (currentSeasonData?.regulations.length || 0) - 1;
+      el.scrollIntoView({ 
+        block: isLastItem ? "end" : "nearest", 
+        behavior: "smooth" 
+      });
     }
-  }, [selected, sidebarOpen]);
+  }, [selected, sidebarOpen, currentSeasonData]);
 
 
   if (loading) {
@@ -221,7 +226,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
         <div className="flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border overflow-hidden">
           {/* Sidebar */}
           <div
-            className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-full md:h-auto transition-all duration-300
+            className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-[calc(100vh-80px)] md:h-auto transition-all duration-300
               ${sidebarOpen ? 'translate-x-0 w-11/12 max-w-xs' : '-translate-x-full w-0'}
               md:translate-x-0 md:w-72
               bg-background border-r border-border
@@ -249,7 +254,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             
             {/* Navegação com scroll */}
             <nav className="flex-1 overflow-y-auto min-h-0" role="navigation">
-              <div className="px-3 py-3">
+              <div className="px-3 py-3 pb-8 md:pb-6">
                 {filteredRegulations.length === 0 && (
                   <div className="text-muted-foreground text-sm px-2 py-4">Nenhuma seção encontrada.</div>
                 )}
