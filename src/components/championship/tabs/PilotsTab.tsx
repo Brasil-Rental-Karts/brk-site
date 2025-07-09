@@ -346,20 +346,21 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3, delay: 1.2 + (categoryIndex * 0.1) + (pilotIndex * 0.05) }}
+                                className="h-20"
                               >
-                                <Card className="hover:shadow-md transition-shadow">
-                                  <CardContent className="p-4">
+                                <Card className="hover:shadow-md transition-shadow h-full">
+                                  <CardContent className="p-4 h-full flex items-center">
                                     {loadingUsers ? (
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-muted rounded-full animate-pulse"></div>
+                                      <div className="flex items-center gap-3 w-full">
+                                        <div className="w-8 h-8 bg-muted rounded-full animate-pulse flex-shrink-0"></div>
                                         <div className="space-y-1 flex-1">
                                           <div className="h-4 bg-muted rounded animate-pulse"></div>
                                           <div className="h-3 bg-muted rounded w-2/3 animate-pulse"></div>
                                         </div>
                                       </div>
                                     ) : user ? (
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                                      <div className="flex items-center gap-3 w-full">
+                                        <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
                                           <User className="h-4 w-4 text-primary" />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -374,11 +375,11 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
                                         </div>
                                       </div>
                                     ) : (
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                                      <div className="flex items-center gap-3 w-full">
+                                        <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
                                           <User className="h-4 w-4 text-muted-foreground" />
                                         </div>
-                                        <div className="flex-1">
+                                        <div className="flex-1 min-w-0">
                                           <div className="text-sm text-muted-foreground truncate">
                                             {pilotId}
                                           </div>
