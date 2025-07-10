@@ -52,22 +52,20 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-
   // Determinar ano inicial baseado nas temporadas disponíveis
   const getInitialYear = () => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       return new Date(championship.availableSeasons[0].startDate).getUTCFullYear().toString();
     }
-    return championship.currentSeason.year;
+    return championship?.currentSeason?.year || new Date().getFullYear().toString();
   };
 
   // Determinar temporada inicial baseada nas temporadas disponíveis
   const getInitialSeason = () => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       return championship.availableSeasons[0].name;
     }
-    return championship.currentSeason.season;
+    return championship?.currentSeason?.season || '';
   };
 
   const [selectedYear, setSelectedYear] = useState<string>(getInitialYear());
@@ -75,8 +73,10 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
 
   // Função para abrir detalhes da etapa
   const handleOpenEventDetails = (event: any) => {
-    setSelectedEvent(event);
-    setIsModalOpen(true);
+    if (event) {
+      setSelectedEvent(event);
+      setIsModalOpen(true);
+    }
   };
 
   // Função para fechar o modal
@@ -86,14 +86,14 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
   };
 
   // Obter anos únicos das temporadas disponíveis
-  const availableYears = championship.availableSeasons 
+  const availableYears = championship?.availableSeasons 
     ? [...new Set(championship.availableSeasons.map(season => 
         new Date(season.startDate).getUTCFullYear().toString()
       ))].sort()
-    : [championship.currentSeason.year];
+    : [championship?.currentSeason?.year || new Date().getFullYear().toString()];
 
   // Obter temporadas do ano selecionado
-  const seasonsForYear = championship.availableSeasons 
+  const seasonsForYear = championship?.availableSeasons 
     ? championship.availableSeasons.filter(season => 
         new Date(season.startDate).getUTCFullYear().toString() === selectedYear
       )
@@ -101,16 +101,18 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
 
   // Atualizar estados quando os dados do campeonato mudarem
   useEffect(() => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       const firstSeason = championship.availableSeasons[0];
       const yearFromSeason = new Date(firstSeason.startDate).getUTCFullYear().toString();
       setSelectedYear(yearFromSeason);
       setSelectedSeason(firstSeason.name);
     }
-  }, [championship.availableSeasons]);
+  }, [championship?.availableSeasons]);
 
   // Função para converter mês em número
   const getMonthNumber = (monthName: string): number => {
+    if (!monthName || typeof monthName !== 'string') return 0;
+    
     const months: { [key: string]: number } = {
       'JAN': 0, 'FEV': 1, 'MAR': 2, 'ABR': 3, 'MAI': 4, 'JUN': 5,
       'JUL': 6, 'AGO': 7, 'SET': 8, 'OUT': 9, 'NOV': 10, 'DEZ': 11,
@@ -122,6 +124,8 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
 
   // Função para formatar hora no formato HH:mm
   const formatTime = (time: string): string => {
+    if (!time || typeof time !== 'string') return '';
+    
     // Se estiver no formato HH:mm:ss, remove os segundos
     if (/^\d{2}:\d{2}:\d{2}$/.test(time)) {
       return time.slice(0, 5); // Pega apenas HH:mm
@@ -154,9 +158,9 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
   };
 
   // Filtrar e ordenar todos os eventos por data crescente
-  const filteredEvents = championship.events
+  const filteredEvents = (championship?.events || [])
     .filter(_event => {
-      if (!championship.availableSeasons) return true;
+      if (!championship?.availableSeasons) return true;
       
       const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
       if (!selectedSeasonData) return true;
@@ -167,24 +171,39 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
     })
     .sort((a, b) => {
       // Criar datas mais precisas para ordenação
-      const yearNum = parseInt(selectedYear);
+      const yearNum = parseInt(selectedYear) || new Date().getFullYear();
       const monthA = getMonthNumber(a.month);
       const monthB = getMonthNumber(b.month);
-      const dayA = parseInt(a.date);
-      const dayB = parseInt(b.date);
+      const dayA = parseInt(a.date) || 1;
+      const dayB = parseInt(b.date) || 1;
       
       const dateA = new Date(yearNum, monthA, dayA);
       const dateB = new Date(yearNum, monthB, dayB);
       
-      // Debug: vamos ver as datas para entender o problema
-      console.log('Ordenação:', {
-        eventA: { date: a.date, month: a.month, stage: a.stage, fullDate: dateA.toLocaleDateString() },
-        eventB: { date: b.date, month: b.month, stage: b.stage, fullDate: dateB.toLocaleDateString() },
-        comparison: dateA.getTime() - dateB.getTime()
-      });
-      
       return dateA.getTime() - dateB.getTime();
     });
+
+  // Verificar se há dados válidos
+  if (!championship) {
+    return (
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={Calendar}
+          title="Calendário do Campeonato"
+          description="Acompanhe todas as etapas e datas importantes do campeonato"
+        />
+        <div className="container px-6">
+          <div className="text-center py-12">
+            <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Dados não disponíveis</h3>
+            <p className="text-muted-foreground">
+              Os dados do campeonato não estão disponíveis no momento.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -192,7 +211,7 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
       <ChampionshipTabHeader
         icon={Calendar}
         title="Calendário do Campeonato"
-        description={`Acompanhe todas as etapas e datas importantes do ${championship.currentSeason.name}`}
+        description={`Acompanhe todas as etapas e datas importantes do ${championship.currentSeason?.name || 'campeonato'}`}
       />
 
       <div className="container px-6 space-y-6">
@@ -233,8 +252,8 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value={championship.currentSeason.season}>
-                  {championship.currentSeason.season}
+                <SelectItem value={championship.currentSeason?.season || ''}>
+                  {championship.currentSeason?.season || 'Temporada atual'}
                 </SelectItem>
               )}
             </SelectContent>

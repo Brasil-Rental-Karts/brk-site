@@ -20,24 +20,34 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
   const [regulationsBySeason, setRegulationsBySeason] = useState<{ season: Season; regulations: Regulation[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? false : true));
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [selected, setSelected] = useState<{ seasonId: string; regulationIndex: number } | null>(null);
   const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadRegulations();
-  }, [championship.id]);
+    if (championship?.id) {
+      loadRegulations();
+    }
+  }, [championship?.id]);
 
   // Temporadas disponíveis
-  const availableSeasons = useMemo(() => regulationsBySeason.map(s => s.season), [regulationsBySeason]);
+  const availableSeasons = useMemo(() => {
+    if (!regulationsBySeason || regulationsBySeason.length === 0) return [];
+    return regulationsBySeason.map(s => s.season).filter(Boolean);
+  }, [regulationsBySeason]);
 
   // Temporada selecionada
-  const currentSeasonData = useMemo(() =>
-    regulationsBySeason.find(s => s.season.id === selectedSeasonId),
-    [regulationsBySeason, selectedSeasonId]
-  );
+  const currentSeasonData = useMemo(() => {
+    if (!regulationsBySeason || !selectedSeasonId) return null;
+    return regulationsBySeason.find(s => s.season.id === selectedSeasonId) || null;
+  }, [regulationsBySeason, selectedSeasonId]);
 
   // Verifica se a temporada selecionada tem regulamento habilitado
   const regulationsEnabled = currentSeasonData?.season?.regulationsEnabled !== false;
@@ -58,10 +68,10 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
   useEffect(() => {
     if (!selectedSeasonId && availableSeasons.length > 0) {
       // Tenta encontrar a temporada vigente pelo nome
-      const current = availableSeasons.find(s => s.name === championship.currentSeason.name);
+      const current = availableSeasons.find(s => s.name === championship?.currentSeason?.name);
       setSelectedSeasonId(current ? current.id : availableSeasons[0].id);
     }
-  }, [selectedSeasonId, availableSeasons, championship.currentSeason.name]);
+  }, [selectedSeasonId, availableSeasons, championship?.currentSeason?.name]);
 
   // Sempre selecionar a primeira seção disponível se nada estiver selecionado
   useEffect(() => {
@@ -75,15 +85,21 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
   }, [filteredRegulations, selected, currentSeasonData]);
 
   const loadRegulations = async () => {
+    if (!championship?.id) {
+      setError('ID do campeonato não fornecido');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
       const data = await getRegulationsBySeasonForChampionship(championship.id);
-      setRegulationsBySeason(data);
+      setRegulationsBySeason(data || []);
       
     } catch (err) {
-      setError('Erro ao carregar regulamentos');
       console.error('Error loading regulations:', err);
+      setError('Erro ao carregar regulamentos');
     } finally {
       setLoading(false);
     }
@@ -136,7 +152,6 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
     }
   }, [selected, sidebarOpen, currentSeasonData]);
 
-
   if (loading) {
     return (
       <div className="space-y-8">
@@ -161,7 +176,9 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
           description="Consulte o regulamento oficial do campeonato e das temporadas."
         />
         <div className="text-center py-12">
-          <p className="text-destructive mb-4">{error}</p>
+          <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Erro ao carregar regulamento</h3>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <button 
             onClick={loadRegulations}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
@@ -173,7 +190,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
     );
   }
 
-  if (regulationsBySeason.length === 0) {
+  if (!regulationsBySeason || regulationsBySeason.length === 0) {
     return (
       <div className="space-y-8">
         <ChampionshipTabHeader
@@ -223,22 +240,23 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
         description="Consulte o regulamento oficial do campeonato e das temporadas."
       />
       <div className="container px-6">
-        <div className="flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border overflow-hidden">
+        <div className="relative flex h-[calc(100vh-200px)] min-h-[500px] bg-background rounded-lg shadow-sm border border-border overflow-hidden">
           {/* Sidebar */}
           <div
-            className={`fixed z-40 md:static top-[64px] md:top-0 left-0 h-[calc(100vh-80px)] md:h-auto transition-all duration-300
+            className={`fixed z-50 md:static top-0 md:top-0 left-0 h-screen md:h-auto transition-all duration-300
               ${sidebarOpen ? 'translate-x-0 w-11/12 max-w-xs' : '-translate-x-full w-0'}
               md:translate-x-0 md:w-72
               bg-background border-r border-border
               max-h-screen md:max-h-[calc(100vh-200px)]
               flex flex-col
+              ${sidebarOpen ? 'block' : 'hidden md:block'}
             `}
             aria-label="Índice do regulamento"
             ref={sidebarRef}
-            style={{ minWidth: sidebarOpen ? (window.innerWidth < 768 ? '90vw' : 288) : 0 }}
+            style={{ minWidth: sidebarOpen ? (typeof window !== 'undefined' && window.innerWidth < 768 ? '90vw' : 288) : 0 }}
           >
             {/* Header com busca */}
-            <div className="flex-shrink-0 px-4 py-3 border-b border-border">
+            <div className="flex-shrink-0 px-4 py-4 md:py-3 border-b border-border">
               <div className="relative">
                 <input
                   type="text"
@@ -263,7 +281,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
                     <ul className="space-y-1">
                       {filteredRegulations[0].regulations.map((reg) => {
                         const realIndex = currentSeasonData.regulations.findIndex(r => r.id === reg.id);
-                        const isActive = selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex;
+                        const isActive = Boolean(selected && selected.seasonId === currentSeasonData.season.id && selected.regulationIndex === realIndex);
                         return (
                           <li key={reg.id}>
                             <button
@@ -271,14 +289,14 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
                               data-idx={realIndex}
                               onClick={() => {
                                 goTo(currentSeasonData.season.id, realIndex);
-                                if (window.innerWidth < 768) setSidebarOpen(false);
+                                if (typeof window !== 'undefined' && window.innerWidth < 768) setSidebarOpen(false);
                               }}
                               className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary border border-transparent text-sm
                                 ${isActive
                                   ? "bg-primary text-primary-foreground font-medium border-primary shadow-sm"
                                   : "hover:bg-muted text-foreground"
                               }`}
-                              aria-current={isActive ? "true" : undefined}
+                              {...(isActive ? { "aria-current": "true" } : {})}
                             >
                               <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-medium ${isActive ? "bg-primary-foreground text-primary" : "bg-primary text-primary-foreground"}`}>
                                 {reg.order}
@@ -307,7 +325,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             </nav>
           </div>
       {/* Overlay para mobile */}
-      {sidebarOpen && window.innerWidth < 768 && (
+      {sidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768 && (
         <div className="fixed inset-0 z-30 bg-black/60" onClick={() => setSidebarOpen(false)} aria-label="Fechar índice" />
       )}
       {/* Conteúdo principal */}
@@ -324,7 +342,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
               </button>
               <button
                 onClick={goPrev}
-                disabled={!selected || (selected && selected.regulationIndex === 0)}
+                disabled={Boolean(!selected || (selected && selected.regulationIndex === 0))}
                 className="mr-2 flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Anterior"
               >
@@ -351,7 +369,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             <div className="flex items-center gap-2">
               <button
                 onClick={goNext}
-                disabled={!selected || (selected && currentSeasonData && selected.regulationIndex === currentSeasonData.regulations.length - 1)}
+                disabled={Boolean(!selected || (selected && currentSeasonData && selected.regulationIndex === currentSeasonData.regulations.length - 1))}
                 className="ml-2 flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Próximo"
               >
@@ -376,7 +394,7 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
             </div>
           ) : (
             <article className="prose prose-sm max-w-3xl mx-auto">
-              <h2 className="text-primary font-semibold text-lg mb-3 flex items-center gap-3">
+              <div className="text-primary font-semibold text-lg mb-3 flex items-center gap-3">
                 <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-primary/10 text-primary font-medium text-sm">{current.order}</span>
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -389,13 +407,16 @@ export const RegulamentoTab = ({ championship, getRegulationsBySeasonForChampion
                 >
                   {current.title}
                 </ReactMarkdown>
-              </h2>
+              </div>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
                   h1: ({ children }) => <h1 className="text-xl font-bold mb-3 mt-4 first:mt-0">{children}</h1>,
                   h2: ({ children }) => <h2 className="text-lg font-bold mb-2 mt-3 first:mt-0">{children}</h2>,
                   h3: ({ children }) => <h3 className="text-base font-semibold mb-2 mt-2 first:mt-0">{children}</h3>,
+                  h4: ({ children }) => <h4 className="text-sm font-semibold mb-2 mt-2 first:mt-0">{children}</h4>,
+                  h5: ({ children }) => <h5 className="text-sm font-medium mb-2 mt-2 first:mt-0">{children}</h5>,
+                  h6: ({ children }) => <div className="text-sm font-medium mb-2 mt-2 first:mt-0">{children}</div>,
                   p: ({ children }) => <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>,
                   ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
                   ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
