@@ -60,17 +60,6 @@ export const Championship = () => {
   const championshipSeasons = currentChampionship ? getSeasonsForChampionship(currentChampionship.id) : [];
   const championshipStages = currentChampionship ? getStagesForChampionship(currentChampionship.id) : [];
 
-  // Debug: Log dos dados carregados
-  console.log('Debug RaceTrack:', {
-    raceTracksCount: raceTracks.length,
-    raceTracks: raceTracks,
-    stagesCount: championshipStages.length,
-    stages: championshipStages.map(stage => ({
-      id: stage.id,
-      name: stage.name,
-      raceTrackId: stage.raceTrackId
-    }))
-  });
 
   // Função para obter dados do kartódromo pelo ID
   const getRaceTrackById = (id: string) => {
@@ -205,47 +194,49 @@ export const Championship = () => {
       {/* Tabs - fullwidth */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="bg-dark-900 border-b border-white/10">
-          <div className="container mx-auto">
-            <TabsList className="bg-transparent border-0 h-auto p-0 space-x-0">
-              <TabsTrigger
-                value="home"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Home
-              </TabsTrigger>
-              <TabsTrigger
-                value="calendario"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Calendário
-              </TabsTrigger>
-              <TabsTrigger
-                value="regulamento"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Regulamento
-              </TabsTrigger>
-              <TabsTrigger
-                value="pilotos"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Pilotos
-              </TabsTrigger>
-              {/* Aba Classificação temporariamente escondida */}
-              {/* <TabsTrigger
-                value="classificacao"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Classificação
-              </TabsTrigger> */}
-              {/* Aba Fotos temporariamente escondida */}
-              {/* <TabsTrigger
-                value="fotos"
-                className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-4 py-3 transition-colors"
-              >
-                Fotos
-              </TabsTrigger> */}
-            </TabsList>
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6">
+              <TabsList className="bg-transparent border-0 h-auto p-0 space-x-0 min-w-max">
+                <TabsTrigger
+                  value="home"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Home
+                </TabsTrigger>
+                <TabsTrigger
+                  value="calendario"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Calendário
+                </TabsTrigger>
+                <TabsTrigger
+                  value="regulamento"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Regulamento
+                </TabsTrigger>
+                <TabsTrigger
+                  value="pilotos"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Pilotos
+                </TabsTrigger>
+                {/* Aba Classificação temporariamente escondida */}
+                {/* <TabsTrigger
+                  value="classificacao"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Classificação
+                </TabsTrigger> */}
+                {/* Aba Fotos temporariamente escondida */}
+                {/* <TabsTrigger
+                  value="fotos"
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
+                >
+                  Fotos
+                </TabsTrigger> */}
+              </TabsList>
+            </div>
           </div>
         </div>
 

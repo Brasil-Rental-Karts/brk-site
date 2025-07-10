@@ -42,9 +42,11 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
   const [loadingSeasons, setLoadingSeasons] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [error, setError] = useState<string | null>(null);
 
   // Função para converter nome para camelCase
   const toCamelCase = (str: string): string => {
+    if (!str || typeof str !== 'string') return '';
     return str
       .toLowerCase()
       .split(' ')
@@ -55,19 +57,23 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
   // Buscar dados das temporadas
   useEffect(() => {
     const fetchSeasons = async () => {
-      if (categories.length === 0) return;
+      if (!categories || categories.length === 0) return;
       
-      // Coletar todos os IDs de temporadas únicos
-      const allSeasonIds = new Set<string>();
-      categories.forEach(category => {
-        allSeasonIds.add(category.seasonId);
-      });
-      
-      const seasonIds = Array.from(allSeasonIds);
-      if (seasonIds.length === 0) return;
-      
-      setLoadingSeasons(true);
       try {
+        // Coletar todos os IDs de temporadas únicos
+        const allSeasonIds = new Set<string>();
+        categories.forEach(category => {
+          if (category && category.seasonId) {
+            allSeasonIds.add(category.seasonId);
+          }
+        });
+        
+        const seasonIds = Array.from(allSeasonIds);
+        if (seasonIds.length === 0) return;
+        
+        setLoadingSeasons(true);
+        setError(null);
+        
         const allSeasons = await championshipService.getAllSeasons();
         const seasonsMap: Record<string, Season> = {};
         allSeasons.forEach(season => {
@@ -78,6 +84,7 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
         setSeasonsMap(seasonsMap);
       } catch (error) {
         console.error('Failed to fetch seasons:', error);
+        setError('Erro ao carregar temporadas');
       } finally {
         setLoadingSeasons(false);
       }
@@ -89,29 +96,36 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
   // Buscar todos os usuários únicos de todas as categorias
   useEffect(() => {
     const fetchUsers = async () => {
-      if (categories.length === 0) return;
+      if (!categories || categories.length === 0) return;
       
-      // Coletar todos os IDs de usuários únicos
-      const allUserIds = new Set<string>();
-      categories.forEach(category => {
-        if (category.pilots && Array.isArray(category.pilots)) {
-          category.pilots.forEach(pilotId => allUserIds.add(pilotId));
-        }
-      });
-      
-      const userIds = Array.from(allUserIds);
-      if (userIds.length === 0) return;
-      
-      setLoadingUsers(true);
       try {
+        // Coletar todos os IDs de usuários únicos
+        const allUserIds = new Set<string>();
+        categories.forEach(category => {
+          if (category && category.pilots && Array.isArray(category.pilots)) {
+            category.pilots.forEach(pilotId => {
+              if (pilotId) allUserIds.add(pilotId);
+            });
+          }
+        });
+        
+        const userIds = Array.from(allUserIds);
+        if (userIds.length === 0) return;
+        
+        setLoadingUsers(true);
+        setError(null);
+        
         const users = await championshipService.getUsersByIds(userIds);
         const usersMap: Record<string, UserType> = {};
         users.forEach(user => {
-          usersMap[user.id] = user;
+          if (user && user.id) {
+            usersMap[user.id] = user;
+          }
         });
         setUsersMap(usersMap);
       } catch (error) {
         console.error('Failed to fetch users:', error);
+        setError('Erro ao carregar usuários');
       } finally {
         setLoadingUsers(false);
       }
@@ -122,9 +136,13 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
 
   // Obter temporadas únicas com nomes
   const availableSeasons = useMemo(() => {
+    if (!categories || categories.length === 0) return [];
+    
     const seasons = new Set<string>();
     categories.forEach(category => {
-      seasons.add(category.seasonId);
+      if (category && category.seasonId) {
+        seasons.add(category.seasonId);
+      }
     });
     return Array.from(seasons)
       .map(seasonId => ({
@@ -143,16 +161,23 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
 
   // Obter categorias únicas
   const availableCategories = useMemo(() => {
+    if (!categories || categories.length === 0) return [];
+    
     const categoryNames = new Set<string>();
     categories.forEach(category => {
-      categoryNames.add(category.name);
+      if (category && category.name) {
+        categoryNames.add(category.name);
+      }
     });
     return Array.from(categoryNames).sort();
   }, [categories]);
 
   // Filtrar categorias baseado nos filtros selecionados
   const filteredCategories = useMemo(() => {
+    if (!categories || categories.length === 0) return [];
+    
     return categories.filter(category => {
+      if (!category) return false;
       const seasonMatch = selectedSeason === "" || category.seasonId === selectedSeason;
       const categoryMatch = selectedCategory === "all" || category.name === selectedCategory;
       return seasonMatch && categoryMatch;
@@ -161,7 +186,10 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
 
   // Calcular estatísticas baseadas apenas na temporada selecionada
   const statsCategories = useMemo(() => {
+    if (!categories || categories.length === 0) return [];
+    
     return categories.filter(category => {
+      if (!category) return false;
       const seasonMatch = selectedSeason === "" || category.seasonId === selectedSeason;
       return seasonMatch;
     });
@@ -171,6 +199,32 @@ export const PilotsTab: React.FC<PilotsTabProps> = ({ categories }) => {
     total + (category.pilots?.length || 0), 0
   );
   const totalCategories = statsCategories.length;
+
+  // Se há erro, mostrar mensagem de erro
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <ChampionshipTabHeader
+          icon={Users}
+          title="Lista de Pilotos"
+          description="Confira todos os pilotos inscritos em cada categoria do campeonato"
+        />
+        <div className="container px-6">
+          <div className="text-center py-12">
+            <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Erro ao carregar dados</h3>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
