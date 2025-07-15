@@ -682,6 +682,21 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
     return time;
   };
 
+  // Função para verificar se a etapa já passou
+  const isEventPast = (eventDate: string, eventMonth: string, eventTime: string): boolean => {
+    const now = new Date();
+    const yearNum = parseInt(selectedYear) || new Date().getFullYear();
+    const monthNum = getMonthNumber(eventMonth);
+    const dayNum = parseInt(eventDate) || 1;
+    const eventDateObj = new Date(yearNum, monthNum, dayNum);
+    
+    // Definir horário da etapa
+    const [hours, minutes] = formatTime(eventTime).split(':').map(Number);
+    eventDateObj.setHours(hours, minutes, 0, 0);
+    
+    return eventDateObj < now;
+  };
+
   // Filtrar e ordenar todos os eventos por data crescente
   const filteredEvents = (championship?.events || [])
     .filter(_event => {
@@ -877,7 +892,9 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                         className="w-full md:w-auto whitespace-normal text-center min-h-[36px]"
                         onClick={() => handleOpenEventDetails(event)}
                       >
-                        <span className="leading-tight">Ver Detalhes</span>
+                        <span className="leading-tight">
+                          {isEventPast(event.date, event.month, event.time) ? "Ver Resultados" : "Ver Detalhes"}
+                        </span>
                         <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0" />
                       </Button>
                     )}
