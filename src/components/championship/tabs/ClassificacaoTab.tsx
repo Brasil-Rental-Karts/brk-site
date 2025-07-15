@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "brk-design-system";
-import { Badge } from "brk-design-system";
 import { Trophy, Medal, Star, Loader2, AlertCircle, Calendar, Layers } from "lucide-react";
 import { championshipService, SeasonClassification, ClassificationPilot, Category } from "@/services/championship.service";
 
@@ -124,10 +123,6 @@ export const ClassificacaoTab = ({ championship }: ClassificacaoTabProps) => {
   const getCategoryName = (categoryId: string) => {
     const category = categories.find(cat => cat.id === categoryId);
     return category ? category.name : `Categoria ${categoryId.slice(-4)}`;
-  };
-
-  const formatPilotName = (pilot: ClassificationPilot) => {
-    return pilot.user.nickname || pilot.user.name;
   };
 
   const formatPilotNameDisplay = (pilot: ClassificationPilot) => {
@@ -322,7 +317,7 @@ export const ClassificacaoTab = ({ championship }: ClassificacaoTabProps) => {
             </h2>
 
             {/* Pódio - Top 3 */}
-            <div className="mb-6">
+            <div className="mb-6 hidden md:block">
               <div className="flex justify-between items-end gap-4 w-full">
                 {/* 2º Lugar - Esquerda */}
                 {top3Pilots[1] && (
@@ -373,14 +368,14 @@ export const ClassificacaoTab = ({ championship }: ClassificacaoTabProps) => {
                     <table className="w-full">
                       <thead className="bg-muted/50">
                         <tr>
-                          <th className="px-4 py-3 text-left font-medium">Pos.</th>
+                          <th className="px-4 py-3 text-center font-medium">Pos.</th>
                           <th className="px-4 py-3 text-left font-medium">Piloto</th>
                           <th className="px-4 py-3 text-center font-medium">Pontos</th>
-                          <th className="px-4 py-3 text-center font-medium">Vitórias</th>
-                          <th className="px-4 py-3 text-center font-medium">Pódios</th>
-                          <th className="px-4 py-3 text-center font-medium">Poles</th>
-                          <th className="px-4 py-3 text-center font-medium">Voltas Ráp.</th>
-                          <th className="px-4 py-3 text-center font-medium">Melhor</th>
+                          <th className="px-4 py-3 text-center font-medium hidden md:table-cell">Vitórias</th>
+                          <th className="px-4 py-3 text-center font-medium hidden md:table-cell">Pódios</th>
+                          <th className="px-4 py-3 text-center font-medium hidden md:table-cell">Poles</th>
+                          <th className="px-4 py-3 text-center font-medium hidden md:table-cell">Voltas Ráp.</th>
+                          <th className="px-4 py-3 text-center font-medium hidden md:table-cell">Melhor</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -401,11 +396,11 @@ export const ClassificacaoTab = ({ championship }: ClassificacaoTabProps) => {
                             <td className="px-4 py-4 text-center">
                               <div className="font-bold text-primary">{piloto.totalPoints}</div>
                             </td>
-                            <td className="px-4 py-4 text-center">{piloto.wins}</td>
-                            <td className="px-4 py-4 text-center">{piloto.podiums}</td>
-                            <td className="px-4 py-4 text-center">{piloto.polePositions}</td>
-                            <td className="px-4 py-4 text-center">{piloto.fastestLaps}</td>
-                            <td className="px-4 py-4 text-center">{piloto.bestPosition}º</td>
+                            <td className="px-4 py-4 text-center hidden md:table-cell">{piloto.wins}</td>
+                            <td className="px-4 py-4 text-center hidden md:table-cell">{piloto.podiums}</td>
+                            <td className="px-4 py-4 text-center hidden md:table-cell">{piloto.polePositions}</td>
+                            <td className="px-4 py-4 text-center hidden md:table-cell">{piloto.fastestLaps}</td>
+                            <td className="px-4 py-4 text-center hidden md:table-cell">{piloto.bestPosition}º</td>
                           </motion.tr>
                         ))}
                       </tbody>
