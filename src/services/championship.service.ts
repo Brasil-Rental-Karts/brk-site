@@ -79,6 +79,27 @@ export interface Stage {
   seasonId: string;
 }
 
+export interface StageResult {
+  bestLap?: string;
+  totalTime?: string;
+  startPosition?: number;
+  finishPosition?: number;
+  qualifyingBestLap?: string;
+  weight?: boolean;
+}
+
+export interface StageResults {
+  [categoryId: string]: {
+    [pilotId: string]: {
+      [raceNumber: string]: StageResult;
+    };
+  };
+}
+
+export interface StageWithResults extends Stage {
+  stageResults?: StageResults;
+}
+
 export interface ApiResponse<T> {
   count?: number;
   data: T;
@@ -348,7 +369,7 @@ class ChampionshipService {
   }
 
   /**
-   * Busca etapas para uma temporada específica
+   * Busca todas as etapas de uma temporada específica
    */
   async getStagesForSeason(seasonId: string): Promise<Stage[]> {
     try {
@@ -357,6 +378,19 @@ class ChampionshipService {
     } catch (error) {
       console.error(`Failed to fetch stages for season ${seasonId}:`, error);
       return [];
+    }
+  }
+
+  /**
+   * Busca detalhes de uma etapa específica com resultados
+   */
+  async getStageWithResults(stageId: string): Promise<StageWithResults | null> {
+    try {
+      const response = await this.request<ApiResponse<StageWithResults>>(`/cache/stages/${stageId}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch stage ${stageId}:`, error);
+      return null;
     }
   }
 
@@ -437,7 +471,8 @@ class ChampionshipService {
     }
     
     return {
-      id: parseInt(stage.id.slice(-4), 16), // Gera um ID numérico baseado no UUID
+      id: stage.id, // UUID do stage
+      seasonId: stage.seasonId, // Garantir que o seasonId está presente
       date: stageDate.getDate().toString().padStart(2, '0'),
       month: months[stageDate.getMonth()],
       day: days[stageDate.getDay()],

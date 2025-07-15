@@ -7,6 +7,7 @@ interface RaceTrackInfoProps {
   raceTracks?: RaceTrack[];
   showAddress?: boolean;
   className?: string;
+  showIcon?: boolean; // Novo: controla exibição do ícone
 }
 
 export const RaceTrackInfo = ({ 
@@ -14,7 +15,8 @@ export const RaceTrackInfo = ({
   raceTrackId, 
   raceTracks = [], 
   showAddress = false,
-  className = "" 
+  className = "",
+  showIcon = true // Novo: default true
 }: RaceTrackInfoProps) => {
   // Função para obter dados do kartódromo
   const getRaceTrackData = (): RaceTrack | null => {
@@ -30,7 +32,7 @@ export const RaceTrackInfo = ({
   if (!raceTrackData) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <MapPin className="h-4 w-4 text-muted-foreground" />
+        {showIcon && <MapPin className="h-4 w-4 text-muted-foreground" />}
         <span className="text-muted-foreground">Kartódromo não disponível</span>
       </div>
     );
@@ -38,7 +40,7 @@ export const RaceTrackInfo = ({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <MapPin className="h-4 w-4 text-muted-foreground" />
+      {showIcon && <MapPin className="h-4 w-4 text-muted-foreground" />}
       <div className="flex flex-col">
         <span>{raceTrackData.name}</span>
         {showAddress && (

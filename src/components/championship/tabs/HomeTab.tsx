@@ -14,6 +14,7 @@ import { Clock, Calendar, Video, UserPlus, MapPin } from "lucide-react";
 import { RaceTrack } from "@/services/championship.service";
 import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 import { CountdownTimer } from "../CountdownTimer";
+import { isEventToday } from "@/utils/championship.utils";
 
 interface Season {
   id: string;
@@ -171,22 +172,21 @@ export const HomeTab = ({
   const filteredEvents = (championship?.events || [])
     .filter(_event => {
       if (!championship?.availableSeasons) return true;
-      
       const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
       if (!selectedSeasonData) return true;
-      
       // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
       // Por enquanto, mostramos todos os eventos
       return true;
     })
     .filter(event => {
-      // Filtrar apenas eventos em andamento ou futuros
+      // Filtrar apenas eventos em andamento ou futuros (comparando só a data, sem hora)
       const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const yearNum = parseInt(selectedYear) || new Date().getFullYear();
       const monthNum = getMonthNumber(event.month);
       const dayNum = parseInt(event.date) || 1;
       const eventDate = new Date(yearNum, monthNum, dayNum);
-      return eventDate >= now;
+      return eventDate >= today;
     })
     .sort((a, b) => {
       // Ordenar por data crescente
@@ -407,11 +407,12 @@ export const HomeTab = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 + (index * 0.1) }}
+                className="h-full"
               >
-                <Card className="relative overflow-hidden hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4">
+                <Card className="relative overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                  <CardContent className="p-4 flex flex-col flex-grow">
                     {/* Data */}
-                    <div className="text-center mb-3">
+                    <div className="text-center mb-3 flex-shrink-0">
                       <div className="text-2xl font-bold">{event.date}</div>
                       <div className="text-sm text-muted-foreground uppercase">
                         {event.month}
@@ -419,7 +420,7 @@ export const HomeTab = ({
                     </div>
 
                     {/* Informações do evento */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-grow">
                       <div className="font-medium text-sm">{event.day}</div>
                       <div className="font-bold">{event.stage}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
@@ -454,16 +455,16 @@ export const HomeTab = ({
                     </div>
 
                     {/* Status Badge */}
-                    <div className="mt-3">
+                    <div className="mt-3 flex-shrink-0">
                       <Badge 
-                        variant={event.status === "Inscrição Aberta" ? "default" : "secondary"}
+                        variant={isEventToday(event.date, event.month, selectedYear) ? "default" : "secondary"}
                         className={`w-full justify-center text-xs ${
-                          event.status === "Inscrição Aberta" 
+                          isEventToday(event.date, event.month, selectedYear) 
                             ? "bg-primary text-white" 
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        {event.status}
+                        {isEventToday(event.date, event.month, selectedYear) ? "Hoje" : event.status}
                       </Badge>
                     </div>
                   </CardContent>

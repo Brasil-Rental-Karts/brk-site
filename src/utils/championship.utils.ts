@@ -161,3 +161,28 @@ export function parseLocalDate(dateStr: string): Date {
     return new Date(year, month - 1, day); // month é 0-indexed
   }
 } 
+
+export const isEventToday = (eventDate: string, eventMonth: string, selectedYear?: string): boolean => {
+  const today = new Date();
+  const year = selectedYear || today.getFullYear().toString();
+  
+  // Converter mês para número
+  const getMonthNumber = (monthName: string): number => {
+    const months: { [key: string]: number } = {
+      'JAN': 0, 'FEV': 1, 'MAR': 2, 'ABR': 3, 'MAI': 4, 'JUN': 5,
+      'JUL': 6, 'AGO': 7, 'SET': 8, 'OUT': 9, 'NOV': 10, 'DEZ': 11,
+      'JANEIRO': 0, 'FEVEREIRO': 1, 'MARÇO': 2, 'ABRIL': 3, 'MAIO': 4, 'JUNHO': 5,
+      'JULHO': 6, 'AGOSTO': 7, 'SETEMBRO': 8, 'OUTUBRO': 9, 'NOVEMBRO': 10, 'DEZEMBRO': 11
+    };
+    return months[monthName.toUpperCase()] || 0;
+  };
+
+  const monthNum = getMonthNumber(eventMonth);
+  const dayNum = parseInt(eventDate) || 1;
+  const yearNum = parseInt(year);
+  
+  const eventDateObj = new Date(yearNum, monthNum, dayNum);
+  const todayDateObj = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
+  return eventDateObj.getTime() === todayDateObj.getTime();
+}; 
