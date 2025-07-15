@@ -99,6 +99,44 @@ export interface Regulation {
   updatedAt?: string;
 }
 
+export interface ClassificationPilot {
+  totalPoints: number;
+  totalStages: number;
+  wins: number;
+  podiums: number;
+  polePositions: number;
+  fastestLaps: number;
+  bestPosition: number;
+  averagePosition: string;
+  lastCalculatedAt: string;
+  user: {
+    id: string;
+    name: string;
+    nickname?: string;
+  };
+}
+
+export interface CategoryClassification {
+  pilots: ClassificationPilot[];
+}
+
+export interface SeasonClassification {
+  lastUpdated: string;
+  totalCategories: number;
+  totalPilots: number;
+  classificationsByCategory: Record<string, CategoryClassification>;
+}
+
+export interface ChampionshipClassification {
+  championship: ChampionshipWithSeasons;
+  classifications: {
+    seasonId: string;
+    seasonName: string;
+    seasonYear: string;
+    classification: SeasonClassification;
+  }[];
+}
+
 class ChampionshipService {
   /**
    * Parse date string to local Date object, avoiding timezone issues
@@ -536,6 +574,32 @@ class ChampionshipService {
     } catch (error) {
       console.error('Failed to fetch users:', error);
       return [];
+    }
+  }
+
+  /**
+   * Busca classificação de uma temporada específica
+   */
+  async getSeasonClassification(seasonId: string): Promise<SeasonClassification | null> {
+    try {
+      const response = await this.request<ApiResponse<SeasonClassification>>(`/cache/seasons/${seasonId}/classification`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch classification for season ${seasonId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca classificação de todas as temporadas de um campeonato
+   */
+  async getChampionshipClassification(championshipId: string): Promise<ChampionshipClassification | null> {
+    try {
+      const response = await this.request<ApiResponse<ChampionshipClassification>>(`/cache/championships/${championshipId}/classification`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch classification for championship ${championshipId}:`, error);
+      return null;
     }
   }
 }

@@ -8,6 +8,7 @@ import { CalendarioTab } from "@/components/championship/tabs/CalendarioTab";
 import { RegulamentoTab } from "@/components/championship/tabs/RegulamentoTab";
 // import { FotosTab } from "@/components/championship/tabs/FotosTab";
 import { PilotsTab } from "@/components/championship/tabs/PilotsTab";
+import { ClassificacaoTab } from "@/components/championship/tabs/ClassificacaoTab";
 import { useChampionships } from "@/hooks/useChampionships";
 import { 
   mapApiChampionshipToUI, 
@@ -221,13 +222,12 @@ export const Championship = () => {
                 >
                   Pilotos
                 </TabsTrigger>
-                {/* Aba Classificação temporariamente escondida */}
-                {/* <TabsTrigger
+                <TabsTrigger
                   value="classificacao"
                   className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary text-white/70 hover:text-white border-b-2 border-transparent rounded-none px-2 sm:px-3 md:px-4 py-3 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0"
                 >
                   Classificação
-                </TabsTrigger> */}
+                </TabsTrigger>
                 {/* Aba Fotos temporariamente escondida */}
                 {/* <TabsTrigger
                   value="fotos"
@@ -271,10 +271,9 @@ export const Championship = () => {
             )}
           </TabsContent>
 
-          {/* Conteúdo da aba Classificação temporariamente escondido */}
-          {/* <TabsContent value="classificacao" className="mt-0">
+          <TabsContent value="classificacao" className="mt-0">
             <ClassificacaoTab championship={championshipForComponents} />
-          </TabsContent> */}
+          </TabsContent>
 
           {/* Conteúdo da aba Fotos temporariamente escondido */}
           {/* <TabsContent value="fotos" className="mt-0">
