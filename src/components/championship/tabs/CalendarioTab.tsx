@@ -28,15 +28,7 @@ const StageResults = ({ stageResults, categories, users }: StageResultsProps) =>
   const [selectedRace, setSelectedRace] = useState<string>('');
 
   if (!stageResults || Object.keys(stageResults).length === 0) {
-    return (
-      <div className="text-center py-8">
-        <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <h3 className="text-lg font-semibold mb-2">Resultados não disponíveis</h3>
-        <p className="text-muted-foreground">
-          Os resultados desta etapa ainda não foram publicados.
-        </p>
-      </div>
-    );
+    return null;
   }
 
   const getCategoryName = (categoryId: string) => {
@@ -1083,7 +1075,7 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
                   </div>
 
                   {/* Resultados da Etapa */}
-                  {stageResults && (
+                  {stageResults && stageResults.stageResults && Object.keys(stageResults.stageResults).length > 0 && (
                     <div className="border-t pt-6">
                       {loadingResults ? (
                         <div className="text-center py-8">
