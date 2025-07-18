@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
@@ -917,10 +918,11 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
           <li>• Em caso de chuva, consulte as redes sociais para atualizações</li>
         </ul>
       </motion.div>
+      </div>
 
-      {/* Modal de Detalhes da Etapa */}
-      <AnimatePresence>
-        {isModalOpen && selectedEvent && (
+      {/* Modal de Detalhes da Etapa - Renderizado fora da estrutura do container */}
+      {isModalOpen && selectedEvent && createPortal(
+        <AnimatePresence>
           <>
             {/* Overlay */}
             <motion.div
@@ -1102,9 +1104,9 @@ export const CalendarioTab = ({ championship, onRegisterClick }: CalendarioTabPr
               </motion.div>
             </motion.div>
           </>
-        )}
-      </AnimatePresence>
-      </div>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }; 
