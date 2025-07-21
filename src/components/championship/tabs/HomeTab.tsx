@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "brk-design-system";
+import { Card, CardContent } from "brk-design-system";
 import { Badge } from "brk-design-system";
 import { Button } from "brk-design-system";
-import { MapPin, Calendar, Clock, Video, UserPlus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "brk-design-system";
+import { Clock, Calendar, Video, UserPlus, MapPin } from "lucide-react";
+import { RaceTrack } from "@/services/championship.service";
+import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 import { CountdownTimer } from "../CountdownTimer";
+import { isEventToday } from "@/utils/championship.utils";
 
 interface Season {
   id: string;
@@ -47,6 +57,8 @@ interface HomeTabProps {
       time: string;
       status: string;
       streamLink?: string;
+      raceTrackData?: RaceTrack;
+      trackLayout?: any; // Dados do traçado se disponível
     }>;
     sponsors: Array<{
       id: string;
@@ -67,42 +79,42 @@ export const HomeTab = ({
 }: HomeTabProps) => {
   // Determinar ano inicial baseado nas temporadas disponíveis
   const getInitialYear = () => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       return new Date(championship.availableSeasons[0].startDate).getUTCFullYear().toString();
     }
-    return championship.currentSeason.year;
+    return championship?.currentSeason?.year || new Date().getFullYear().toString();
   };
 
   // Determinar temporada inicial baseada nas temporadas disponíveis
   const getInitialSeason = () => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       return championship.availableSeasons[0].name;
     }
-    return championship.currentSeason.season;
+    return championship?.currentSeason?.season || '';
   };
 
   const [selectedYear, setSelectedYear] = useState<string>(getInitialYear());
   const [selectedSeason, setSelectedSeason] = useState<string>(getInitialSeason());
 
   // Obter anos únicos das temporadas disponíveis
-  const availableYears = championship.availableSeasons 
+  const availableYears = championship?.availableSeasons 
     ? [...new Set(championship.availableSeasons.map(season => 
         new Date(season.startDate).getUTCFullYear().toString()
       ))].sort()
-    : [championship.currentSeason.year];
+    : [championship?.currentSeason?.year || new Date().getFullYear().toString()];
 
   // Atualizar estados quando os dados do campeonato mudarem
   useEffect(() => {
-    if (championship.availableSeasons && championship.availableSeasons.length > 0) {
+    if (championship?.availableSeasons && championship.availableSeasons.length > 0) {
       const firstSeason = championship.availableSeasons[0];
       const yearFromSeason = new Date(firstSeason.startDate).getUTCFullYear().toString();
       setSelectedYear(yearFromSeason);
       setSelectedSeason(firstSeason.name);
     }
-  }, [championship.availableSeasons]);
+  }, [championship?.availableSeasons]);
 
   // Obter temporadas do ano selecionado
-  const seasonsForYear = championship.availableSeasons 
+  const seasonsForYear = championship?.availableSeasons 
     ? championship.availableSeasons.filter(season => 
         new Date(season.startDate).getUTCFullYear().toString() === selectedYear
       )
@@ -110,6 +122,8 @@ export const HomeTab = ({
 
   // Função para converter mês em número
   const getMonthNumber = (monthName: string): number => {
+    if (!monthName || typeof monthName !== 'string') return 0;
+    
     const months: { [key: string]: number } = {
       'JAN': 0, 'FEV': 1, 'MAR': 2, 'ABR': 3, 'MAI': 4, 'JUN': 5,
       'JUL': 6, 'AGO': 7, 'SET': 8, 'OUT': 9, 'NOV': 10, 'DEZ': 11,
@@ -121,6 +135,8 @@ export const HomeTab = ({
 
   // Função para formatar hora no formato HH:mm
   const formatTime = (time: string): string => {
+    if (!time || typeof time !== 'string') return '';
+    
     // Se estiver no formato HH:mm:ss, remove os segundos
     if (/^\d{2}:\d{2}:\d{2}$/.test(time)) {
       return time.slice(0, 5); // Pega apenas HH:mm
@@ -153,33 +169,32 @@ export const HomeTab = ({
   };
 
   // Filtrar eventos baseado na temporada selecionada e mostrar apenas futuros/em andamento
-  const filteredEvents = championship.events
+  const filteredEvents = (championship?.events || [])
     .filter(_event => {
-      if (!championship.availableSeasons) return true;
-      
+      if (!championship?.availableSeasons) return true;
       const selectedSeasonData = championship.availableSeasons.find(season => season.name === selectedSeason);
       if (!selectedSeasonData) return true;
-      
       // Aqui você pode adicionar lógica mais específica para filtrar eventos por temporada
       // Por enquanto, mostramos todos os eventos
       return true;
     })
     .filter(event => {
-      // Filtrar apenas eventos em andamento ou futuros
+      // Filtrar apenas eventos em andamento ou futuros (comparando só a data, sem hora)
       const now = new Date();
-      const yearNum = parseInt(selectedYear);
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yearNum = parseInt(selectedYear) || new Date().getFullYear();
       const monthNum = getMonthNumber(event.month);
-      const dayNum = parseInt(event.date);
+      const dayNum = parseInt(event.date) || 1;
       const eventDate = new Date(yearNum, monthNum, dayNum);
-      return eventDate >= now;
+      return eventDate >= today;
     })
     .sort((a, b) => {
       // Ordenar por data crescente
-      const yearNum = parseInt(selectedYear);
+      const yearNum = parseInt(selectedYear) || new Date().getFullYear();
       const monthA = getMonthNumber(a.month);
       const monthB = getMonthNumber(b.month);
-      const dayA = parseInt(a.date);
-      const dayB = parseInt(b.date);
+      const dayA = parseInt(a.date) || 1;
+      const dayB = parseInt(b.date) || 1;
       
       const dateA = new Date(yearNum, monthA, dayA);
       const dateB = new Date(yearNum, monthB, dayB);
@@ -188,8 +203,23 @@ export const HomeTab = ({
     });
 
   // Separar patrocinadores e apoiadores
-  const sponsors = championship.sponsors?.filter(s => s.type === 'sponsor' || !s.type) || [];
-  const supporters = championship.sponsors?.filter(s => s.type === 'supporter') || [];
+  const sponsors = championship?.sponsors?.filter(s => s.type === 'sponsor' || !s.type) || [];
+  const supporters = championship?.sponsors?.filter(s => s.type === 'supporter') || [];
+
+  // Verificar se há dados válidos
+  if (!championship) {
+    return (
+      <div className="space-y-8">
+        <div className="text-center py-12">
+          <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Dados não disponíveis</h3>
+          <p className="text-muted-foreground">
+            Os dados do campeonato não estão disponíveis no momento.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -288,7 +318,7 @@ export const HomeTab = ({
                       <Button
                         key={season.id}
                         size="lg"
-                        className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full whitespace-normal text-center min-h-[48px] w-full sm:w-auto"
+                        className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full whitespace-normal text-center min-h-[56px] w-full sm:w-auto"
                         onClick={() => onRegisterClick?.(season.slug || season.id)}
                       >
                         <UserPlus className="h-5 w-5 mr-2 flex-shrink-0" />
@@ -299,7 +329,7 @@ export const HomeTab = ({
                 ) : (
                   <Button
                     size="lg"
-                    className="bg-muted hover:bg-muted text-muted-foreground font-semibold px-8 py-3 rounded-full cursor-not-allowed whitespace-normal text-center min-h-[48px] w-full sm:w-auto"
+                    className="bg-muted hover:bg-muted text-muted-foreground font-semibold px-8 py-4 rounded-full cursor-not-allowed whitespace-normal text-center min-h-[56px] w-full sm:w-auto"
                     disabled
                   >
                     <span className="leading-tight">Aguarde abertura das inscrições</span>
@@ -319,12 +349,12 @@ export const HomeTab = ({
         className="container px-6 py-8"
       >
         <div className="mb-6">
-          <h2 className="font-heading text-2xl font-bold mb-2 flex items-center gap-2">
+          <h2 className="font-heading text-xl md:text-2xl font-bold mb-2 flex items-center gap-2">
             <Calendar className="h-6 w-6 text-primary" />
             CALENDÁRIO
           </h2>
           <h3 className="text-xl font-semibold text-muted-foreground">
-            {championship.currentSeason.name}
+            {championship.currentSeason?.name || 'Temporada atual'}
           </h3>
         </div>
 
@@ -361,7 +391,7 @@ export const HomeTab = ({
                     <SelectItem key={season.id} value={season.name}>{season.name}</SelectItem>
                   ))
                 ) : (
-                  <SelectItem value={championship.currentSeason.season}>{championship.currentSeason.season}</SelectItem>
+                  <SelectItem value={championship.currentSeason?.season || ''}>{championship.currentSeason?.season || 'Temporada atual'}</SelectItem>
                 )}
               </SelectContent>
             </Select>
@@ -377,11 +407,12 @@ export const HomeTab = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 + (index * 0.1) }}
+                className="h-full"
               >
-                <Card className="relative overflow-hidden hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4">
+                <Card className="relative overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                  <CardContent className="p-4 flex flex-col flex-grow">
                     {/* Data */}
-                    <div className="text-center mb-3">
+                    <div className="text-center mb-3 flex-shrink-0">
                       <div className="text-2xl font-bold">{event.date}</div>
                       <div className="text-sm text-muted-foreground uppercase">
                         {event.month}
@@ -389,13 +420,21 @@ export const HomeTab = ({
                     </div>
 
                     {/* Informações do evento */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-grow">
                       <div className="font-medium text-sm">{event.day}</div>
                       <div className="font-bold">{event.stage}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {event.location}
+                        <RaceTrackInfo 
+                          raceTrack={event.raceTrackData}
+                          className="text-sm text-muted-foreground flex items-center gap-1"
+                        />
                       </div>
+                      {event.trackLayout && (
+                        <div className="text-sm text-muted-foreground flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span>Traçado: {event.trackLayout.name}</span>
+                        </div>
+                      )}
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {formatTime(event.time)}
@@ -416,16 +455,16 @@ export const HomeTab = ({
                     </div>
 
                     {/* Status Badge */}
-                    <div className="mt-3">
+                    <div className="mt-3 flex-shrink-0">
                       <Badge 
-                        variant={event.status === "Inscrição Aberta" ? "default" : "secondary"}
+                        variant={isEventToday(event.date, event.month, selectedYear) ? "default" : "secondary"}
                         className={`w-full justify-center text-xs ${
-                          event.status === "Inscrição Aberta" 
+                          isEventToday(event.date, event.month, selectedYear) 
                             ? "bg-primary text-white" 
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        {event.status}
+                        {isEventToday(event.date, event.month, selectedYear) ? "Hoje" : event.status}
                       </Badge>
                     </div>
                   </CardContent>
@@ -451,7 +490,7 @@ export const HomeTab = ({
           {/* Seção dos Patrocinadores */}
           {sponsors.length > 0 && (
             <div className="mb-12">
-              <h2 className="font-heading text-3xl font-bold mb-8 text-center">
+              <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold mb-8 text-center">
                 Patrocinadores
               </h2>
               
@@ -505,7 +544,7 @@ export const HomeTab = ({
           {/* Seção dos Apoiadores */}
           {supporters.length > 0 && (
             <div>
-              <h3 className="font-heading text-xl font-semibold mb-6 text-center text-muted-foreground">
+              <h3 className="font-heading text-lg md:text-xl font-semibold mb-6 text-center text-muted-foreground">
                 Apoiadores
               </h3>
               

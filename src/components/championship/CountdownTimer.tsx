@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { isEventToday } from "@/utils/championship.utils";
 
 interface Event {
   id: number;
@@ -25,6 +26,7 @@ export const CountdownTimer = ({ events, selectedYear }: CountdownTimerProps) =>
     seconds: number;
   } | null>(null);
   const [nextEvent, setNextEvent] = useState<Event | null>(null);
+  const [todayEvent, setTodayEvent] = useState<Event | null>(null);
 
   // Função para converter mês em número
   const getMonthNumber = (monthName: string): number => {
@@ -59,10 +61,22 @@ export const CountdownTimer = ({ events, selectedYear }: CountdownTimerProps) =>
     return time;
   };
 
-  // Encontrar a próxima etapa
+  // Encontrar a próxima etapa e verificar se há evento hoje
   useEffect(() => {
     const now = new Date();
     const yearNum = parseInt(selectedYear);
+    
+    // Verificar se há evento hoje
+    const todayEventFound = events.find(event => 
+      isEventToday(event.date, event.month, selectedYear)
+    );
+    
+    if (todayEventFound) {
+      setTodayEvent(todayEventFound);
+      setNextEvent(null);
+      setTimeLeft(null);
+      return;
+    }
     
     // Filtrar eventos futuros e ordenar por data
     const futureEvents = events
@@ -86,8 +100,10 @@ export const CountdownTimer = ({ events, selectedYear }: CountdownTimerProps) =>
 
     if (futureEvents.length > 0) {
       setNextEvent(futureEvents[0]);
+      setTodayEvent(null);
     } else {
       setNextEvent(null);
+      setTodayEvent(null);
       setTimeLeft(null);
     }
   }, [events, selectedYear]);
@@ -126,6 +142,21 @@ export const CountdownTimer = ({ events, selectedYear }: CountdownTimerProps) =>
 
     return () => clearInterval(interval);
   }, [nextEvent, selectedYear]);
+
+  // Se há evento hoje, mostrar mensagem especial
+  if (todayEvent) {
+    return (
+      <div className="rounded px-2 py-2 flex flex-col gap-2 items-center w-full max-w-full">
+        <div className="text-xs text-primary font-semibold mb-1 text-center">
+          Hoje tem Etapa!
+        </div>
+        <div className="bg-primary/20 rounded-lg px-3 py-2 text-center">
+          <div className="text-lg font-bold text-white">{todayEvent.stage}</div>
+          <div className="text-xs text-white/70">{formatTime(todayEvent.time)}</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!nextEvent || !timeLeft) {
     return null;

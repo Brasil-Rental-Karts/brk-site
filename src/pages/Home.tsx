@@ -7,6 +7,7 @@ import {
   Zap,
   Target,
   Loader2,
+  Video,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "brk-design-system";
@@ -17,7 +18,7 @@ import {
   Championship,
   Stage,
 } from "@/services/championship.service";
-import { parseLocalDate } from "@/utils/championship.utils";
+import { parseLocalDate, isEventToday } from "@/utils/championship.utils";
 import { Hero } from "@/components/Hero";
 import { RegisterCTA } from "@/components/RegisterCTA";
 
@@ -35,6 +36,8 @@ interface UpcomingEventUI {
   championship: string;
   location: string;
   status: string;
+  trackLayout?: any; // Dados do traçado se disponível
+  streamLink?: string; // Link da transmissão
 }
 
 export function Home() {
@@ -67,7 +70,10 @@ export function Home() {
         const topChampionships = [...featured, ...notFeatured].slice(0, 3);
         setFeaturedChampionships(topChampionships as HomeChampionship[]);
 
-        // 4. Buscar eventos dos principais campeonatos
+        // 4. Buscar dados dos kartódromos
+        const allRaceTracks = await championshipService.getAllRaceTracks();
+        
+        // 5. Buscar eventos dos principais campeonatos
         let allStages: (Stage & { championshipName: string })[] = [];
         
         for (const champ of topChampionships) {
@@ -102,22 +108,28 @@ export function Home() {
           }
         }
 
-        // 5. Ordenar e pegar os próximos 3 eventos
+        // 6. Ordenar e pegar os próximos 3 eventos
         const upcoming = allStages
           .filter((stage) => {
+            // Comparar apenas a data (sem hora)
             const stageDate = parseLocalDate(stage.date);
-            const now = new Date();
-            return stageDate >= now;
+            const today = new Date();
+            const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const stageDateOnly = new Date(stageDate.getFullYear(), stageDate.getMonth(), stageDate.getDate());
+            return stageDateOnly >= todayDate;
           })
           .sort(
             (a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime()
           )
           .slice(0, 3)
           .map((stage) => {
-            const formattedStage = championshipService.formatStageForUI(stage);
+            // Buscar dados do kartódromo para este stage
+            const raceTrack = allRaceTracks.find(rt => rt.id === stage.raceTrackId);
+            const formattedStage = championshipService.formatStageForUI(stage, raceTrack || undefined);
             return {
               ...formattedStage,
-              championship: stage.championshipName
+              championship: stage.championshipName,
+              streamLink: stage.streamLink // Incluir o link de transmissão do stage original
             };
           });
 
@@ -404,6 +416,26 @@ export function Home() {
                             <MapPin className="h-3 w-3" />
                             {event.location}
                           </div>
+                          {event.trackLayout && (
+                            <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>Traçado: {event.trackLayout.name}</span>
+                            </div>
+                          )}
+                          {/* Link de transmissão apenas se for hoje e tiver transmissão */}
+                          {isEventToday(event.date, event.month) && event.streamLink && (
+                            <div className="text-sm text-primary flex items-center justify-center gap-1">
+                              <Video className="h-3 w-3" />
+                              <a 
+                                href={event.streamLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                              >
+                                Assistir transmissão
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -411,13 +443,15 @@ export function Home() {
                       <div className="text-center mt-4">
                         <Badge
                           variant={
-                            event.status === "Inscrição Aberta"
-                              ? "default"
-                              : "secondary"
+                            isEventToday(event.date, event.month) ? "default" : "secondary"
                           }
-                          className="text-center"
+                          className={`text-center ${
+                            isEventToday(event.date, event.month) 
+                              ? "bg-primary text-white" 
+                              : ""
+                          }`}
                         >
-                          {event.status}
+                          {isEventToday(event.date, event.month) ? "Hoje" : event.status}
                         </Badge>
                       </div>
                     </CardContent>

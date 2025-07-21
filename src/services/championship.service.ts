@@ -42,6 +42,29 @@ export interface Category {
   maxPilots: number;
   minimumAge: number;
   seasonId: string;
+  pilots?: string[]; // Added for pilots
+}
+
+export interface User {
+  id: string;
+  name: string;
+  nickname?: string;
+  active: boolean;
+  profilePicture?: string;
+}
+
+export interface RaceTrack {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  address: string;
+  trackLayouts?: any[];
+  defaultFleets?: any[];
+  generalInfo?: any;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Stage {
@@ -49,10 +72,32 @@ export interface Stage {
   name: string;
   date: string;
   time: string;
-  kartodrome: string;
+  raceTrackId: string;
+  trackLayoutId?: string;
   streamLink?: string;
   briefing?: string;
   seasonId: string;
+}
+
+export interface StageResult {
+  bestLap?: string;
+  totalTime?: string;
+  startPosition?: number;
+  finishPosition?: number;
+  qualifyingBestLap?: string;
+  weight?: boolean;
+}
+
+export interface StageResults {
+  [categoryId: string]: {
+    [pilotId: string]: {
+      [raceNumber: string]: StageResult;
+    };
+  };
+}
+
+export interface StageWithResults extends Stage {
+  stageResults?: StageResults;
 }
 
 export interface ApiResponse<T> {
@@ -75,6 +120,44 @@ export interface Regulation {
   updatedAt?: string;
 }
 
+export interface ClassificationPilot {
+  totalPoints: number;
+  totalStages: number;
+  wins: number;
+  podiums: number;
+  polePositions: number;
+  fastestLaps: number;
+  bestPosition: number;
+  averagePosition: string;
+  lastCalculatedAt: string;
+  user: {
+    id: string;
+    name: string;
+    nickname?: string;
+  };
+}
+
+export interface CategoryClassification {
+  pilots: ClassificationPilot[];
+}
+
+export interface SeasonClassification {
+  lastUpdated: string;
+  totalCategories: number;
+  totalPilots: number;
+  classificationsByCategory: Record<string, CategoryClassification>;
+}
+
+export interface ChampionshipClassification {
+  championship: ChampionshipWithSeasons;
+  classifications: {
+    seasonId: string;
+    seasonName: string;
+    seasonYear: string;
+    classification: SeasonClassification;
+  }[];
+}
+
 class ChampionshipService {
   /**
    * Parse date string to local Date object, avoiding timezone issues
@@ -94,12 +177,13 @@ class ChampionshipService {
     }
   }
 
-  private async request<T>(endpoint: string): Promise<T> {
+  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     if (!CACHE_API_URL) {
       throw new Error('VITE_CACHE_API_URL is not configured');
     }
 
-    const response = await fetch(`${CACHE_API_URL}${endpoint}`);
+    const url = `${CACHE_API_URL}${endpoint}`;
+    const response = await fetch(url, options);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -285,7 +369,7 @@ class ChampionshipService {
   }
 
   /**
-   * Busca etapas para uma temporada específica
+   * Busca todas as etapas de uma temporada específica
    */
   async getStagesForSeason(seasonId: string): Promise<Stage[]> {
     try {
@@ -298,26 +382,108 @@ class ChampionshipService {
   }
 
   /**
+   * Busca detalhes de uma etapa específica com resultados
+   */
+  async getStageWithResults(stageId: string): Promise<StageWithResults | null> {
+    try {
+      const response = await this.request<ApiResponse<StageWithResults>>(`/cache/stages/${stageId}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch stage ${stageId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca todos os kartódromos do cache
+   */
+  async getAllRaceTracks(): Promise<RaceTrack[]> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack[]>>('/cache/raceTracks');
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch race tracks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca kartódromos ativos do cache
+   */
+  async getActiveRaceTracks(): Promise<RaceTrack[]> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack[]>>('/cache/raceTracks/active');
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch active race tracks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca um kartódromo específico pelo ID
+   */
+  async getRaceTrackById(id: string): Promise<RaceTrack | null> {
+    try {
+      const response = await this.request<ApiResponse<RaceTrack>>(`/cache/raceTracks/${id}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch race track ${id}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca dados do kartódromo para uma etapa
+   */
+  async getRaceTrackDataForStage(raceTrackId: string): Promise<RaceTrack | null> {
+    try {
+      // Tentar buscar do cache primeiro
+      const raceTrack = await this.getRaceTrackById(raceTrackId);
+      if (raceTrack) {
+        return raceTrack;
+      }
+      
+      // Se não estiver em cache, buscar da API (fallback)
+      // Aqui você pode implementar a chamada para a API principal se necessário
+      console.warn(`Race track ${raceTrackId} not found in cache`);
+      return null;
+    } catch (error) {
+      console.error(`Failed to fetch race track data for stage ${raceTrackId}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Formata uma etapa para o formato esperado pelo UI
    */
-  formatStageForUI(stage: Stage): any {
+  formatStageForUI(stage: Stage, raceTrack?: RaceTrack): any {
     // Usar função utilitária para parsing de data
     const stageDate = this.parseLocalDate(stage.date);
     
     const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
     const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     
+    // Buscar informações do traçado se disponível
+    let trackLayout = null;
+    if (stage.trackLayoutId && raceTrack?.trackLayouts) {
+      trackLayout = raceTrack.trackLayouts.find(layout => layout.name === stage.trackLayoutId);
+    }
+    
     return {
-      id: parseInt(stage.id.slice(-4), 16), // Gera um ID numérico baseado no UUID
+      id: stage.id, // UUID do stage
+      seasonId: stage.seasonId, // Garantir que o seasonId está presente
       date: stageDate.getDate().toString().padStart(2, '0'),
       month: months[stageDate.getMonth()],
       day: days[stageDate.getDay()],
       stage: stage.name,
-      location: stage.kartodrome,
+      location: raceTrack?.name || stage.raceTrackId, // Usar nome do kartódromo se disponível, senão o ID
       time: stage.time || 'A partir das 14h',
       status: stageDate > new Date() ? 'Programado' : 'Finalizado',
       streamLink: stage.streamLink,
-      briefing: stage.briefing
+      briefing: stage.briefing,
+      raceTrackData: raceTrack, // Incluir dados do kartódromo se disponível
+      trackLayout: trackLayout // Incluir dados do traçado se disponível
     };
   }
 
@@ -393,6 +559,82 @@ class ChampionshipService {
     } catch (error) {
       console.error(`Failed to fetch regulations by season for championship ${championshipId}:`, error);
       return [];
+    }
+  }
+
+  /**
+   * Busca os pilotos de uma categoria específica
+   */
+  async getPilotsForCategory(categoryId: string): Promise<string[]> {
+    try {
+      const response = await this.request<ApiResponse<Category[]>>('/cache/categories');
+      const categories = response.data || [];
+      const category = categories.find(cat => cat.id === categoryId);
+      if (category && Array.isArray(category.pilots)) {
+        return category.pilots;
+      }
+      return [];
+    } catch (error) {
+      console.error(`Failed to fetch pilots for category ${categoryId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca um usuário específico por ID
+   */
+  async getUserById(userId: string): Promise<User | null> {
+    try {
+      const response = await this.request<ApiResponse<User>>(`/cache/users/${userId}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch user ${userId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca múltiplos usuários por IDs
+   */
+  async getUsersByIds(userIds: string[]): Promise<User[]> {
+    try {
+      const response = await this.request<ApiResponse<User[]>>('/cache/users/batch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userIds }),
+      });
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca classificação de uma temporada específica
+   */
+  async getSeasonClassification(seasonId: string): Promise<SeasonClassification | null> {
+    try {
+      const response = await this.request<ApiResponse<SeasonClassification>>(`/cache/seasons/${seasonId}/classification`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch classification for season ${seasonId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Busca classificação de todas as temporadas de um campeonato
+   */
+  async getChampionshipClassification(championshipId: string): Promise<ChampionshipClassification | null> {
+    try {
+      const response = await this.request<ApiResponse<ChampionshipClassification>>(`/cache/championships/${championshipId}/classification`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch classification for championship ${championshipId}:`, error);
+      return null;
     }
   }
 }

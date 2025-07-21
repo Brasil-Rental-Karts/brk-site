@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { championshipService, type Championship, type ChampionshipWithSeasons, type Season, type Category, type Stage } from '@/services/championship.service';
+import { championshipService, type Championship, type ChampionshipWithSeasons, type Season, type Category, type Stage, type RaceTrack } from '@/services/championship.service';
 
 export interface UseChampionshipsReturn {
   championships: Championship[];
   seasons: Season[];
   categories: Category[];
   stages: Stage[];
+  raceTracks: RaceTrack[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -15,6 +16,8 @@ export interface UseChampionshipsReturn {
   getSeasonsForChampionship: (championshipId: string) => Season[];
   getStagesForSeason: (seasonId: string) => Stage[];
   getStagesForChampionship: (championshipId: string) => Stage[];
+  getRaceTrackById: (id: string) => RaceTrack | null;
+  getActiveRaceTracks: () => RaceTrack[];
   getRegulationsForSeason: (seasonId: string) => Promise<any[]>;
   getActiveRegulationsForChampionship: (championshipId: string) => Promise<any[]>;
   getRegulationsBySeasonForChampionship: (championshipId: string) => Promise<any[]>;
@@ -37,6 +40,7 @@ export function useChampionships(): UseChampionshipsReturn {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [stages, setStages] = useState<Stage[]>([]);
+  const [raceTracks, setRaceTracks] = useState<RaceTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,17 +50,19 @@ export function useChampionships(): UseChampionshipsReturn {
       setError(null);
       
       // Buscar todos os dados em paralelo
-      const [championshipsData, seasonsData, categoriesData, stagesData] = await Promise.all([
+      const [championshipsData, seasonsData, categoriesData, stagesData, raceTracksData] = await Promise.all([
         championshipService.getAllChampionships(),
         championshipService.getAllSeasons(),
         championshipService.getAllCategories(),
-        championshipService.getAllStages()
+        championshipService.getAllStages(),
+        championshipService.getAllRaceTracks()
       ]);
       
       setChampionships(championshipsData);
       setSeasons(seasonsData);
       setCategories(categoriesData);
       setStages(stagesData);
+      setRaceTracks(raceTracksData);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao carregar dados';
       setError(message);
@@ -108,6 +114,14 @@ export function useChampionships(): UseChampionshipsReturn {
     return stages.filter(stage => seasonIds.includes(stage.seasonId));
   };
 
+  const getRaceTrackById = (id: string): RaceTrack | null => {
+    return raceTracks.find(raceTrack => raceTrack.id === id) || null;
+  };
+
+  const getActiveRaceTracks = (): RaceTrack[] => {
+    return raceTracks.filter(raceTrack => raceTrack.isActive);
+  };
+
   // Buscar regulamentações por temporada
   const getRegulationsForSeason = useCallback(async (seasonId: string) => {
     try {
@@ -147,6 +161,7 @@ export function useChampionships(): UseChampionshipsReturn {
     seasons,
     categories,
     stages,
+    raceTracks,
     loading,
     error,
     refetch: fetchAllData,
@@ -156,6 +171,8 @@ export function useChampionships(): UseChampionshipsReturn {
     getSeasonsForChampionship,
     getStagesForSeason,
     getStagesForChampionship,
+    getRaceTrackById,
+    getActiveRaceTracks,
     getRegulationsForSeason,
     getActiveRegulationsForChampionship,
     getRegulationsBySeasonForChampionship
