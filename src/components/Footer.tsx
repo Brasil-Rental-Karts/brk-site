@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { MessageCircle, Instagram, Mail, Globe } from "lucide-react"
 
 interface FooterProps extends React.HTMLAttributes<HTMLElement> {
   className?: string
@@ -69,17 +70,32 @@ export function Footer({ className, ...props }: FooterProps) {
               <ul className="text-muted-foreground space-y-2">
                 <li>
                   <a
-                    href="mailto:falecom@brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all"
+                    href="https://wa.me/5547997007515"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all flex items-center gap-2"
                   >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="mailto:falecom@brasilrentalkarts.com.br"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all flex items-center gap-2"
+                  >
+                    <Mail className="h-4 w-4" />
                     falecom@brasilrentalkarts.com.br
                   </a>
                 </li>
                 <li>
                   <a
                     href="https://www.brasilrentalkarts.com.br"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded break-all flex items-center gap-2"
                   >
+                    <Globe className="h-4 w-4" />
                     www.brasilrentalkarts.com.br
                   </a>
                 </li>
@@ -91,8 +107,11 @@ export function Footer({ className, ...props }: FooterProps) {
                 <li>
                   <a
                     href="https://www.instagram.com/brasilrentalkarts/"
-                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline focus:outline focus:outline-2 focus:outline-primary rounded flex items-center gap-2"
                   >
+                    <Instagram className="h-4 w-4" />
                     Instagram
                   </a>
                 </li>

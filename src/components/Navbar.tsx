@@ -82,18 +82,28 @@ export function Navbar() {
           {/* Menu para Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
             <Link
-              to="/"
-              className="inline-flex h-9 w-max items-center justify-center rounded-2xl px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
-            >
-              Início
-            </Link>
-
-            <Link
               to="/campeonatos"
               className="inline-flex h-9 w-max items-center justify-center rounded-2xl px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
             >
               Campeonatos
             </Link>
+
+            {user && (
+              <>
+                <a
+                  href={`${APP_URL}/dashboard`}
+                  className="inline-flex h-9 w-max items-center justify-center rounded-2xl px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
+                >
+                  Minha Página
+                </a>
+                <a
+                  href={`${APP_URL}/financial`}
+                  className="inline-flex h-9 w-max items-center justify-center rounded-2xl px-4 py-2 text-sm font-medium transition-colors hover:bg-accent/30 hover:text-accent-foreground focus:bg-accent/30 focus:text-accent-foreground focus:outline-none"
+                >
+                  Meus Pagamentos
+                </a>
+              </>
+            )}
           </nav>
         </div>
 
@@ -128,20 +138,6 @@ export function Navbar() {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <a
-                    href={`${APP_URL}/dashboard`}
-                  >
-                    Dashboard
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={`${APP_URL}/financial`}
-                  >
-                    Financeiro
-                  </a>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <a
                     href={`${APP_URL}/profile/edit`}
@@ -207,13 +203,6 @@ export function Navbar() {
                 )}
                 <nav className="flex flex-col gap-2">
                   <Link
-                    to="/"
-                    className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Início
-                  </Link>
-                  <Link
                     to="/campeonatos"
                     className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                     onClick={() => setIsOpen(false)}
@@ -229,14 +218,14 @@ export function Navbar() {
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
-                        Dashboard
+                        Minha Página
                       </a>
                       <a
                         href={`${APP_URL}/financial`}
                         className="px-2 py-1 rounded-2xl hover:bg-accent/50 transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
-                        Financeiro
+                        Meus Pagamentos
                       </a>
                       <a
                         href={`${APP_URL}/profile/edit`}
