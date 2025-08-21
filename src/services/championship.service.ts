@@ -158,6 +158,52 @@ export interface ChampionshipClassification {
   }[];
 }
 
+// Nova estrutura de classificação (V2)
+export interface ClassificationTotalsV2 {
+  userId: string;
+  name: string;
+  nickname: string | null;
+  total: number;
+}
+
+export interface ClassificationCellV2 {
+  key: string; // ex: "<stageId>:<batteryIndex>"
+  points: number;
+  token: string; // ex: "P1", "-"
+  hadPenalty: boolean;
+  discardStage: boolean;
+  discardBattery: boolean;
+  minNoPenalty: boolean;
+}
+
+export interface ClassificationGridRowV2 {
+  userId: string;
+  cells: ClassificationCellV2[];
+}
+
+export interface ClassificationColumnV2 {
+  id: string; // deve bater com cell.key
+  label: string; // ex: "E1 B1"
+  name: string; // ex: nome da etapa
+  date: string; // ISO
+}
+
+export interface SeasonCategoryClassificationV2 {
+  generatedAt: string;
+  seasonId: string;
+  categoryId: string;
+  totals: ClassificationTotalsV2[];
+  grid: ClassificationGridRowV2[];
+  columns: ClassificationColumnV2[];
+}
+
+export interface SeasonClassificationByCategoryV2 {
+  lastUpdated: string;
+  totalCategories: number;
+  totalPilots: number;
+  classificationsByCategory: Record<string, SeasonCategoryClassificationV2>;
+}
+
 class ChampionshipService {
   /**
    * Parse date string to local Date object, avoiding timezone issues
@@ -634,6 +680,33 @@ class ChampionshipService {
       return response.data || null;
     } catch (error) {
       console.error(`Failed to fetch classification for championship ${championshipId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Nova classificação V2 por temporada e categoria
+   * Espera a estrutura com totals, grid e columns
+   */
+  async getSeasonCategoryClassificationV2(seasonId: string, categoryId: string): Promise<SeasonCategoryClassificationV2 | null> {
+    try {
+      const response = await this.request<ApiResponse<SeasonCategoryClassificationV2>>(`/cache/seasons/${seasonId}/classification?categoryId=${encodeURIComponent(categoryId)}`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch classification V2 for season ${seasonId} and category ${categoryId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Nova classificação V2 por temporada (com separação por categoria)
+   */
+  async getSeasonClassificationV2(seasonId: string): Promise<SeasonClassificationByCategoryV2 | null> {
+    try {
+      const response = await this.request<ApiResponse<SeasonClassificationByCategoryV2>>(`/cache/seasons/${seasonId}/classification`);
+      return response.data || null;
+    } catch (error) {
+      console.error(`Failed to fetch season classification V2 for season ${seasonId}:`, error);
       return null;
     }
   }
