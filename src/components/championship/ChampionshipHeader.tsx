@@ -1,5 +1,6 @@
 import { Button } from "brk-design-system";
 import { UserPlus } from "lucide-react";
+import { getRegistrationButtonText } from "@/utils/pre-registration.utils";
 
 interface Season {
   id: string;
@@ -98,7 +99,7 @@ export const ChampionshipHeader = ({
                   onClick={() => onRegisterClick?.(season.slug || season.id)}
                 >
                   <UserPlus className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <span className="leading-tight">Inscrever-se em {season.name}</span>
+                  <span className="leading-tight">{getRegistrationButtonText(season)}</span>
                 </Button>
               ))
             ) : (
@@ -157,7 +158,7 @@ export const ChampionshipHeader = ({
                   onClick={() => onRegisterClick?.(season.slug || season.id)}
                 >
                   <UserPlus className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <span className="leading-tight">Inscrever-se em {season.name}</span>
+                  <span className="leading-tight">{getRegistrationButtonText(season)}</span>
                 </Button>
               ))
             ) : (

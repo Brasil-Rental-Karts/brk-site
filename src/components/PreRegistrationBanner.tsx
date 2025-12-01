@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "brk-design-system";
 import { Clock, Users, Calendar, X } from "lucide-react";
+import { isPreRegistrationPeriodActive } from "@/utils/pre-registration.utils";
 
 interface Season {
   id: string;
@@ -19,25 +20,6 @@ interface Season {
 interface PreRegistrationBannerProps {
   season: Season;
 }
-
-/**
- * Determina se o período exclusivo de pré-inscrição está ativo
- */
-const isPreRegistrationPeriodActive = (season: Season): boolean => {
-  if (!season.preRegistrationEnabled || !season.preRegistrationEndDate) {
-    return false;
-  }
-
-  if (!season.registrationOpen) {
-    return false;
-  }
-
-  const now = new Date();
-  const preRegistrationEndDate = new Date(season.preRegistrationEndDate);
-
-  // Período exclusivo está ativo se ainda não passou a data de término
-  return now < preRegistrationEndDate;
-};
 
 /**
  * Calcula a data de abertura das inscrições gerais

@@ -16,6 +16,7 @@ import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 import { CountdownTimer } from "../CountdownTimer";
 import { isEventToday } from "@/utils/championship.utils";
 import { PreRegistrationBanner } from "@/components/PreRegistrationBanner";
+import { getRegistrationButtonText } from "@/utils/pre-registration.utils";
 
 interface Season {
   id: string;
@@ -325,7 +326,7 @@ export const HomeTab = ({
                         onClick={() => onRegisterClick?.(season.slug || season.id)}
                       >
                         <UserPlus className="h-5 w-5 mr-2 flex-shrink-0" />
-                        <span className="leading-tight">Inscrever-se em {season.name}</span>
+                        <span className="leading-tight">{getRegistrationButtonText(season)}</span>
                       </Button>
                     ))}
                   </div>
