@@ -9,6 +9,8 @@ interface Season {
   endDate: string;
   championshipId: string;
   registrationOpen?: boolean;
+  preRegistrationEnabled?: boolean;
+  preRegistrationEndDate?: string | null;
 }
 
 interface ChampionshipHeaderProps {

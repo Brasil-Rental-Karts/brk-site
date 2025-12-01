@@ -15,6 +15,7 @@ import { RaceTrack } from "@/services/championship.service";
 import { RaceTrackInfo } from "@/components/championship/RaceTrackInfo";
 import { CountdownTimer } from "../CountdownTimer";
 import { isEventToday } from "@/utils/championship.utils";
+import { PreRegistrationBanner } from "@/components/PreRegistrationBanner";
 
 interface Season {
   id: string;
@@ -24,6 +25,8 @@ interface Season {
   endDate: string;
   championshipId: string;
   registrationOpen?: boolean;
+  preRegistrationEnabled?: boolean;
+  preRegistrationEndDate?: string | null;
 }
 
 interface HomeTabProps {
@@ -340,6 +343,18 @@ export const HomeTab = ({
           </div>
         </div>
       </motion.div>
+
+      {/* Banner de Pré-Inscrição */}
+      {seasonsWithOpenRegistration.length > 0 && 
+       seasonsWithOpenRegistration.some(season => season.preRegistrationEnabled) && (
+        <div className="container mx-auto px-4 sm:px-6">
+          {seasonsWithOpenRegistration
+            .filter(season => season.preRegistrationEnabled)
+            .map(season => (
+              <PreRegistrationBanner key={season.id} season={season} />
+            ))}
+        </div>
+      )}
 
       {/* Seção do Calendário */}
       <motion.div
